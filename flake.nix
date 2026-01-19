@@ -44,6 +44,7 @@
             (vscode-with-extensions.override {
               vscodeExtensions = with vscode-extensions; [
                 wpilib.vscode-wpilib
+                vscode-extensions.redhat.java
               ];
             })
           ];
@@ -53,7 +54,7 @@
             export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${builtins.toString (pkgs.lib.makeLibraryPath buildInputs)}";
             export LIBCLANG_PATH="${pkgs.libclang.lib}/lib";
             export HALSIM_EXTENSIONS="$PWD/build/jni/release/libhalsim_gui.so";
-            export JAVA_HOME="/home/churst/Downloads/wpilib-2025/WPILib_Linux-2025.3.2/jdk/"
+            export JAVA_HOME="/home/churst/Downloads/wpilib-2026/WPILib_Linux-2026.2.1/jdk"
           '';
         };
       }

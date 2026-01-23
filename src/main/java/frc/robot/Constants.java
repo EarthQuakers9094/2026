@@ -9,8 +9,10 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -45,5 +47,8 @@ public final class Constants {
     public static final Translation3d positionOnRobot =
         new Translation3d(Inches.of(0.0), Inches.of(5.0), Inches.of(0.0));
     public static final LinearVelocity launchSpeed = MetersPerSecond.of(10.0);
+    public static final AngularVelocity minLaunchSpeed = RotationsPerSecond.of(100.);
+    public static final double flywheelMOI = 28122.783131854398;
+    public static final double flywheelGearing = 1;
   }
 }

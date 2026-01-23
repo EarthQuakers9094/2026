@@ -155,7 +155,7 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> {
-                  shooter.shoot();
+                  // shooter.shoot();
                 }));
 
     // Lock to 0° when A button is held

@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -19,6 +20,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final Supplier<Translation2d> robotPositionSupplier;
   private final BooleanSupplier shouldTargetHub;
 
+  @AutoLogOutput private boolean isShooting = false;
+  @AutoLogOutput private boolean isIndexing = false;
+
   public ShooterSubsystem(
       ShooterIO io, Supplier<Pose2d> robotPositionSupplier, BooleanSupplier shouldTargetHub) {
     this.io = io;
@@ -26,8 +30,15 @@ public class ShooterSubsystem extends SubsystemBase {
     this.shouldTargetHub = shouldTargetHub;
   }
 
-  public void shoot() {
-    io.shoot();
+  public void beginShooting() {
+    isShooting = true;
+    io.spinUpShooter();
+  }
+
+  public void endShooting() {
+    isShooting = true;
+    io.stopShooter();
+    // io.endShooting();
   }
 
   @Override
@@ -67,6 +78,16 @@ public class ShooterSubsystem extends SubsystemBase {
       io.setPitch(new Rotation2d(pitchRadians));
     }
 
+    if (isShooting
+        && inputs.shooterSpeed.baseUnitMagnitude()
+            >= Constants.ShooterConstants.minLaunchSpeed.baseUnitMagnitude()) {
+      io.startIndexing();
+      isIndexing = true;
+
+    } else {
+      io.stopIndexing();
+      isIndexing = false;
+    }
     Logger.processInputs("Shooter", inputs);
   }
 }

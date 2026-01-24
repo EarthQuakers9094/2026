@@ -1,12 +1,20 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 import java.util.function.Supplier;
 
@@ -16,9 +24,11 @@ public class ShooterIOSim implements ShooterIO {
   private Rotation2d yaw = new Rotation2d();
 
   private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
-  //        SparkFlex flex = new SparkFlex(11, MotorType.kBrushless);
-  //        // create the Spark Flex sim object
-  //        SparkFlexSim flexSim = new SparkFlexSim(flex, flexGearbox);
+
+  private final SparkFlex flex =
+      new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
+  private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
+
   private FlywheelSim flywheelSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(
@@ -37,6 +47,16 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
+
+    flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+
+    flywheelSim.update(0.02);
+
+    flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
+
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+
     inputs.currentPitch = pitch;
     inputs.shooterSpeed = flywheelSim.getAngularVelocity();
   }
@@ -73,11 +93,15 @@ public class ShooterIOSim implements ShooterIO {
   // }
 
   public void spinUpShooter() {
-    flywheelSim.setInput();
+    flex.getClosedLoopController()
+        .setSetpoint(
+            Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond), ControlType.kVelocity);
   }
   ;
 
-  public void stopShooter() {}
+  public void stopShooter() {
+    flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
+  }
   ;
 
   public void startIndexing() {}

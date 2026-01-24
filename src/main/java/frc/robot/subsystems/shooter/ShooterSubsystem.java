@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,7 +39,6 @@ public class ShooterSubsystem extends SubsystemBase {
   public void endShooting() {
     isShooting = true;
     io.stopShooter();
-    // io.endShooting();
   }
 
   @Override
@@ -61,7 +61,12 @@ public class ShooterSubsystem extends SubsystemBase {
       // meters
 
       double g = 9.81;
-      double v_squared = Math.pow(Constants.ShooterConstants.launchSpeed.in(MetersPerSecond), 2);
+      double v_squared =
+          Math.pow(
+              Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
+                  * Constants.ShooterConstants.flywheelDiameter.in(Meters)
+                  * Math.PI,
+              2);
 
       // https://en.wikipedia.org/wiki/Projectile_motion#Angle_%CE%B8_required_to_hit_coordinate_(x,_y)
       double pitchRadians =

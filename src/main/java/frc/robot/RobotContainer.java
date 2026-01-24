@@ -152,11 +152,8 @@ public class RobotContainer {
 
     controller
         .button(8)
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  // shooter.shoot();
-                }));
+        .onTrue(new InstantCommand(shooter::beginShooting))
+        .onFalse(new InstantCommand(shooter::endShooting));
 
     // Lock to 0° when A button is held
     controller

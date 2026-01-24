@@ -20,93 +20,91 @@ import java.util.function.Supplier;
 
 public class ShooterIOSim implements ShooterIO {
 
-  private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
-  private Rotation2d yaw = new Rotation2d();
+        private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
+        private Rotation2d yaw = new Rotation2d();
 
-  private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
+        private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
 
-  private final SparkFlex flex =
-      new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
-  private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
+        private final SparkFlex flex = new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
+        private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
 
-  private FlywheelSim flywheelSim =
-      new FlywheelSim(
-          LinearSystemId.createFlywheelSystem(
-              DCMotor.getNeoVortex(1),
-              Constants.ShooterConstants.flywheelMOI,
-              Constants.ShooterConstants.flywheelGearing),
-          flywheelMotor);
+        private FlywheelSim flywheelSim = new FlywheelSim(
+                        LinearSystemId.createFlywheelSystem(
+                                        DCMotor.getNeoVortex(1),
+                                        Constants.ShooterConstants.flywheelMOI,
+                                        Constants.ShooterConstants.flywheelGearing),
+                        flywheelMotor);
 
-  private final Supplier<Translation2d> robotPositionSupplier;
-  private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
+        private final Supplier<Translation2d> robotPositionSupplier;
+        private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
-  public ShooterIOSim(
-      Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
-    this.robotPositionSupplier = () -> robotPositionSupplier.get().getTranslation();
-    this.chassisSpeedsSupplier = chassisSpeedsSupplier;
-  }
+        public ShooterIOSim(
+                        Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+                this.robotPositionSupplier = () -> robotPositionSupplier.get().getTranslation();
+                this.chassisSpeedsSupplier = chassisSpeedsSupplier;
 
-  public void updateInputs(ShooterIOInputs inputs) {
+        }
 
-    flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+        public void updateInputs(ShooterIOInputs inputs) {
 
-    flywheelSim.update(0.02);
+                flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
 
-    flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
+                flywheelSim.update(0.02);
 
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+                flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
 
-    inputs.currentPitch = pitch;
-    inputs.shooterSpeed = flywheelSim.getAngularVelocity();
-  }
+                RoboRioSim.setVInVoltage(
+                                BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
 
-  public void setPitch(Rotation2d pitch) {
-    this.pitch = pitch;
-  }
+                inputs.currentPitch = pitch;
+                inputs.shooterSpeed = flywheelSim.getAngularVelocity();
+        }
 
-  public void setYaw(Rotation2d yaw) {
-    this.yaw = yaw;
-  }
+        public void setPitch(Rotation2d pitch) {
+                this.pitch = pitch;
+        }
 
-  // public void shoot() {
-  // System.out.println("firing fuel");
-  // RebuiltFuelOnFly fuel = new RebuiltFuelOnFly(
-  // robotPositionSupplier.get(),
-  // Constants.ShooterConstants.positionOnRobot.toTranslation2d(),
-  // chassisSpeedsSupplier.get(),
-  // yaw,
-  // Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
-  // Constants.ShooterConstants.launchSpeed,
-  // pitch.getMeasure());
-  //
-  // fuel
-  // // Set the target center to the Crescendo Speaker of the current alliance
-  // .withTargetPosition(() -> new Translation3d(0.25, 5.56, 2.3))
-  // // Set the tolerance: x: ±0.5m, y: ±1.2m, z: ±0.3m (this is the size of the
-  // // speaker's "mouth")
-  // .withTargetTolerance(new Translation3d(0.5, 1.2, 0.3))
-  // // Set a callback to run when the note hits the target
-  // .withHitTargetCallBack(() -> System.out.println("Hit speaker, +2 points!"));
-  //
-  // SimulatedArena.getInstance().addGamePieceProjectile(fuel);
-  // }
+        public void setYaw(Rotation2d yaw) {
+                this.yaw = yaw;
+        }
 
-  public void spinUpShooter() {
-    flex.getClosedLoopController()
-        .setSetpoint(
-            Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond), ControlType.kVelocity);
-  }
-  ;
+        // public void shoot() {
+        // System.out.println("firing fuel");
+        // RebuiltFuelOnFly fuel = new RebuiltFuelOnFly(
+        // robotPositionSupplier.get(),
+        // Constants.ShooterConstants.positionOnRobot.toTranslation2d(),
+        // chassisSpeedsSupplier.get(),
+        // yaw,
+        // Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
+        // Constants.ShooterConstants.launchSpeed,
+        // pitch.getMeasure());
+        //
+        // fuel
+        // // Set the target center to the Crescendo Speaker of the current alliance
+        // .withTargetPosition(() -> new Translation3d(0.25, 5.56, 2.3))
+        // // Set the tolerance: x: ±0.5m, y: ±1.2m, z: ±0.3m (this is the size of the
+        // // speaker's "mouth")
+        // .withTargetTolerance(new Translation3d(0.5, 1.2, 0.3))
+        // // Set a callback to run when the note hits the target
+        // .withHitTargetCallBack(() -> System.out.println("Hit speaker, +2 points!"));
+        //
+        // SimulatedArena.getInstance().addGamePieceProjectile(fuel);
+        // }
 
-  public void stopShooter() {
-    flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
-  }
-  ;
+        public void spinUpShooter() {
+                flex.getClosedLoopController()
+                                .setSetpoint(
+                                                Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond),
+                                                ControlType.kVelocity);
+        };
 
-  public void startIndexing() {}
-  ;
+        public void stopShooter() {
+                flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
+        };
 
-  public void stopIndexing() {}
-  ;
+        public void startIndexing() {
+        };
+
+        public void stopIndexing() {
+        };
 }

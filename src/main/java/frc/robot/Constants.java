@@ -39,7 +39,8 @@ public final class Constants {
     public static final Translation3d hub =
         new Translation3d(Inches.of(181.56), Inches.of(158.84), Inches.of(72));
 
-    public static final Translation3d hubTarget = hub;
+    public static final Translation3d hubTarget =
+        hub.plus(new Translation3d(Inches.of(15), Inches.of(0), Inches.of(0)));
   }
 
   public static class ShooterConstants {
@@ -51,5 +52,6 @@ public final class Constants {
     public static final double flywheelGearing = 1;
     public static final int motorId = 0;
     public static final Distance flywheelDiameter = Inches.of(2.0);
+    public static final int targetingIterations = 15;
   }
 }

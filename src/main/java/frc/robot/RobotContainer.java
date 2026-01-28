@@ -96,6 +96,7 @@ public class RobotContainer {
             new ShooterSubsystem(
                 new ShooterIOSim(drive::getPose, drive::getChassisSpeeds),
                 drive::getPose,
+                drive::getChassisSpeeds,
                 () -> true);
         break;
 
@@ -108,7 +109,9 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose, () -> true);
+        shooter =
+            new ShooterSubsystem(
+                new ShooterIO() {}, drive::getPose, drive::getChassisSpeeds, () -> true);
         break;
     }
 

@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -28,6 +29,8 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.targeter.IterativeKinematicTargeter;
+import frc.robot.subsystems.shooter.targeter.Targeter;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,15 +43,20 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final Targeter targeter = new IterativeKinematicTargeter(5);
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
+  private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -97,7 +105,8 @@ public class RobotContainer {
                 new ShooterIOSim(drive::getPose, drive::getChassisSpeeds),
                 drive::getPose,
                 drive::getChassisSpeeds,
-                () -> true);
+                () -> true,
+                targeter);
         break;
 
       default:
@@ -111,7 +120,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter =
             new ShooterSubsystem(
-                new ShooterIO() {}, drive::getPose, drive::getChassisSpeeds, () -> true);
+                new ShooterIO() {}, drive::getPose, drive::getChassisSpeeds, () -> true, targeter);
         break;
     }
 
@@ -149,8 +158,14 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
+            () ->
+                shooter.isActivelyShooting()
+                    ? yInputAverage.calculate(-controller.getLeftY())
+                    : -controller.getLeftY(),
+            () ->
+                shooter.isActivelyShooting()
+                    ? xInputAverage.calculate(-controller.getLeftX())
+                    : -controller.getLeftX(),
             () -> -controller.getRightX()));
 
     controller

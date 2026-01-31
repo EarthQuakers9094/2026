@@ -1,17 +1,22 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
+import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import frc.robot.util.MovingAverage;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
@@ -22,6 +27,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
+  private final Targeter targeter;
   private final Supplier<Pose2d> robotPositionSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final BooleanSupplier shouldTargetHub;
@@ -34,11 +40,13 @@ public class ShooterSubsystem extends SubsystemBase {
       ShooterIO io,
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      BooleanSupplier shouldTargetHub) {
+      BooleanSupplier shouldTargetHub,
+      Targeter targeter) {
     this.io = io;
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.shouldTargetHub = shouldTargetHub;
+    this.targeter = targeter;
   }
 
   public void beginShooting() {
@@ -55,63 +63,75 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", 0.0);
   }
 
+  public boolean isActivelyShooting() {
+    return this.isIndexing;
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
 
     if (shouldTargetHub.getAsBoolean()) {
       Pose2d robotPosition = robotPositionSupplier.get();
-      Translation3d hubTarget = Constants.Field.hubTarget;
-      Pose2d shooter =
-          robotPosition.plus(
-              new Transform2d(
-                  Constants.ShooterConstants.positionOnRobot.toTranslation2d(), inputs.currentYaw));
-
-      Translation2d shooterToTarget = hubTarget.toTranslation2d().minus(shooter.getTranslation());
-
-      double x =
-          Math.sqrt(
-              Math.pow(shooterToTarget.getX(), 2)
-                  + Math.pow(shooterToTarget.getY(), 2)); // target distance in meters
-      double y = hubTarget.getZ() - Constants.ShooterConstants.positionOnRobot.getZ(); // target
-      // height in
-      // meters
-      //
       ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
-      double driveVelocity =
+      Pose2d anticipatedRobotPosition =
+          robotPosition.exp(
+              chassisSpeeds.toTwist2d(Constants.ShooterConstants.robotPositionAnticipationSeconds));
+      Logger.recordOutput("Shooter/AnticipatedRobotPosition", anticipatedRobotPosition);
+
+      Pose2d anticipatedShooterPosition =
+          anticipatedRobotPosition.transformBy(
+              new Transform2d(
+                  Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
+                  Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
+
+      Distance xDistance =
+          Meters.of(
+              Constants.Field.hubTarget
+                  .toTranslation2d()
+                  .getDistance(anticipatedShooterPosition.getTranslation()));
+      Distance yDistance =
+          Meters.of(
+              Constants.Field.hubTarget.getZ() - Constants.ShooterConstants.positionOnRobot.getZ());
+      double robotVelocityMps =
           Math.sqrt(
-              Math.pow(chassisSpeeds.vxMetersPerSecond, 2)
-                  + Math.pow(chassisSpeeds.vyMetersPerSecond, 2));
-      double driveAngle =
-          Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond);
+              Math.pow(chassisSpeeds.vyMetersPerSecond, 2)
+                  + Math.pow(chassisSpeeds.vxMetersPerSecond, 2));
+      double shooterToTargetAngle =
+          (Constants.Field.hubTarget
+                  .toTranslation2d()
+                  .minus(anticipatedShooterPosition.getTranslation()))
+              .getAngle()
+              .getRadians();
+      double velocityAngleRelativeToTarget =
+          Math.atan2(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond)
+              - shooterToTargetAngle;
+      LinearVelocity xVelocity =
+          MetersPerSecond.of(Math.cos(velocityAngleRelativeToTarget) * robotVelocityMps);
+      LinearVelocity zVelocity =
+          MetersPerSecond.of(Math.sin(velocityAngleRelativeToTarget) * robotVelocityMps);
+      LinearVelocity projectileVelocity =
+          MetersPerSecond.of(
+              Constants.ShooterConstants.flywheelDiameter.in(Meters)
+                  * inputs.shooterSpeed.in(RadiansPerSecond));
 
-      double driveAngleRelativeToTarget = driveAngle - shooterToTarget.getAngle().getRadians();
-
-      double velocityTowardsTarget = Math.cos(driveAngleRelativeToTarget) * driveVelocity;
-      double velocityPerpendicularToTarget = Math.sin(driveAngleRelativeToTarget) * driveVelocity;
-
-      Logger.recordOutput("Shooter/DriveAngleRelativeToTarget", driveAngleRelativeToTarget);
-      Logger.recordOutput("Shooter/VelocityTowardsTarget", velocityTowardsTarget);
       Logger.recordOutput(
-          "Shooter/RobotVelocityMagnitude", driveVelocity - Math.abs(velocityTowardsTarget));
+          "Shooter/PerpendicularVelocity",
+          new Pose2d[] {
+            anticipatedShooterPosition,
+            anticipatedRobotPosition.exp(
+                new Twist2d(
+                    zVelocity.baseUnitMagnitude() * Math.sin(shooterToTargetAngle),
+                    zVelocity.baseUnitMagnitude() * Math.cos(shooterToTargetAngle),
+                    0.0))
+          });
 
       TargetingResult3d targetingResult =
-          approximateTargetingWithVelocity(
-              x, y, velocityTowardsTarget, velocityPerpendicularToTarget);
+          targeter.getShooterTargeting(
+              new TargetingData(xDistance, yDistance, xVelocity, zVelocity, projectileVelocity));
 
-      // https://en.wikipedia.org/wiki/Projectile_motion#Angle_%CE%B8_required_to_hit_coordinate_(x,_y)
-
-      Logger.recordOutput("Shooter/TargetingHeight", y);
-      // Logger.recordOutput("Shooter/TargetingVelocity", v);
-      Logger.recordOutput("Shooter/TargetingDistance", x);
-      Logger.recordOutput("Shooter/TargetingPitch", targetingResult.pitchRadians);
-
-      io.setPitch(new Rotation2d(targetingResult.pitchRadians));
-      io.setYaw(
-          shooterToTarget
-              .getAngle()
-              .minus(robotPosition.getRotation())
-              .plus(new Rotation2d(targetingResult.yawRadians /* + Math.PI*/)));
+      io.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      io.setYaw(new Rotation2d(shooterToTargetAngle).minus(robotPosition.getRotation()));
     }
     double averageSpeed = speedAverage.addValue(inputs.shooterSpeed.baseUnitMagnitude());
 
@@ -128,57 +148,4 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     Logger.processInputs("Shooter", inputs);
   }
-
-  private TargetingResult3d approximateTargetingWithVelocity(
-      double xDistanceMeters,
-      double yDistanceMeters,
-      double xVelocityMetersPerSecond,
-      double zVelocityMetersPerSecond) {
-    double x = xDistanceMeters;
-    TargetingResult2d newestTargetingResult2d = null;
-    for (int i = 0; i < Constants.ShooterConstants.targetingIterations; i++) {
-      newestTargetingResult2d = getTargetingForDistance(x, yDistanceMeters);
-      x = xDistanceMeters - xVelocityMetersPerSecond * newestTargetingResult2d.timeOfFlightSeconds;
-    }
-    return new TargetingResult3d(
-        newestTargetingResult2d.pitchRadians,
-        -Math.atan2(
-            zVelocityMetersPerSecond * newestTargetingResult2d.timeOfFlightSeconds,
-            xDistanceMeters),
-        newestTargetingResult2d.timeOfFlightSeconds);
-  }
-
-  private TargetingResult2d getTargetingForDistance(
-      double xDistanceMeters, double yDistanceMeters) {
-    double v =
-        inputs.shooterSpeed.in(RadiansPerSecond)
-            * Constants.ShooterConstants.flywheelDiameter.in(Meters);
-    double v_squared = Math.pow(v, 2);
-    double g = 9.81;
-
-    double pitchRadians =
-        Math.atan2(
-            v_squared
-                + Math.sqrt(
-                    Math.pow(v_squared, 2)
-                        - g * (g * Math.pow(xDistanceMeters, 2) + 2 * yDistanceMeters * v_squared)),
-            g * xDistanceMeters);
-
-    // double pitchRadians =
-    //     Math.atan2(
-    //         v_squared
-    //             + Math.sqrt(
-    //                 Math.pow(v_squared, 2)
-    //                     - g * (g * Math.pow(xDistanceMeters, 2) + 2 * yDistanceMeters *
-    // v_squared)),
-    //         g * xDistanceMeters);
-    double timeOfFlightSeconds = xDistanceMeters / (v * Math.cos(pitchRadians));
-
-    return new TargetingResult2d(pitchRadians, timeOfFlightSeconds);
-  }
-
-  private record TargetingResult2d(double pitchRadians, double timeOfFlightSeconds) {}
-
-  private record TargetingResult3d(
-      double pitchRadians, double yawRadians, double timeOfFlightSeconds) {}
 }

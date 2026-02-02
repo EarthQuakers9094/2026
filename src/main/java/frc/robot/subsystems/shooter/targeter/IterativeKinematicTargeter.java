@@ -40,6 +40,11 @@ public class IterativeKinematicTargeter implements Targeter {
       iterationStartTime = Timer.getFPGATimestamp();
       targetingResult = getShooterTargetingWithoutVelocity(xMetersLookahead, yMeters, vMps);
       xMetersLookahead = xMeters - targetingResult.timeOfFlightSeconds() * velocityTowardsTargetMps;
+      Logger.recordOutput("Shooter/Targeter/xMetersLookahead", xMetersLookahead);
+      Logger.recordOutput("Shooter/Targeter/velocityTowardsTarget", velocityTowardsTargetMps);
+      Logger.recordOutput("Shooter/Targeter/xMeters", xMeters);
+      Logger.recordOutput("Shooter/Targeter/timeOfFlight", targetingResult.timeOfFlightSeconds());
+
       Logger.recordOutput(
           "Shooter/IterationDurationMs", 1000 * (Timer.getFPGATimestamp() - iterationStartTime));
     }
@@ -47,12 +52,15 @@ public class IterativeKinematicTargeter implements Targeter {
         "Shooter/TargetingDurationMs", 1000 * (Timer.getFPGATimestamp() - targetingStartTime));
 
     // Targeting result cannot be null at this point since iterations must be >= 1
+    Logger.recordOutput(
+        "Shooter/Targeter/zMetersLookahead",
+        velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds());
 
     return new TargetingResult3d(
         targetingResult.pitchRadians(),
-        0,
-        // Math.atan2(
-        //     velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(), xMeters),
+        -Math.atan2(
+            velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(),
+            xMeters - velocityTowardsTargetMps * targetingResult.timeOfFlightSeconds()),
         targetingResult.timeOfFlightSeconds());
   }
 

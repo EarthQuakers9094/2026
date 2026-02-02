@@ -119,34 +119,30 @@ public class ShooterIOSim implements ShooterIO {
             Constants.ShooterConstants.positionOnRobot.getY(),
             yaw);
     Translation2d robotPosition = robotPositionSupplier.get().getTranslation();
+
     drawTrajectory(
         new Translation3d(
             robotPosition.getX(),
             robotPosition.getY(),
             Constants.ShooterConstants.positionOnRobot.getZ()),
         chassisSpeedsSupplier.get(),
-        robotPositionSupplier.get().transformBy(shooterPositionOnRobot),
+        yaw,
         pitch.getRadians(),
-        inputs.shooterSpeed.in(RadiansPerSecond)
+        Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
             * Constants.ShooterConstants.flywheelDiameter.in(Meters));
   }
 
-  private void drawTrajectory(
+  public void drawTrajectory(
       Translation3d startPosition,
       ChassisSpeeds chassisSpeeds,
-      Pose2d shooterPose,
+      Rotation2d yaw,
       double pitch,
       double launchVelocity) {
 
     Pose3d[] poses = new Pose3d[20];
-    System.out.println(shooterPose.getRotation().getCos());
 
-    double vx =
-        // chassisSpeeds.vxMetersPerSecond
-        0 + shooterPose.getRotation().getCos() * launchVelocity * Math.cos(pitch);
-    double vy =
-        // chassisSpeeds.vyMetersPerSecond
-        0 + shooterPose.getRotation().getSin() * launchVelocity * Math.cos(pitch);
+    double vx = chassisSpeeds.vxMetersPerSecond + yaw.getCos() * launchVelocity * Math.cos(pitch);
+    double vy = chassisSpeeds.vyMetersPerSecond + yaw.getSin() * launchVelocity * Math.cos(pitch);
     double vz = Math.sin(pitch) * launchVelocity;
 
     double x = startPosition.getX();
@@ -164,16 +160,16 @@ public class ShooterIOSim implements ShooterIO {
       z += vz * dt;
     }
 
-    Logger.recordOutput("Shooter/Trajectory", poses);
+    Logger.recordOutput("Shooter/Trajectory/" + "MainTrajectory", poses);
   }
 
   private Translation3d launchVelocity(
       ChassisSpeeds chassisSpeeds, Pose2d shooterPose, double pitch, double launchVelocity) {
     double vx =
-        chassisSpeeds.vxMetersPerSecond
+        chassisSpeeds.vyMetersPerSecond
             + shooterPose.getRotation().getCos() * launchVelocity * Math.cos(pitch);
     double vy =
-        chassisSpeeds.vyMetersPerSecond
+        chassisSpeeds.vxMetersPerSecond
             + shooterPose.getRotation().getSin() * launchVelocity * Math.cos(pitch);
     double vz = Math.sin(pitch) * launchVelocity;
 

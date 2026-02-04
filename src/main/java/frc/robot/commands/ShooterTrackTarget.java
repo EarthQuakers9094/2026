@@ -7,10 +7,9 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -61,39 +60,20 @@ public class ShooterTrackTarget extends Command {
             new Transform2d(
                 Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
                 Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
-
-    Distance xDistance =
-        Meters.of(
-            target.toTranslation2d().getDistance(anticipatedShooterPosition.getTranslation()));
-    Distance yDistance =
-        Meters.of(target.getZ() - Constants.ShooterConstants.positionOnRobot.getZ());
-    double robotVelocityMps =
-        Math.sqrt(
-            Math.pow(chassisSpeeds.vyMetersPerSecond, 2)
-                + Math.pow(chassisSpeeds.vxMetersPerSecond, 2));
-    double shooterToTargetAngle =
-        (target.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()))
-            .getAngle()
-            .getRadians();
-    double velocityAngleRelativeToTarget =
-        Math.atan2(chassisSpeeds.vyMetersPerSecond, chassisSpeeds.vxMetersPerSecond)
-            - shooterToTargetAngle;
-    LinearVelocity xVelocity =
-        MetersPerSecond.of(Math.cos(velocityAngleRelativeToTarget) * robotVelocityMps);
-    LinearVelocity zVelocity =
-        MetersPerSecond.of(Math.sin(velocityAngleRelativeToTarget) * robotVelocityMps);
-    LinearVelocity projectileVelocity =
-        MetersPerSecond.of(
-            Constants.ShooterConstants.flywheelDiameter.in(Meters)
-                * shooterSubsystem.getShooterSpeed().in(RadiansPerSecond));
-
     TargetingResult3d targetingResult =
         targeter.getShooterTargeting(
-            new TargetingData(xDistance, yDistance, xVelocity, zVelocity, projectileVelocity));
+            new TargetingData(
+                Constants.Field.hubTarget
+                    .toTranslation2d()
+                    .minus(anticipatedShooterPosition.getTranslation()),
+                Constants.Field.hubTarget.getMeasureZ(),
+                new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
+                MetersPerSecond.of(
+                    Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
+                        * Constants.ShooterConstants.flywheelDiameter.in(Meters))));
 
     shooterSubsystem.setYaw(
-        new Rotation2d(shooterToTargetAngle + targetingResult.yawRadians())
-            .minus(robotPosition.getRotation()));
+        new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
     if (targetingResult.pitchRadians() >= Math.PI / 2.) {
       DriverStation.reportError(
           "Targeting pitch result ("

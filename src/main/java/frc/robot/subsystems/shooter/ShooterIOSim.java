@@ -111,7 +111,7 @@ public class ShooterIOSim implements ShooterIO {
             robotPosition.getY(),
             Constants.ShooterConstants.positionOnRobot.getZ()),
         chassisSpeedsSupplier.get(),
-        yaw,
+        yaw.plus(robotPositionSupplier.get().getRotation()),
         pitch.getRadians(),
         Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
             * Constants.ShooterConstants.flywheelDiameter.in(Meters));

@@ -30,7 +30,7 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.shooter.targeter.IterativeKinematicTargeter;
+import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -44,7 +44,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
-  private final Targeter targeter = new IterativeKinematicTargeter(5);
+  private final Targeter targeter = new EeshwarkTargeter();
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);

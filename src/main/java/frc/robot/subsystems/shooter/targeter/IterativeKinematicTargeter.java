@@ -3,7 +3,9 @@ package frc.robot.subsystems.shooter.targeter;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult2d;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import org.littletonrobotics.junction.Logger;
@@ -24,12 +26,16 @@ public class IterativeKinematicTargeter implements KinematicTargeter {
 
   @Override
   public TargetingResult3d getShooterTargeting(TargetingData targetingData) {
-    double xMeters = targetingData.horizontalDistanceToTarget().in(Meters);
-    double yMeters = targetingData.verticalDistanceToTarget().in(Meters);
+    double xMeters = targetingData.target().getNorm();
+    double yMeters =
+        targetingData.targetHeight().in(Meters) - Constants.ShooterConstants.positionOnRobot.getZ();
     double vMps = targetingData.projectileVelocity().in(MetersPerSecond);
-    double velocityTowardsTargetMps = targetingData.velocityTowardsTarget().in(MetersPerSecond);
+    Translation2d directionToTarget = targetingData.robotVelocity().div(xMeters);
+    Translation2d robotVelocity = targetingData.robotVelocity();
+    double velocityTowardsTargetMps =
+        directionToTarget.dot(robotVelocity) * robotVelocity.getNorm();
     double velocityPerpendicularToTargetMps =
-        targetingData.velocityPerpendicularToTarget().in(MetersPerSecond);
+        Math.sqrt(robotVelocity.getSquaredNorm() - Math.pow(velocityTowardsTargetMps, 2));
 
     double xMetersLookahead = xMeters;
 
@@ -58,9 +64,10 @@ public class IterativeKinematicTargeter implements KinematicTargeter {
 
     return new TargetingResult3d(
         targetingResult.pitchRadians(),
-        -Math.atan2(
-            velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(),
-            xMeters - velocityTowardsTargetMps * targetingResult.timeOfFlightSeconds()),
+        directionToTarget.getAngle().getRadians()
+            - Math.atan2(
+                velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(),
+                xMeters - velocityTowardsTargetMps * targetingResult.timeOfFlightSeconds()),
         targetingResult.timeOfFlightSeconds());
   }
 }

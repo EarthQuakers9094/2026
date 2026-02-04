@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -16,7 +17,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 import java.util.function.Supplier;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterIOSim implements ShooterIO {
@@ -87,37 +89,20 @@ public class ShooterIOSim implements ShooterIO {
 
     if (isIndexing && delta >= 0.1) {
       lastShotFuelS = newTime;
-      // RebuiltFuelOnFly fuel =
-      //     new RebuiltFuelOnFly(
-      //         robotPositionSupplier.get().getTranslation(),
-      //         Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
-      //         chassisSpeedsSupplier.get(),
-      //         yaw.plus(robotPositionSupplier.get().getRotation()),
-      //         Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
-      //         MetersPerSecond.of(
-      //             flywheelSim.getAngularVelocityRadPerSec()
-      //                 * Constants.ShooterConstants.flywheelDiameter.in(Meters)),
-      //         pitch.getMeasure());
-      // SimulatedArena.getInstance().addGamePieceProjectile(fuel);
-
-      // Translation2d robotPosition = robotPositionSupplier.get().getTranslation();
-      // FuelSim.getInstance()
-      //     .spawnFuel(
-      //         new Translation3d(
-      //             robotPosition.getX(),
-      //             robotPosition.getY(),
-      //             Constants.ShooterConstants.positionOnRobot.getZ()),
-      //         launchVelocity(
-      //             chassisSpeedsSupplier.get(),
-      //             robotPositionSupplier.get().transformBy(shooterPositionOnRobot),
-      //             newTime,
-      //             delta));
+      RebuiltFuelOnFly fuel =
+          new RebuiltFuelOnFly(
+              robotPositionSupplier.get().getTranslation(),
+              Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
+              chassisSpeedsSupplier.get(),
+              yaw.plus(robotPositionSupplier.get().getRotation()),
+              Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
+              MetersPerSecond.of(
+                  flywheelSim.getAngularVelocityRadPerSec()
+                      * Constants.ShooterConstants.flywheelDiameter.in(Meters)),
+              pitch.getMeasure());
+      SimulatedArena.getInstance().addGamePieceProjectile(fuel);
     }
-    Transform2d shooterPositionOnRobot =
-        new Transform2d(
-            Constants.ShooterConstants.positionOnRobot.getX(),
-            Constants.ShooterConstants.positionOnRobot.getY(),
-            yaw);
+
     Translation2d robotPosition = robotPositionSupplier.get().getTranslation();
 
     drawTrajectory(
@@ -161,19 +146,6 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     Logger.recordOutput("Shooter/Trajectory/" + "MainTrajectory", poses);
-  }
-
-  private Translation3d launchVelocity(
-      ChassisSpeeds chassisSpeeds, Pose2d shooterPose, double pitch, double launchVelocity) {
-    double vx =
-        chassisSpeeds.vyMetersPerSecond
-            + shooterPose.getRotation().getCos() * launchVelocity * Math.cos(pitch);
-    double vy =
-        chassisSpeeds.vxMetersPerSecond
-            + shooterPose.getRotation().getSin() * launchVelocity * Math.cos(pitch);
-    double vz = Math.sin(pitch) * launchVelocity;
-
-    return new Translation3d(vx, vy, vz);
   }
 
   public void setPitch(Rotation2d pitch) {

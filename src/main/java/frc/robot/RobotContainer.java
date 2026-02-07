@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShooterTrackTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -28,6 +30,8 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
+import frc.robot.subsystems.shooter.targeter.Targeter;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,15 +44,20 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final Targeter targeter = new EeshwarkTargeter();
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
+  private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -92,11 +101,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
 
-        shooter =
-            new ShooterSubsystem(
-                new ShooterIOSim(drive::getPose, drive::getChassisSpeeds),
-                drive::getPose,
-                () -> true);
+        shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
         break;
 
       default:
@@ -108,7 +113,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose, () -> true);
+        shooter = new ShooterSubsystem(new ShooterIO() {});
         break;
     }
 
@@ -146,9 +151,18 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
+            () ->
+                shooter.isActivelyShooting()
+                    ? yInputAverage.calculate(controller.getLeftY())
+                    : controller.getLeftY(),
+            () ->
+                shooter.isActivelyShooting()
+                    ? xInputAverage.calculate(controller.getLeftX())
+                    : controller.getLeftX(),
             () -> -controller.getRightX()));
+    shooter.setDefaultCommand(
+        new ShooterTrackTarget(
+            shooter, drive::getPose, drive::getChassisSpeeds, targeter, Constants.Field.hubTarget));
 
     controller
         .button(8)

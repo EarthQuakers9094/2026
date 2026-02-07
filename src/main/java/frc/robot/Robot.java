@@ -152,9 +152,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
 
-    Pose3d[] notesPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
+    Pose3d[] fuelPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
     // Publish to telemetry using AdvantageKit
-    Logger.recordOutput("FieldSimulation/NotesPositions", notesPoses);
+    Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
+
   }
 }

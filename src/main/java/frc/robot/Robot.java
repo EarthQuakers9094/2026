@@ -146,7 +146,6 @@ public class Robot extends LoggedRobot {
   public void simulationInit() {
     Logger.recordOutput("FieldSimulation/Hub", Constants.Field.hub);
     Logger.recordOutput("FieldSimulation/HubTarget", Constants.Field.hubTarget);
-    // FuelSim.getInstance().start();
   }
 
   /** This function is called periodically whilst in simulation. */
@@ -155,9 +154,8 @@ public class Robot extends LoggedRobot {
 
     Pose3d[] fuelPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
     // Publish to telemetry using AdvantageKit
-    Logger.recordOutput("FieldSimulation/NotesPositions", fuelPoses);
+    Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
 
-    // FuelSim.getInstance().updateSim();
   }
 }

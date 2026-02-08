@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
@@ -124,6 +127,12 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    Logger.recordOutput(
+        "Field length",
+        new Translation3d[] {
+          new Translation3d(), new Translation3d(Constants.Field.fieldLength.in(Meters), 0, 0)
+        });
   }
 
   /** This function is called periodically during operator control. */
@@ -156,6 +165,5 @@ public class Robot extends LoggedRobot {
     // Publish to telemetry using AdvantageKit
     Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
-
   }
 }

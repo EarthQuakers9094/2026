@@ -10,6 +10,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -43,6 +45,12 @@ public final class Constants {
 
     public static final Translation3d hubTarget =
         hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
+
+    public static final AprilTagFieldLayout aprilTagLayout =
+        AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static final Distance fieldLength = Inches.of(651.22);
+
+    public static final Distance fieldWidth = Inches.of(317.69);
   }
 
   public static class ShooterConstants {
@@ -56,6 +64,6 @@ public final class Constants {
     public static final int motorId = 0;
     public static final Distance flywheelDiameter = Inches.of(2.0);
     public static final int targetingIterations = 20;
-    public static final double robotPositionAnticipationSeconds = 0.03;
+    public static final double robotPositionAnticipationSeconds = 0.0;
   }
 }

@@ -1,0 +1,178 @@
+package frc.robot.subsystems.shooter;
+
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.sim.SparkFlexSim;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
+import frc.robot.Constants;
+import java.util.function.Supplier;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
+import org.littletonrobotics.junction.Logger;
+
+public class ShooterIOSim implements ShooterIO {
+
+  private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
+  private Rotation2d yaw = new Rotation2d();
+
+  private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
+
+  private final SparkFlex flex =
+      new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
+  private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
+
+  private FlywheelSim flywheelSim =
+      new FlywheelSim(
+          LinearSystemId.createFlywheelSystem(
+              DCMotor.getNeoVortex(1),
+              Constants.ShooterConstants.flywheelMOI,
+              Constants.ShooterConstants.flywheelGearing),
+          flywheelMotor);
+
+  private final Supplier<Pose2d> robotPositionSupplier;
+  private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
+
+  private boolean isIndexing = false;
+  private double lastShotFuelS = Timer.getFPGATimestamp();
+
+  public ShooterIOSim(
+      Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+    this.robotPositionSupplier = robotPositionSupplier;
+    this.chassisSpeedsSupplier = chassisSpeedsSupplier;
+
+    flex.configure(
+        new SparkFlexConfig().apply(new ClosedLoopConfig().pid(0.0025, 0.0, 0.0)),
+        ResetMode.kResetSafeParameters,
+        PersistMode.kNoPersistParameters);
+  }
+
+  public void updateInputs(ShooterIOInputs inputs) {
+
+    flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+
+    flywheelSim.update(0.02);
+
+    flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
+
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+
+    inputs.currentPitch = pitch;
+    inputs.currentYaw = yaw;
+    inputs.shooterSpeed = flywheelSim.getAngularVelocity();
+
+    double newTime = Timer.getFPGATimestamp();
+    double delta = newTime - lastShotFuelS;
+
+    if (isIndexing && delta >= 0.1) {
+      lastShotFuelS = newTime;
+      RebuiltFuelOnFly fuel =
+          new RebuiltFuelOnFly(
+              robotPositionSupplier.get().getTranslation(),
+              Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
+              chassisSpeedsSupplier.get(),
+              yaw.plus(robotPositionSupplier.get().getRotation()),
+              Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
+              MetersPerSecond.of(
+                  flywheelSim.getAngularVelocityRadPerSec()
+                      * Constants.ShooterConstants.flywheelDiameter.in(Meters)),
+              pitch.getMeasure());
+      SimulatedArena.getInstance().addGamePieceProjectile(fuel);
+    }
+
+    Translation2d robotPosition = robotPositionSupplier.get().getTranslation();
+
+    drawTrajectory(
+        new Translation3d(
+            robotPosition.getX(),
+            robotPosition.getY(),
+            Constants.ShooterConstants.positionOnRobot.getZ()),
+        chassisSpeedsSupplier.get(),
+        yaw.plus(robotPositionSupplier.get().getRotation()),
+        pitch.getRadians(),
+        Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
+            * Constants.ShooterConstants.flywheelDiameter.in(Meters));
+  }
+
+  public void drawTrajectory(
+      Translation3d startPosition,
+      ChassisSpeeds chassisSpeeds,
+      Rotation2d yaw,
+      double pitch,
+      double launchVelocity) {
+
+    Pose3d[] poses = new Pose3d[20];
+
+    double vx = chassisSpeeds.vxMetersPerSecond + yaw.getCos() * launchVelocity * Math.cos(pitch);
+    double vy = chassisSpeeds.vyMetersPerSecond + yaw.getSin() * launchVelocity * Math.cos(pitch);
+    double vz = Math.sin(pitch) * launchVelocity;
+
+    double x = startPosition.getX();
+    double y = startPosition.getY();
+    double z = startPosition.getZ();
+
+    double dt = 0.1;
+
+    for (int i = 0; i < 20; i++) {
+      poses[i] = new Pose3d(x, y, z, new Rotation3d());
+      vz -= 9.81 * dt;
+
+      x += vx * dt;
+      y += vy * dt;
+      z += vz * dt;
+    }
+
+    Logger.recordOutput("Shooter/Trajectory/" + "MainTrajectory", poses);
+  }
+
+  public void setPitch(Rotation2d pitch) {
+    this.pitch = pitch;
+  }
+
+  public void setYaw(Rotation2d yaw) {
+    this.yaw = yaw;
+  }
+
+  public void setVelocitySetpoint(AngularVelocity speed) {
+    flex.getClosedLoopController().setSetpoint(speed.in(RPM), ControlType.kVelocity);
+  }
+  ;
+
+  public void stopShooter() {
+    flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
+  }
+  ;
+
+  public void startIndexing() {
+    isIndexing = true;
+  }
+  ;
+
+  public void stopIndexing() {
+    isIndexing = false;
+  }
+  ;
+}

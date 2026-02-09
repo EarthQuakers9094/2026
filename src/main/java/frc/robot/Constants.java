@@ -10,12 +10,15 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import java.nio.file.Path;
 
 /**
  * This class defines the runtime mode used by AdvantageKit. The mode is always "real" when running
@@ -37,12 +40,30 @@ public final class Constants {
     REPLAY
   }
 
+  public static class Camera {
+
+    public static final double linearStdDev = 1.0;
+    public static final double angularStdDev = 1.0;
+  }
+
   public static class Field {
     public static final Translation3d hub =
         new Translation3d(Inches.of(181.56), Inches.of(158.84), Inches.of(72));
 
     public static final Translation3d hubTarget =
         hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
+
+    public static final AprilTagFieldLayout aprilTagLayout =
+        getFieldLayout(); // AprilTagFieldLayout.loadField();
+
+    private static AprilTagFieldLayout getFieldLayout() {
+      try {
+        return new AprilTagFieldLayout(
+            Path.of(Filesystem.getDeployDirectory().getPath(), "apriltags", "2026-official.json"));
+      } catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   public static class ShooterConstants {

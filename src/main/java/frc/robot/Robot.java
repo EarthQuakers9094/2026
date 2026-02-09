@@ -156,6 +156,5 @@ public class Robot extends LoggedRobot {
     // Publish to telemetry using AdvantageKit
     Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
-
   }
 }

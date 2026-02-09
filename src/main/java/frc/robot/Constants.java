@@ -54,7 +54,7 @@ public final class Constants {
         hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
 
     public static final AprilTagFieldLayout aprilTagLayout =
-        getFieldLayout(); // AprilTagFieldLayout.loadField();
+        getFieldLayout();
 
     private static AprilTagFieldLayout getFieldLayout() {
       try {

@@ -19,6 +19,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final MovingAverage speedAverage = new MovingAverage(40);
   private double currentAverageSpeed;
 
+  private boolean wasFuelInShooter = false;
+  @AutoLogOutput public int shotCount = 0;
+
   public enum ShooterState {
     Inactive,
     Revving,
@@ -28,6 +31,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
 
   public ShooterSubsystem(ShooterIO io) {
+    Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 0);
+
     this.io = io;
   }
 
@@ -38,12 +43,15 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void beginShooting() {
     if (shooterState == ShooterState.Inactive) {
+      Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
+
       shooterState = ShooterState.Revving;
       setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
     }
   }
 
   public void endShooting() {
+    Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
     shooterState = ShooterState.Inactive;
     setSpeedSetpoint(RPM.of(0.));
   }
@@ -54,29 +62,36 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     io.updateInputs(inputs);
     currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.baseUnitMagnitude());
     Logger.recordOutput("Shooter/AverageSpeed", currentAverageSpeed);
 
     switch (shooterState) {
       case Inactive:
+        io.stopIndexing();
         break;
       case Revving:
         if (isSpunUp()) {
           this.shooterState = ShooterState.Shooting;
           io.startIndexing();
+        } else {
+          io.stopIndexing();
         }
         break;
       case Shooting:
         if (!isSpunUp()) {
           this.shooterState = ShooterState.Revving;
-          io.stopIndexing();
         }
-
         break;
       default:
         break;
     }
+
+    if (inputs.isFuelInShooter && !wasFuelInShooter) {
+      shotCount += 1;
+    }
+    wasFuelInShooter = inputs.isFuelInShooter;
 
     Logger.processInputs("Shooter", inputs);
   }

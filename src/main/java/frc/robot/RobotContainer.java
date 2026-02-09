@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -121,6 +122,12 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
+    NamedCommands.registerCommand(
+        "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
+    NamedCommands.registerCommand(
+        "reset_shot_count", new InstantCommand(() -> shooter.shotCount = 0));
+
+    NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());

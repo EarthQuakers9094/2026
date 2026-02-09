@@ -102,8 +102,9 @@ public class ShooterIOSim implements ShooterIO {
 
     double newTime = Timer.getFPGATimestamp();
     double delta = newTime - lastShotFuelS;
-
+    inputs.isFuelInShooter = false;
     if (isIndexing && delta >= 0.1) {
+      inputs.isFuelInShooter = true;
       lastShotFuelS = newTime;
       RebuiltFuelOnFly fuel =
           new RebuiltFuelOnFly(

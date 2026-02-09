@@ -44,7 +44,7 @@ public final class Constants {
         new Translation3d(Inches.of(181.56), Inches.of(158.84), Inches.of(72));
 
     public static final Translation3d hubTarget =
-        hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
+        hub.plus(new Translation3d(Inches.of(15.0), Inches.of(0), Inches.of(0)));
 
     public static final AprilTagFieldLayout aprilTagLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);

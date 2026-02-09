@@ -63,9 +63,7 @@ public class ShooterTrackTarget extends Command {
     TargetingResult3d targetingResult =
         targeter.getShooterTargeting(
             new TargetingData(
-                target
-                    .toTranslation2d()
-                    .minus(anticipatedShooterPosition.getTranslation()),
+                target.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
                 target.getMeasureZ(),
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
                 MetersPerSecond.of(

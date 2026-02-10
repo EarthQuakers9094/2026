@@ -2,17 +2,18 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.sim.SparkFlexSim;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.SparkFlexConfig;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.sim.ChassisReference;
+import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
@@ -38,16 +40,18 @@ public class ShooterIOSim implements ShooterIO {
   private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
   private Rotation2d yaw = new Rotation2d();
 
-  private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
+  private DCMotor flywheelMotor = DCMotor.getKrakenX60(1);
 
-  private final SparkFlex flex =
-      new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
-  private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
+  private final TalonFX flywheelLeadMotor = new TalonFX(Constants.ShooterConstants.motor1Id);
+  private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
+
+  private final TalonFXSimState leadMotorSimState;
+  private final TalonFXSimState followerMotorSimState;
 
   private FlywheelSim flywheelSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(
-              DCMotor.getNeoVortex(1),
+              flywheelMotor,
               Constants.ShooterConstants.flywheelMOI,
               Constants.ShooterConstants.flywheelGearing),
           flywheelMotor);
@@ -63,19 +67,44 @@ public class ShooterIOSim implements ShooterIO {
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
 
-    flex.configure(
-        new SparkFlexConfig().apply(new ClosedLoopConfig().pid(0.0025, 0.0, 0.0)),
-        ResetMode.kResetSafeParameters,
-        PersistMode.kNoPersistParameters);
+    // Slot0Configs flywheelPID = ;
+
+    flywheelFollowerMotor.setControl(
+        new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(new Slot0Configs().withKP(0.02).withKI(0.0).withKD(0.0).withKV(0.06));
+
+    this.leadMotorSimState = flywheelLeadMotor.getSimState();
+    this.followerMotorSimState = flywheelFollowerMotor.getSimState();
+
+    leadMotorSimState.setMotorType(MotorType.KrakenX60);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
 
-    flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+    leadMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
+    followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
+
+    leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
+
+    Voltage leadVoltage = leadMotorSimState.getMotorVoltageMeasure();
+    Voltage followerVoltage = followerMotorSimState.getMotorVoltageMeasure();
+
+    Logger.recordOutput("ShooterSubsystem/LeadVoltage", leadVoltage);
+
+    flywheelSim.setInput(leadVoltage.in(Volts) + followerVoltage.in(Volts));
 
     flywheelSim.update(0.02);
 
-    flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
+    leadMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
+    followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
+
+    // leadMotorSimState.addRotorPosition(
+    //     flywheelSim.getAngularVelocity().in(RotationsPerSecond) * 0.02);
+    // followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
@@ -157,12 +186,12 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   public void setVelocitySetpoint(AngularVelocity speed) {
-    flex.getClosedLoopController().setSetpoint(speed.in(RPM), ControlType.kVelocity);
+    flywheelLeadMotor.setControl(new VelocityVoltage(speed.in(RotationsPerSecond)).withSlot(0));
   }
   ;
 
   public void stopShooter() {
-    flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
+    flywheelLeadMotor.setControl(new VelocityVoltage(0.0).withSlot(0));
   }
   ;
 

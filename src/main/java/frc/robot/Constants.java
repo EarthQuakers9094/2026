@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -74,9 +75,10 @@ public final class Constants {
     public static final AngularVelocity minLaunchSpeed = RPM.of(1700.);
     public static final double flywheelMOI = 0.0011705586; // 28122.783131854398;
     public static final double flywheelGearing = 1;
-    public static final int motorId = 0;
+    public static final int motor1Id = 0;
+    public static final int motor2Id = 1;
     public static final Distance flywheelDiameter = Inches.of(2.0);
     public static final int targetingIterations = 20;
-    public static final double robotPositionAnticipationSeconds = 0.03;
+    public static final double robotPositionAnticipationSeconds = 0.0;
   }
 }

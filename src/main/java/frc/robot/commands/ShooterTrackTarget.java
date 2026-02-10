@@ -17,6 +17,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
+import frc.robot.util.AllianceFlipUtil;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -27,6 +28,7 @@ public class ShooterTrackTarget extends Command {
   private final Supplier<Pose2d> robotPositionSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Translation3d target;
+  private final boolean shouldFlipTarget;
 
   public ShooterTrackTarget(
       ShooterSubsystem shooterSubsystem,
@@ -34,11 +36,22 @@ public class ShooterTrackTarget extends Command {
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
       Targeter targeter,
       Translation3d target) {
+    this(shooterSubsystem, robotPositionSupplier, chassisSpeedsSupplier, targeter, target, false);
+  }
+
+  public ShooterTrackTarget(
+      ShooterSubsystem shooterSubsystem,
+      Supplier<Pose2d> robotPositionSupplier,
+      Supplier<ChassisSpeeds> chassisSpeedsSupplier,
+      Targeter targeter,
+      Translation3d target,
+      boolean shouldFlipTarget) {
     this.shooterSubsystem = shooterSubsystem;
     this.targeter = targeter;
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.target = target;
+    this.shouldFlipTarget = shouldFlipTarget;
 
     addRequirements(shooterSubsystem);
   }
@@ -60,14 +73,19 @@ public class ShooterTrackTarget extends Command {
             new Transform2d(
                 Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
                 Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
+
+    Translation3d flippedTarget = shouldFlipTarget ? AllianceFlipUtil.apply(target) : target;
+
+    Logger.recordOutput("Target", flippedTarget);
+
     TargetingResult3d targetingResult =
         targeter.getShooterTargeting(
             new TargetingData(
-                target.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
-                target.getMeasureZ(),
+                flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
+                flippedTarget.getMeasureZ(),
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
                 MetersPerSecond.of(
-                    Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
+                    shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)
                         * Constants.ShooterConstants.flywheelDiameter.in(Meters))));
 
     shooterSubsystem.setYaw(
@@ -78,7 +96,8 @@ public class ShooterTrackTarget extends Command {
               + targetingResult.pitchRadians()
               + ") is outside of physically possible range.",
           true);
-      // TODO: Not sure what to do in this case... we're asking just too much of our shooter
+      // TODO: Not sure what to do in this case... we're asking just too much of our
+      // shooter
     } else {
       shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
     }

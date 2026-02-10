@@ -8,6 +8,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,9 +19,11 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShooterTrackTarget;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -145,6 +148,15 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter));
+    NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
+    NamedCommands.registerCommand(
+        "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
+    NamedCommands.registerCommand(
+        "reset_shot_count", new InstantCommand(() -> shooter.shotCount = 0));
+
+    NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -180,22 +192,26 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
             drive,
             () ->
-                shooter.isActivelyShooting()
-                    ? yInputAverage.calculate(controller.getLeftY())
-                    : controller.getLeftY(),
+                -1
+                    * (shooter.isActivelyShooting()
+                        ? yInputAverage.calculate(controller.getLeftY())
+                        : controller.getLeftY()),
             () ->
-                shooter.isActivelyShooting()
-                    ? xInputAverage.calculate(controller.getLeftX())
-                    : controller.getLeftX(),
+                -1
+                    * (shooter.isActivelyShooting()
+                        ? xInputAverage.calculate(controller.getLeftX())
+                        : controller.getLeftX()),
             () -> -controller.getRightX()));
     shooter.setDefaultCommand(
         new ShooterTrackTarget(
-            shooter, drive::getPose, drive::getChassisSpeeds, targeter, Constants.Field.hubTarget));
+            shooter,
+            drive::getPose,
+            drive::getChassisSpeeds,
+            targeter,
+            Constants.Field.hubTarget,
+            true));
 
-    controller
-        .button(8)
-        .onTrue(new InstantCommand(shooter::beginShooting))
-        .onFalse(new InstantCommand(shooter::endShooting));
+    controller.button(8).whileTrue(new ShootFuel(shooter));
 
     // Lock to 0° when A button is held
     controller

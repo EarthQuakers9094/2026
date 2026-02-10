@@ -11,7 +11,6 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -54,8 +53,7 @@ public final class Constants {
     public static final Translation3d hubTarget =
         hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
 
-    public static final AprilTagFieldLayout aprilTagLayout =
-        getFieldLayout();
+    public static final AprilTagFieldLayout aprilTagLayout = getFieldLayout();
 
     private static AprilTagFieldLayout getFieldLayout() {
       try {
@@ -65,6 +63,9 @@ public final class Constants {
         throw new RuntimeException(e);
       }
     }
+
+    public static final double fieldLength = aprilTagLayout.getFieldLength();
+    public static final double fieldWidth = aprilTagLayout.getFieldWidth();
   }
 
   public static class ShooterConstants {

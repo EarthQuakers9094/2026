@@ -80,7 +80,7 @@ public class ShooterIOSim implements ShooterIO {
 
     this.leadMotorSimState = flywheelLeadMotor.getSimState();
     this.followerMotorSimState = flywheelFollowerMotor.getSimState();
-    
+
     leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
     followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
 

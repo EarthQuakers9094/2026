@@ -18,6 +18,7 @@ import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import frc.robot.util.AllianceFlipUtil;
+import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
@@ -78,7 +79,7 @@ public class ShooterTrackTarget extends Command {
 
     Logger.recordOutput("Target", flippedTarget);
 
-    TargetingResult3d targetingResult =
+    Optional<TargetingResult3d> maybeTargetingResult =
         targeter.getShooterTargeting(
             new TargetingData(
                 flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
@@ -87,19 +88,22 @@ public class ShooterTrackTarget extends Command {
                 MetersPerSecond.of(
                     shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)
                         * Constants.ShooterConstants.flywheelDiameter.in(Meters))));
+    if (maybeTargetingResult.isPresent()) {
+      TargetingResult3d targetingResult = maybeTargetingResult.get();
 
-    shooterSubsystem.setYaw(
-        new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
-    if (targetingResult.pitchRadians() >= Math.PI / 2.) {
-      DriverStation.reportError(
-          "Targeting pitch result ("
-              + targetingResult.pitchRadians()
-              + ") is outside of physically possible range.",
-          true);
-      // TODO: Not sure what to do in this case... we're asking just too much of our
-      // shooter
-    } else {
-      shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      shooterSubsystem.setYaw(
+          new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
+      if (targetingResult.pitchRadians() >= Math.PI / 2.) {
+        DriverStation.reportError(
+            "Targeting pitch result ("
+                + targetingResult.pitchRadians()
+                + ") is outside of physically possible range.",
+            true);
+        // TODO: Not sure what to do in this case... we're asking just too much of our
+        // shooter
+      } else {
+        shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      }
     }
   }
 

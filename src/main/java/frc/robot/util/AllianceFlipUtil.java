@@ -7,19 +7,17 @@
 
 package frc.robot.util;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
 
 public class AllianceFlipUtil {
   public static double applyX(double x) {
-    return shouldFlip() ? Constants.Field.fieldLength.in(Meters) - x : x;
+    return shouldFlip() ? Constants.Field.fieldLength - x : x;
   }
 
   public static double applyY(double y) {
-    return shouldFlip() ? Constants.Field.fieldWidth.in(Meters) - y : y;
+    return shouldFlip() ? Constants.Field.fieldWidth - y : y;
   }
 
   public static Translation2d apply(Translation2d translation) {

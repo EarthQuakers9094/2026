@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Meters;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -131,7 +129,7 @@ public class Robot extends LoggedRobot {
     Logger.recordOutput(
         "Field length",
         new Translation3d[] {
-          new Translation3d(), new Translation3d(Constants.Field.fieldLength.in(Meters), 0, 0)
+          new Translation3d(), new Translation3d(Constants.Field.fieldLength, 0, 0)
         });
   }
 

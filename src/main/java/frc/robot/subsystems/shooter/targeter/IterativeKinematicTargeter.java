@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult2d;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
+import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class IterativeKinematicTargeter implements KinematicTargeter {
@@ -25,7 +26,7 @@ public class IterativeKinematicTargeter implements KinematicTargeter {
   }
 
   @Override
-  public TargetingResult3d getShooterTargeting(TargetingData targetingData) {
+  public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData) {
     double xMeters = targetingData.target().getNorm();
     double yMeters =
         targetingData.targetHeight().in(Meters) - Constants.ShooterConstants.positionOnRobot.getZ();
@@ -62,12 +63,13 @@ public class IterativeKinematicTargeter implements KinematicTargeter {
         "Shooter/Targeter/zMetersLookahead",
         velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds());
 
-    return new TargetingResult3d(
-        targetingResult.pitchRadians(),
-        directionToTarget.getAngle().getRadians()
-            - Math.atan2(
-                velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(),
-                xMeters - velocityTowardsTargetMps * targetingResult.timeOfFlightSeconds()),
-        targetingResult.timeOfFlightSeconds());
+    return Optional.of(
+        new TargetingResult3d(
+            targetingResult.pitchRadians(),
+            directionToTarget.getAngle().getRadians()
+                - Math.atan2(
+                    velocityPerpendicularToTargetMps * targetingResult.timeOfFlightSeconds(),
+                    xMeters - velocityTowardsTargetMps * targetingResult.timeOfFlightSeconds()),
+            targetingResult.timeOfFlightSeconds()));
   }
 }

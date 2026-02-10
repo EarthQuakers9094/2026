@@ -12,6 +12,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,6 +37,9 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -47,6 +52,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
 
   // Controller
@@ -92,6 +98,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = null;
+        vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         break;
 
       case SIM:
@@ -105,6 +112,26 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "Front",
+                    new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Left",
+                    new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI / 2.)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Right",
+                    new Transform3d(
+                        0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Back",
+                    new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+                    drive::getPose));
         break;
 
       default:
@@ -117,6 +144,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
+        vision = null;
         break;
     }
 

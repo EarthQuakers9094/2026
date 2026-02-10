@@ -11,7 +11,9 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
+import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,7 +40,7 @@ public class ShooterIOSim implements ShooterIO {
   private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
   private Rotation2d yaw = new Rotation2d();
 
-  private DCMotor flywheelMotor = DCMotor.getKrakenX60(2);
+  private DCMotor flywheelMotor = DCMotor.getKrakenX60(1);
 
   private final TalonFX flywheelLeadMotor = new TalonFX(Constants.ShooterConstants.motor1Id);
   private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
@@ -72,16 +74,21 @@ public class ShooterIOSim implements ShooterIO {
 
     flywheelLeadMotor
         .getConfigurator()
-        .apply(new Slot0Configs().withKP(1.0).withKI(0.0).withKP(0.0));
+        .apply(new Slot0Configs().withKP(0.02).withKI(0.0).withKD(0.0).withKV(0.06));
 
     this.leadMotorSimState = flywheelLeadMotor.getSimState();
     this.followerMotorSimState = flywheelFollowerMotor.getSimState();
+
+    leadMotorSimState.setMotorType(MotorType.KrakenX60);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
 
     leadMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
     followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
+
+    leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
 
     Voltage leadVoltage = leadMotorSimState.getMotorVoltageMeasure();
     Voltage followerVoltage = followerMotorSimState.getMotorVoltageMeasure();
@@ -94,6 +101,10 @@ public class ShooterIOSim implements ShooterIO {
 
     leadMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
     followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
+
+    // leadMotorSimState.addRotorPosition(
+    //     flywheelSim.getAngularVelocity().in(RotationsPerSecond) * 0.02);
+    // followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));

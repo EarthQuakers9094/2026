@@ -61,7 +61,8 @@ public final class Constants {
     public static final AngularVelocity minLaunchSpeed = RPM.of(1700.);
     public static final double flywheelMOI = 0.0011705586; // 28122.783131854398;
     public static final double flywheelGearing = 1;
-    public static final int motorId = 0;
+    public static final int motor1Id = 0;
+    public static final int motor2Id = 1;
     public static final Distance flywheelDiameter = Inches.of(2.0);
     public static final int targetingIterations = 20;
     public static final double robotPositionAnticipationSeconds = 0.0;

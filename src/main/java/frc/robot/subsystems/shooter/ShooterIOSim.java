@@ -18,6 +18,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -59,6 +60,9 @@ public class ShooterIOSim implements ShooterIO {
   private final Supplier<Pose2d> robotPositionSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
+  // private final Mechanism2d turretVisulization = new Mechanism2d(3, 3);
+  // private final MechanismLigament2d turretLigament;
+
   private boolean isIndexing = false;
   private double lastShotFuelS = Timer.getFPGATimestamp();
 
@@ -66,8 +70,6 @@ public class ShooterIOSim implements ShooterIO {
       Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
-
-    // Slot0Configs flywheelPID = ;
 
     flywheelFollowerMotor.setControl(
         new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
@@ -78,17 +80,22 @@ public class ShooterIOSim implements ShooterIO {
 
     this.leadMotorSimState = flywheelLeadMotor.getSimState();
     this.followerMotorSimState = flywheelFollowerMotor.getSimState();
+    
+    leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
+    followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
 
     leadMotorSimState.setMotorType(MotorType.KrakenX60);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
+    Logger.recordOutput(
+        "TurretVisualization",
+        robotPositionSupplier
+            .get()
+            .plus(new Transform2d(new Translation2d(1.0, yaw), new Rotation2d())));
 
     leadMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
     followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
-
-    leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-    followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
 
     Voltage leadVoltage = leadMotorSimState.getMotorVoltageMeasure();
     Voltage followerVoltage = followerMotorSimState.getMotorVoltageMeasure();
@@ -115,8 +122,9 @@ public class ShooterIOSim implements ShooterIO {
 
     double newTime = Timer.getFPGATimestamp();
     double delta = newTime - lastShotFuelS;
-
+    inputs.isFuelInShooter = false;
     if (isIndexing && delta >= 0.1) {
+      inputs.isFuelInShooter = true;
       lastShotFuelS = newTime;
       RebuiltFuelOnFly fuel =
           new RebuiltFuelOnFly(
@@ -142,7 +150,7 @@ public class ShooterIOSim implements ShooterIO {
         chassisSpeedsSupplier.get(),
         yaw.plus(robotPositionSupplier.get().getRotation()),
         pitch.getRadians(),
-        Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond)
+        inputs.shooterSpeed.in(RadiansPerSecond)
             * Constants.ShooterConstants.flywheelDiameter.in(Meters));
   }
 
@@ -174,7 +182,7 @@ public class ShooterIOSim implements ShooterIO {
       z += vz * dt;
     }
 
-    Logger.recordOutput("Shooter/Trajectory/" + "MainTrajectory", poses);
+    Logger.recordOutput("Shooter Trajectory", poses);
   }
 
   public void setPitch(Rotation2d pitch) {

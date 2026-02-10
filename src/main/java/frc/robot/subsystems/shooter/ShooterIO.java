@@ -12,6 +12,7 @@ public interface ShooterIO {
     public AngularVelocity shooterSpeed = RPM.of(0.);
     public Rotation2d currentPitch = new Rotation2d();
     public Rotation2d currentYaw = new Rotation2d();
+    public boolean isFuelInShooter = false;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}

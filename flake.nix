@@ -36,6 +36,7 @@
             clang
             wpilib.glass
             wpilib.sysid
+            elastic-dashboard
             # jdk17
             stdenv.cc.cc.lib
             advantagescope

@@ -17,54 +17,92 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private final MovingAverage speedAverage = new MovingAverage(40);
+  private double currentAverageSpeed;
 
-  @AutoLogOutput private boolean isShooting = false;
-  @AutoLogOutput private boolean isIndexing = false;
+  private boolean wasFuelInShooter = false;
+  @AutoLogOutput public int shotCount = 0;
+
+  public enum ShooterState {
+    Inactive,
+    Revving,
+    Shooting
+  }
+
+  @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
 
   public ShooterSubsystem(ShooterIO io) {
+    Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 0);
+
     this.io = io;
   }
 
+  private void setSpeedSetpoint(AngularVelocity speed) {
+    io.setVelocitySetpoint(speed);
+    Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", speed.in(RadiansPerSecond));
+  }
+
   public void beginShooting() {
-    isShooting = true;
-    io.setVelocitySetpoint(Constants.ShooterConstants.launchSpeed);
-    Logger.recordOutput(
-        "Shooter/SpeedSetpointRadPerSec",
-        Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond));
+    if (shooterState == ShooterState.Inactive) {
+      Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
+
+      shooterState = ShooterState.Revving;
+      setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
+    }
   }
 
   public void endShooting() {
-    isShooting = false;
-    io.setVelocitySetpoint(RPM.of(0.0));
-    Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", 0.0);
+    Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
+    shooterState = ShooterState.Inactive;
+    setSpeedSetpoint(RPM.of(0.));
   }
 
   public boolean isActivelyShooting() {
-    return this.isIndexing;
+    return shooterState == ShooterState.Shooting;
   }
 
   @Override
   public void periodic() {
+
     io.updateInputs(inputs);
+    currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.baseUnitMagnitude());
+    Logger.recordOutput("Shooter/AverageSpeed", currentAverageSpeed);
 
-    double averageSpeed = speedAverage.addValue(inputs.shooterSpeed.baseUnitMagnitude());
-
-    Logger.recordOutput("Shooter/AverageSpeed", averageSpeed);
-    if (isShooting
-        && averageSpeed >= Constants.ShooterConstants.minLaunchSpeed.baseUnitMagnitude()
-        && speedAverage.getStandardDeviation(averageSpeed) <= 12.) {
-      io.startIndexing();
-      isIndexing = true;
-
-    } else {
-      io.stopIndexing();
-      isIndexing = false;
+    switch (shooterState) {
+      case Inactive:
+        io.stopIndexing();
+        break;
+      case Revving:
+        if (isSpunUp()) {
+          this.shooterState = ShooterState.Shooting;
+          io.startIndexing();
+        } else {
+          io.stopIndexing();
+        }
+        break;
+      case Shooting:
+        if (!isSpunUp()) {
+          this.shooterState = ShooterState.Revving;
+        }
+        break;
+      default:
+        break;
     }
+
+    if (inputs.isFuelInShooter && !wasFuelInShooter) {
+      shotCount += 1;
+    }
+    wasFuelInShooter = inputs.isFuelInShooter;
+
     Logger.processInputs("Shooter", inputs);
   }
 
   public AngularVelocity getShooterSpeed() {
     return inputs.shooterSpeed;
+  }
+
+  public boolean isSpunUp() {
+    return currentAverageSpeed >= Constants.ShooterConstants.minLaunchSpeed.baseUnitMagnitude()
+        && speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
   }
 
   public void setPitch(Rotation2d pitch) {

@@ -10,8 +10,6 @@ public interface ShooterIO {
   @AutoLog
   public static class ShooterIOInputs {
     public AngularVelocity shooterSpeed = RPM.of(0.);
-    public Rotation2d currentPitch = new Rotation2d();
-    public Rotation2d currentYaw = new Rotation2d();
     public boolean isFuelInShooter = false;
   }
 

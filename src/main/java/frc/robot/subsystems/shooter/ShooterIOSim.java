@@ -110,14 +110,12 @@ public class ShooterIOSim implements ShooterIO {
     followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
 
     // leadMotorSimState.addRotorPosition(
-    //     flywheelSim.getAngularVelocity().in(RotationsPerSecond) * 0.02);
+    // flywheelSim.getAngularVelocity().in(RotationsPerSecond) * 0.02);
     // followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
 
-    inputs.currentPitch = pitch;
-    inputs.currentYaw = yaw;
     inputs.shooterSpeed = flywheelSim.getAngularVelocity();
 
     double newTime = Timer.getFPGATimestamp();
@@ -190,6 +188,7 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   public void setYaw(Rotation2d yaw) {
+
     this.yaw = yaw;
   }
 

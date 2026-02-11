@@ -110,6 +110,11 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setYaw(Rotation2d yaw) {
-    io.setYaw(yaw);
+    double yawRadians =
+        Math.max(
+            Math.min(yaw.getRadians(), Constants.ShooterConstants.maxTurretYaw.getRadians()),
+            Constants.ShooterConstants.minTurretYaw.getRadians());
+
+    io.setYaw(new Rotation2d(yawRadians));
   }
 }

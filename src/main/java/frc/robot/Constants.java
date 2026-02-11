@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -42,6 +43,7 @@ public final class Constants {
 
   public static class Camera {
 
+    // TODO: set on real robot
     public static final double linearStdDev = 1.0;
     public static final double angularStdDev = 1.0;
   }
@@ -68,10 +70,12 @@ public final class Constants {
     public static final double fieldWidth = aprilTagLayout.getFieldWidth();
   }
 
+  public static class IndexerConstants {
+    // TODO: set on real robot
+    public static final int indexerMotorId = 0;
+  }
+
   public static class ShooterConstants {
-    public static final Transform3d positionOnRobot =
-        new Transform3d(
-            new Translation3d(Inches.of(0.0), Inches.of(5.0), Inches.of(0.0)), new Rotation3d());
     public static final AngularVelocity launchSpeed = RPM.of(1800.0);
     public static final AngularVelocity minLaunchSpeed = RPM.of(1700.);
     public static final double flywheelMOI = 0.0011705586; // 28122.783131854398;
@@ -80,6 +84,23 @@ public final class Constants {
     public static final int motor2Id = 1;
     public static final Distance flywheelDiameter = Inches.of(2.0);
     public static final int targetingIterations = 20;
+
+    // TODO: set on real robot
+    public static final Transform3d positionOnRobot =
+        new Transform3d(
+            new Translation3d(Inches.of(0.0), Inches.of(5.0), Inches.of(0.0)), new Rotation3d());
     public static final double robotPositionAnticipationSeconds = 0.0;
+    public static final double flywheelKP = 0.0;
+    public static final double flywheelKI = 0.0;
+    public static final double flywheelKD = 0.0;
+    public static final double flywheelKV = 0.0;
+    public static final int shooterBeamBrakePort = 0;
+    public static final int turretMotorId = 0;
+    public static final int hoodMotorId = 0;
+    public static final double hoodKP = 0;
+    public static final double hoodKD = 0;
+    public static final double hoodKI = 0;
+    public static final Rotation2d maxTurretYaw = new Rotation2d(0);
+    public static final Rotation2d minTurretYaw = new Rotation2d(0);
   }
 }

@@ -28,7 +28,7 @@ public class ShooterTrackTarget extends Command {
   private final Targeter targeter;
   private final Supplier<Pose2d> robotPositionSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
-  private final Translation3d target;
+  private final Supplier<Translation3d> targetSupplier;
   private final boolean shouldFlipTarget;
 
   public ShooterTrackTarget(
@@ -47,11 +47,27 @@ public class ShooterTrackTarget extends Command {
       Targeter targeter,
       Translation3d target,
       boolean shouldFlipTarget) {
+    this(
+        shooterSubsystem,
+        robotPositionSupplier,
+        chassisSpeedsSupplier,
+        targeter,
+        () -> target,
+        shouldFlipTarget);
+  }
+
+  public ShooterTrackTarget(
+      ShooterSubsystem shooterSubsystem,
+      Supplier<Pose2d> robotPositionSupplier,
+      Supplier<ChassisSpeeds> chassisSpeedsSupplier,
+      Targeter targeter,
+      Supplier<Translation3d> targetSupplier,
+      boolean shouldFlipTarget) {
     this.shooterSubsystem = shooterSubsystem;
     this.targeter = targeter;
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
-    this.target = target;
+    this.targetSupplier = targetSupplier;
     this.shouldFlipTarget = shouldFlipTarget;
 
     addRequirements(shooterSubsystem);
@@ -75,7 +91,8 @@ public class ShooterTrackTarget extends Command {
                 Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
                 Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
 
-    Translation3d flippedTarget = shouldFlipTarget ? AllianceFlipUtil.apply(target) : target;
+    Translation3d flippedTarget =
+        shouldFlipTarget ? AllianceFlipUtil.apply(targetSupplier.get()) : targetSupplier.get();
 
     Logger.recordOutput("Target", flippedTarget);
 

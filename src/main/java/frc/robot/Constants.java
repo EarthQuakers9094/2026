@@ -68,6 +68,8 @@ public final class Constants {
 
     public static final double fieldLength = aprilTagLayout.getFieldLength();
     public static final double fieldWidth = aprilTagLayout.getFieldWidth();
+
+    public static final Distance allianceZoneWidth = Inches.of(182.11);
   }
 
   public static class IndexerConstants {
@@ -100,7 +102,7 @@ public final class Constants {
     public static final double hoodKP = 0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
-    public static final Rotation2d maxTurretYaw = new Rotation2d(0);
-    public static final Rotation2d minTurretYaw = new Rotation2d(0);
+    public static final Rotation2d maxTurretYaw = new Rotation2d(Math.PI);
+    public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
   }
 }

@@ -195,20 +195,17 @@ public class ShooterIOSim implements ShooterIO {
   public void setVelocitySetpoint(AngularVelocity speed) {
     flywheelLeadMotor.setControl(new VelocityVoltage(speed.in(RotationsPerSecond)).withSlot(0));
   }
-  ;
 
   public void stopShooter() {
     flywheelLeadMotor.setControl(new VelocityVoltage(0.0).withSlot(0));
   }
-  ;
 
   public void startIndexing() {
     isIndexing = true;
   }
-  ;
 
   public void stopIndexing() {
     isIndexing = false;
   }
-  ;
+
 }

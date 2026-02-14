@@ -70,6 +70,12 @@ public final class Constants {
     public static final double fieldWidth = aprilTagLayout.getFieldWidth();
 
     public static final Distance allianceZoneWidth = Inches.of(182.11);
+
+    public static final Distance trenchOrigin = Inches.of(158.61);
+
+    public static final Distance trenchWidth = Inches.of(23.5 * 2);
+
+    public static final Distance trenchHeight = Inches.of(49.48);
   }
 
   public static class IndexerConstants {
@@ -104,5 +110,6 @@ public final class Constants {
     public static final double hoodKI = 0;
     public static final Rotation2d maxTurretYaw = new Rotation2d(Math.PI);
     public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
+    public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
 }

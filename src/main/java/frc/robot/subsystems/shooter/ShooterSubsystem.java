@@ -117,4 +117,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     io.setYaw(new Rotation2d(yawRadians));
   }
+
+  public void retractHood() {
+    io.retractHood();
+  }
 }

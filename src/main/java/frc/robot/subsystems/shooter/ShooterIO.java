@@ -4,6 +4,8 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
+import frc.robot.Constants;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
@@ -20,11 +22,12 @@ public interface ShooterIO {
   public default void setYaw(Rotation2d yaw) {}
 
   public default void setVelocitySetpoint(AngularVelocity speed) {}
-  ;
 
   public default void startIndexing() {}
-  ;
 
   public default void stopIndexing() {}
-  ;
+
+  public default void retractHood() {
+    this.setPitch(Constants.ShooterConstants.safeHoodAngle);
+  }
 }

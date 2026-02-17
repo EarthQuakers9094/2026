@@ -112,4 +112,14 @@ public final class Constants {
     public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
     public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
+
+  public static class IntakeConstants {
+
+    public static int intakePivotMotor = 53; //made up value
+    public static int intakeSpinMotor = 54; //made up value
+    public static double intakeMOI = 0.0011705586; //made up value
+    public static double intakeGearing = 2.0; //made up value
+    public static double armLength = 3/12/12; //made up value
+
+  }
 }

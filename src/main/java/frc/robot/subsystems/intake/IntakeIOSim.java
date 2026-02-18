@@ -72,12 +72,16 @@ public class IntakeIOSim implements IntakeIO {
   public IntakeIOSim(){
     pivotMotor
       .getConfigurator()
-      .apply(new Slot0Configs().withKP(0.02).withKI(0.0).withKD(0.0).withKV(0.06));
+      .apply(new Slot0Configs().withKP(Constants.IntakeConstants.pivotkP)
+      .withKI(0.0).withKD(Constants.IntakeConstants.pivotkD)
+      .withKV(Constants.IntakeConstants.pivotkV));
 
       //find gear ratios
     spinMotor
       .getConfigurator()
-      .apply(new Slot0Configs().withKP(0.02).withKI(0.0).withKD(0.0).withKV(0.06));
+      .apply(new Slot0Configs().withKP(Constants.IntakeConstants.spinkP)
+      .withKI(0.0).withKD(Constants.IntakeConstants.spinkD)
+      .withKV(Constants.IntakeConstants.spinkV));
 
 
     this.intakeMotorSim = spinMotor.getSimState();

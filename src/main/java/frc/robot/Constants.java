@@ -122,5 +122,13 @@ public final class Constants {
     public static double armLength = 3/12/12; //made up value
     public static double maxRad = Math.PI/3; //made up value //60 degrees
 
+    public static double pivotkP = 0.1; //made up value
+    public static double pivotkD = 0.01; //made up value
+    public static double pivotkV = 0.06; //made up value
+
+    public static double spinkP = 0.1; //made up value
+    public static double spinkD = 0.01; //made up value
+    public static double spinkV = 0.06; //made up value
+
   }
 }

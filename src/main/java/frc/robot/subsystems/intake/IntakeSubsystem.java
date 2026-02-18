@@ -31,7 +31,7 @@ public class IntakeSubsystem extends SubsystemBase {
 private final IntakeIO io;
     private final IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-    public IntakeSubsystem(IntakeIO io, Supplier<Pose2d> robotPositionSupplier, BooleanSupplier shouldTargetHub){
+    public IntakeSubsystem(IntakeIO io){
         this.io = io;
     } 
 

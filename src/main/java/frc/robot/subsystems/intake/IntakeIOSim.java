@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.Rotation;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
@@ -48,8 +49,8 @@ import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 public class IntakeIOSim implements IntakeIO {
 
-  DCMotor spinGearbox = DCMotor.getNeoVortex(1);
-  DCMotor pivotGearbox = DCMotor.getNeoVortex(1);
+  DCMotor spinGearbox = DCMotor.getKrakenX60(1); //make sure this is the right kraken
+  DCMotor pivotGearbox = DCMotor.getKrakenX60(1);
 
 
   private final TalonFX pivotMotor = new TalonFX(IntakeConstants.intakePivotMotor);
@@ -65,8 +66,8 @@ public class IntakeIOSim implements IntakeIO {
       pivotGearbox,
       Constants.IntakeConstants.intakeMOI,
       Constants.IntakeConstants.intakeGearing), 
-    pivotGearbox, 0, Constants.IntakeConstants.armLength, 
-    0, 60, false, 0, null);
+    pivotGearbox, Constants.IntakeConstants.intakeGearing, Constants.IntakeConstants.armLength, 
+    0, Constants.IntakeConstants.maxRad, true, 0);
 
   public IntakeIOSim(){
     pivotMotor
@@ -81,7 +82,6 @@ public class IntakeIOSim implements IntakeIO {
 
     this.intakeMotorSim = spinMotor.getSimState();
     this.pivotMotorSim= pivotMotor.getSimState();
-    intakeMotorSim.setMotorType(com.ctre.phoenix6.sim.TalonFXSimState.MotorType.KrakenX60);
     intakeMotorSim.setMotorType(MotorType.KrakenX60);
     pivotMotorSim.setMotorType(MotorType.KrakenX60);
 
@@ -108,11 +108,13 @@ public class IntakeIOSim implements IntakeIO {
     inputs.isIntaking = isIntaking;
   }
 
-  public void runIntake(Angle rotations){
-    spinMotor.setControl(new VelocityVoltage(rotations.baseUnitMagnitude()));
+  public void runIntake(AngularVelocity rotations){ //rotations per minute
+    spinMotor.setControl(new VelocityVoltage(rotations.in(RPM))); //set to something else if needed
   }
 
-  public void pivotIntake(Angle angle){
-    pivotMotor.setControl(new VelocityVoltage(angle.baseUnitMagnitude()));
+  public void pivotIntake(Angle rotation){ 
+    final PositionVoltage encoder = new PositionVoltage(0).withSlot(0);
+
+    pivotMotor.setControl(encoder.withPosition(rotation.in(Rotation)));
   }
 }

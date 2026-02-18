@@ -120,6 +120,7 @@ public final class Constants {
     public static double intakeMOI = 0.0011705586; //made up value
     public static double intakeGearing = 2.0; //made up value
     public static double armLength = 3/12/12; //made up value
+    public static double maxRad = Math.PI/3; //made up value //60 degrees
 
   }
 }

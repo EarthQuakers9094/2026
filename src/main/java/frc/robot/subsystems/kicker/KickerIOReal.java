@@ -1,0 +1,61 @@
+package frc.robot.subsystems.kicker;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import frc.robot.Constants;
+
+public class KickerIOReal implements KickerIO {
+  private final SparkFlex motor;
+
+  public KickerIOReal() {
+    motor = new SparkFlex(Constants.KickerConstants.motorId, MotorType.kBrushless);
+    motor.configure(
+        new SparkFlexConfig()
+            .inverted(false)
+            .apply(
+                new EncoderConfig()
+                    .velocityConversionFactor(Constants.KickerConstants.encoder_conversion_factor))
+            .apply(
+                new ClosedLoopConfig()
+                    .pid(
+                        Constants.KickerConstants.kP,
+                        Constants.KickerConstants.kI,
+                        Constants.KickerConstants.kD)
+                    .apply(
+                        new FeedForwardConfig()
+                            .kS(Constants.KickerConstants.kS)
+                            .kV(Constants.KickerConstants.kV))),
+        ResetMode.kResetSafeParameters,
+        PersistMode.kPersistParameters);
+  }
+
+  public void startKicker() {
+    motor
+        .getClosedLoopController()
+        .setSetpoint(Constants.KickerConstants.activeVelocity, ControlType.kVelocity);
+  }
+
+  public void stopKicker() {
+    motor.getClosedLoopController().setSetpoint(0.0d, ControlType.kVelocity);
+  }
+
+  public double getVelocityMeters() {
+    return motor.getEncoder().getVelocity();
+  }
+
+  public double getVelocitySetpointMeters() {
+    return motor.getClosedLoopController().getSetpoint();
+  }
+
+  public void updateInputs(KickerIOInputs inputs) {
+    inputs.current_velocity_in_meters = getVelocityMeters();
+    inputs.velocity_sepoint_in_meters = getVelocitySetpointMeters();
+  }
+}

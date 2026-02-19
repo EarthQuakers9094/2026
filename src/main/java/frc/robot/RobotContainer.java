@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -33,6 +34,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOReal;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -57,6 +62,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
+  private final KickerSubsystem kicker;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -102,6 +108,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
         vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        kicker = new KickerSubsystem(new KickerIOReal());
         break;
 
       case SIM:
@@ -135,6 +142,7 @@ public class RobotContainer {
                     "Back",
                     new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
                     drive::getPose));
+        kicker = new KickerSubsystem(new KickerIOSim());
         break;
 
       default:
@@ -148,6 +156,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
         vision = new Vision(drive::addVisionMeasurement);
+        kicker = new KickerSubsystem(new KickerIO() {});
         break;
     }
 
@@ -253,6 +262,8 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.y().onTrue(new KickerTemporaryCommand(kicker));
   }
 
   /**

@@ -112,4 +112,21 @@ public final class Constants {
     public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
     public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
+
+  public static class KickerConstants {
+    // TODO set actual CAN Id.
+    public static final int motorId = -1;
+    public static final double encoder_conversion_factor = 1.0d;
+    public static final double activeVelocity = 1;
+
+    public static final double kP = 0.2d;
+    public static final double kI = 0.0d;
+    public static final double kD = 0.0d;
+    public static final double kS = 0.0d;
+    public static final double kV = 0.0d;
+
+    // SIM SPECIFIC
+    public static final double simFlywheelMOI = 1.0d;
+    public static final double simFlywheelGearing = 1.0d;
+  }
 }

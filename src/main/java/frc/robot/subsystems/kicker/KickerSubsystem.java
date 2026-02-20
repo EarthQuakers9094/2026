@@ -19,12 +19,12 @@ public class KickerSubsystem extends SubsystemBase {
     io.stopKicker();
   }
 
-  public double getVelocityMeters() {
-    return io.getVelocityMeters();
+  public double getRPM() {
+    return io.getRPM();
   }
 
-  public double getVelocitySetpointMeters() {
-    return io.getVelocitySetpointMeters();
+  public double getRPMSetpoint() {
+    return io.getRPMSetpoint();
   }
 
   @Override

@@ -263,7 +263,7 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.y().onTrue(new KickerTemporaryCommand(kicker));
+    controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
   }
 
   /**

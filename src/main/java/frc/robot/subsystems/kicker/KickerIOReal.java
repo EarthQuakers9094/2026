@@ -39,23 +39,23 @@ public class KickerIOReal implements KickerIO {
   public void startKicker() {
     motor
         .getClosedLoopController()
-        .setSetpoint(Constants.KickerConstants.activeVelocity, ControlType.kVelocity);
+        .setSetpoint(Constants.KickerConstants.activeRPM, ControlType.kVelocity);
   }
 
   public void stopKicker() {
     motor.getClosedLoopController().setSetpoint(0.0d, ControlType.kVelocity);
   }
 
-  public double getVelocityMeters() {
+  public double getRPM() {
     return motor.getEncoder().getVelocity();
   }
 
-  public double getVelocitySetpointMeters() {
+  public double getRPMSetpoint() {
     return motor.getClosedLoopController().getSetpoint();
   }
 
   public void updateInputs(KickerIOInputs inputs) {
-    inputs.current_velocity_in_meters = getVelocityMeters();
-    inputs.velocity_sepoint_in_meters = getVelocitySetpointMeters();
+    inputs.rpm_present = getRPM();
+    inputs.rpm_setpoint = getRPMSetpoint();
   }
 }

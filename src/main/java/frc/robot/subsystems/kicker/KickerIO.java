@@ -6,19 +6,19 @@ public interface KickerIO {
   @AutoLog
   public static class KickerIOInputs {
     // TODO add auto logged variables which are needed (currently unknown to me)
-    public double velocity_sepoint_in_meters = -1d;
-    public double current_velocity_in_meters = -1d;
+    public double rpm_present = -1d;
+    public double rpm_setpoint = -1d;
   }
 
   public default void startKicker() {}
 
   public default void stopKicker() {}
 
-  public default double getVelocityMeters() {
+  public default double getRPM() {
     return -1.0d;
   }
 
-  public default double getVelocitySetpointMeters() {
+  public default double getRPMSetpoint() {
     return -1.0d;
   }
 

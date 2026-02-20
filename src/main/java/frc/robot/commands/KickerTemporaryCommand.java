@@ -29,13 +29,13 @@ public class KickerTemporaryCommand extends Command {
   }
 
   private boolean shouldEnd() {
-    double velocity = subsystem.getVelocityMeters();
-    double setpoint = subsystem.getVelocitySetpointMeters();
+    /*double velocity = subsystem.getRPM();
+    double setpoint = subsystem.getRPMSetpoint();
     double five_percent_setpoint = setpoint / 20d;
     if (velocity >= (setpoint - five_percent_setpoint)
         && velocity <= (setpoint + five_percent_setpoint)) {
       return true;
-    }
+    }*/
     return false;
   }
 

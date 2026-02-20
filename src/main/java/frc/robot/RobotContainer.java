@@ -26,6 +26,8 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.intake.PivotIntakeCommand;
+import frc.robot.commands.intake.RunIntakeCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -33,6 +35,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -55,6 +61,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake;
+
   private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
 
@@ -101,6 +109,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
+        intake = new IntakeSubsystem(new IntakeIOReal());
         vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         break;
 
@@ -115,6 +124,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
+        intake = new IntakeSubsystem(new IntakeIOSim()); // fix
+
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -147,6 +158,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
+        intake = new IntakeSubsystem(new IntakeIO() {});
         vision = new Vision(drive::addVisionMeasurement);
         break;
     }
@@ -253,6 +265,16 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller
+        .button(9)
+        .onTrue( // No clue what button 9 is
+            new PivotIntakeCommand(intake, 0.1)); // temporary constant
+
+    controller
+        .button(10)
+        .onTrue( // See above comment
+            new RunIntakeCommand(intake, 1));
   }
 
   /**

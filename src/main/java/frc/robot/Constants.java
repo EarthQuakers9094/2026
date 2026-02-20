@@ -115,20 +115,19 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static int intakePivotMotor = 53; //made up value
-    public static int intakeSpinMotor = 54; //made up value
-    public static double intakeMOI = 0.0011705586; //made up value
-    public static double intakeGearing = 2.0; //made up value
-    public static double armLength = 3/12/12; //made up value
-    public static double maxRad = Math.PI/3; //made up value //60 degrees
+    public static int intakePivotMotor = 53; // made up value
+    public static int intakeSpinMotor = 54; // made up value
+    public static double intakeMOI = 0.0011705586; // made up value
+    public static double intakeGearing = 2.0; // made up value
+    public static double armLength = 3 / 12 / 12; // made up value
+    public static double maxRad = Math.PI / 3; // made up value //60 degrees
 
-    public static double pivotkP = 0.1; //made up value
-    public static double pivotkD = 0.01; //made up value
-    public static double pivotkV = 0.06; //made up value
+    public static double pivotkP = 0.1; // made up value
+    public static double pivotkD = 0.01; // made up value
+    public static double pivotkV = 0.06; // made up value
 
-    public static double spinkP = 0.1; //made up value
-    public static double spinkD = 0.01; //made up value
-    public static double spinkV = 0.06; //made up value
-
+    public static double spinkP = 0.1; // made up value
+    public static double spinkD = 0.01; // made up value
+    public static double spinkV = 0.06; // made up value
   }
 }

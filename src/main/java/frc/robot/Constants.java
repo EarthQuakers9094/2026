@@ -115,18 +115,20 @@ public final class Constants {
 
   public static class KickerConstants {
     // TODO set actual CAN Id.
-    public static final int motorId = -1;
+    public static final int motorId = 53;
+    // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
+    // angular velocity.
     public static final double encoder_conversion_factor = 1.0d;
-    public static final double activeRPM = 240;
+    public static final double activeRPM = 1250;
 
-    public static final double kP = 0.02d;
-    public static final double kI = 0.02d;
+    public static final double kP = 0.0d;
+    public static final double kI = 0.0d;
     public static final double kD = 0.0d;
     public static final double kS = 0.0d;
-    public static final double kV = 0.0d;
+    public static final double kV = 0.00174d;
 
-    // SIM SPECIFIC
-    public static final double simFlywheelMOI = 0.005d;
+    // SIM SPECIFIC, get cadder for MOI
+    public static final double simFlywheelMOI = 0.0011705586;
     public static final double simFlywheelGearing = 1.0d;
   }
 }

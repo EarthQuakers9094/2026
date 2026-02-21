@@ -5,7 +5,6 @@ import org.littletonrobotics.junction.AutoLog;
 public interface KickerIO {
   @AutoLog
   public static class KickerIOInputs {
-    // TODO add auto logged variables which are needed (currently unknown to me)
     public double rpm_present = -1d;
     public double rpm_setpoint = -1d;
   }

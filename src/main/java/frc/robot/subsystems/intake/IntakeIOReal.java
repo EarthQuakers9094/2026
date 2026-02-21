@@ -1,8 +1,5 @@
 package frc.robot.subsystems.intake;
 
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Rotation;
-
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -10,8 +7,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -48,7 +43,6 @@ public class IntakeIOReal implements IntakeIO {
     spinMotor.getSupplyVoltage();
     pivotMotor.getSupplyVoltage();
 
-
     boolean isIntaking;
     if (spinMotor.getSupplyVoltage().getValueAsDouble() == 0.0) {
       isIntaking = false;
@@ -57,10 +51,9 @@ public class IntakeIOReal implements IntakeIO {
     }
 
     inputs.isIntaking = isIntaking;
-  
   }
 
-  public void runIntake(AngularVelocity rotations) { 
+  public void runIntake(AngularVelocity rotations) {
     spinMotor.setControl(new VelocityVoltage(rotations));
   }
 

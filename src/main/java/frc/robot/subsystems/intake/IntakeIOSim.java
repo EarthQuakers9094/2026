@@ -1,9 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -80,6 +78,8 @@ public class IntakeIOSim implements IntakeIO {
     double intakeVoltage;
     intakeVoltage = intakeMotorSim.getMotorVoltage();
 
+    armSim.setInputVoltage(intakeVoltage * RoboRioSim.getVInVoltage());
+
     armSim.update(0.02);
 
     RoboRioSim.setVInVoltage(
@@ -96,7 +96,7 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   public void runIntake(AngularVelocity rotations) { // rotations per minute
-    spinMotor.setControl(new VelocityVoltage(rotations)); 
+    spinMotor.setControl(new VelocityVoltage(rotations));
   }
 
   public void pivotIntake(Angle rotation) {

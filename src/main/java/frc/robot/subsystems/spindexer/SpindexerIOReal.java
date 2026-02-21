@@ -23,7 +23,12 @@ public class SpindexerIOReal implements SpindexerIO {
   /** Creates a new SpindexerIOReal. */
   public SpindexerIOReal() {
     spindexerMotor.configure(
-        spindexerMotorConfig.apply(new ClosedLoopConfig().pid(0.1, 0, 0.1)),
+        spindexerMotorConfig.apply(
+            new ClosedLoopConfig()
+                .pid(
+                    Constants.SpindexerConstants.kP,
+                    Constants.SpindexerConstants.kI,
+                    Constants.SpindexerConstants.kD)),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
   }

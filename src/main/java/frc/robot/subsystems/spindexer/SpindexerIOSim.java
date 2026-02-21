@@ -47,12 +47,14 @@ public class SpindexerIOSim implements SpindexerIO {
   }
 
   public void updateInputs(SpindexerIOInputs inputs) {
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
     flywheelSim.setInput(spindexerMotor.getAppliedOutput() * RoboRioSim.getVInVoltage());
     flywheelSim.update(0.02);
     spindexerMotorSim.iterate(flywheelSim.getAngularVelocityRPM(), 12, 0.02);
-    RoboRioSim.setVInVoltage(
-        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
     inputs.spindexerCurrentSpeed = flywheelSim.getAngularVelocity();
+    inputs.spinexerVelocitySetpoint =
+        RPM.of(spindexerMotor.getClosedLoopController().getSetpoint());
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {

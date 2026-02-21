@@ -9,6 +9,7 @@ public interface SpindexerIO {
   @AutoLog
   public static class SpindexerIOInputs {
     public AngularVelocity spindexerCurrentSpeed = RPM.of(0);
+    public AngularVelocity spinexerVelocitySetpoint = RPM.of(0);
   }
 
   public default void updateInputs(SpindexerIOInputs inputs) {}

@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -49,6 +50,10 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
+
+import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -269,12 +274,12 @@ public class RobotContainer {
     controller
         .button(9)
         .onTrue( // No clue what button 9 is
-            new PivotIntakeCommand(intake, 0.1)); // temporary constant
+            new PivotIntakeCommand(intake, Radians.of(0.1))); // temporary constant
 
     controller
         .button(10)
-        .onTrue( // See above comment
-            new RunIntakeCommand(intake, 1));
+        .whileTrue( // See above comment
+            new RunIntakeCommand(intake, RPM.of(1)));
   }
 
   /**

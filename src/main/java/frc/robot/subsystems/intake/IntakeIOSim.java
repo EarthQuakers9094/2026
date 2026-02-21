@@ -91,12 +91,10 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   public void runIntake(AngularVelocity rotations) { // rotations per minute
-    spinMotor.setControl(new VelocityVoltage(rotations.in(RPM))); // set to something else if needed
+    spinMotor.setControl(new VelocityVoltage(rotations)); 
   }
 
   public void pivotIntake(Angle rotation) {
-    final PositionVoltage encoder = new PositionVoltage(0).withSlot(0);
-
-    pivotMotor.setControl(encoder.withPosition(rotation.in(Rotation)));
+    pivotMotor.setControl(new PositionVoltage(rotation.in(Rotation)).withSlot(0));
   }
 }

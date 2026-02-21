@@ -44,13 +44,11 @@ public class IntakeIOReal implements IntakeIO {
 
   public void updateInputs(IntakeIOInputs inputs) {}
 
-  public void runIntake(AngularVelocity rotations) { // rotations per minute
-    spinMotor.setControl(new VelocityVoltage(rotations.in(RPM))); // set to something else if needed
+  public void runIntake(AngularVelocity rotations) { 
+    spinMotor.setControl(new VelocityVoltage(rotations));
   }
 
   public void pivotIntake(Angle rotation) {
-    final PositionVoltage encoder = new PositionVoltage(0).withSlot(0);
-
-    pivotMotor.setControl(encoder.withPosition(rotation.in(Rotation)));
+    pivotMotor.setControl(new PositionVoltage(rotation.in(Rotation)).withSlot(0));
   }
 }

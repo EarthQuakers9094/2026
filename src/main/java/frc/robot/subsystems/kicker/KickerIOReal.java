@@ -23,7 +23,7 @@ public class KickerIOReal implements KickerIO {
             .inverted(false)
             .apply(
                 new EncoderConfig()
-                    .velocityConversionFactor(Constants.KickerConstants.encoderConversionFactorRPM))
+                    .velocityConversionFactor(Constants.KickerConstants.encoderConversionFactor))
             .apply(
                 new ClosedLoopConfig()
                     .pid(

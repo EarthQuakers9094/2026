@@ -1,5 +1,8 @@
 package frc.robot.subsystems.spindexer;
 
+import static edu.wpi.first.units.Units.RPM;
+
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SpindexerSubsystem extends SubsystemBase {
@@ -10,7 +13,11 @@ public class SpindexerSubsystem extends SubsystemBase {
     this.spindexerIO = spindexerIO;
   }
 
-  public void setVelocitySetpoint(double spindexerSpeed) {
-    spindexerIO.setVelocitySetpoint(spindexerSpeed);
+  public void run(AngularVelocity spindexerSpeed) {
+    spindexerIO.run(spindexerSpeed);
+  }
+
+  public void stop() {
+    spindexerIO.run(RPM.of(0));
   }
 }

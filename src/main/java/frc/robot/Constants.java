@@ -55,7 +55,7 @@ public final class Constants {
 
   public static class SpindexerConstants {
     public static final int spindexerMotorId = 69;
-    public static final double spindexerMOI = 0.0012; //TBD
+    public static final double spindexerMOI = 0.0012; // TBD
     public static final double spindexerGearing = 1;
   }
 }

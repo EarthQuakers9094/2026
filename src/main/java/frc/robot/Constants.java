@@ -118,8 +118,9 @@ public final class Constants {
     public static final int motorId = 53;
     // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
     // angular velocity.
-    public static final double encoder_conversion_factor = 1.0d;
-    public static final double activeRPM = 1250;
+    public static final double flywheelGearing = 1.0d;
+    public static final double encoderConversionFactorRPM = 1.0 / flywheelGearing;
+    public static final AngularVelocity velocitySetpoint = RPM.of(1250d);
 
     public static final double kP = 0.0d;
     public static final double kI = 0.0d;
@@ -129,6 +130,5 @@ public final class Constants {
 
     // SIM SPECIFIC, get cadder for MOI
     public static final double simFlywheelMOI = 0.0011705586;
-    public static final double simFlywheelGearing = 1.0d;
   }
 }

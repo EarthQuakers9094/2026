@@ -1,5 +1,7 @@
 package frc.robot.subsystems.kicker;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkFlexSim;
@@ -12,6 +14,7 @@ import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
@@ -31,7 +34,7 @@ public class KickerIOSim implements KickerIO {
             LinearSystemId.createFlywheelSystem(
                 dcVortex,
                 Constants.KickerConstants.simFlywheelMOI,
-                Constants.KickerConstants.simFlywheelGearing),
+                Constants.KickerConstants.flywheelGearing),
             dcVortex);
 
     motor = new SparkFlex(Constants.KickerConstants.motorId, MotorType.kBrushless);
@@ -40,7 +43,7 @@ public class KickerIOSim implements KickerIO {
             .inverted(false)
             .apply(
                 new EncoderConfig()
-                    .velocityConversionFactor(Constants.KickerConstants.encoder_conversion_factor))
+                    .velocityConversionFactor(Constants.KickerConstants.encoderConversionFactorRPM))
             .apply(
                 new ClosedLoopConfig()
                     .pid(
@@ -59,19 +62,11 @@ public class KickerIOSim implements KickerIO {
   public void startKicker() {
     motor
         .getClosedLoopController()
-        .setSetpoint(Constants.KickerConstants.activeRPM, ControlType.kVelocity);
+        .setSetpoint(Constants.KickerConstants.velocitySetpoint.in(RPM), ControlType.kVelocity);
   }
 
   public void stopKicker() {
     motor.getClosedLoopController().setSetpoint(0.0d, ControlType.kVelocity);
-  }
-
-  public double getRPM() {
-    return flywheelSIM.getAngularVelocityRPM();
-  }
-
-  public double getRPMSetpoint() {
-    return motor.getClosedLoopController().getSetpoint();
   }
 
   public void updateInputs(KickerIOInputs inputs) {
@@ -83,11 +78,11 @@ public class KickerIOSim implements KickerIO {
     flywheelSIM.setInputVoltage(motorVoltage);
     flywheelSIM.update(0.020);
 
-    double rpm = getRPM();
+    AngularVelocity rpm = RPM.of(flywheelSIM.getAngularVelocityRPM());
 
-    motorSIM.iterate(rpm, RoboRioSim.getVInVoltage(), 0.020);
+    motorSIM.iterate(rpm.in(RPM), RoboRioSim.getVInVoltage(), 0.020);
 
-    inputs.rpm_present = rpm;
-    inputs.rpm_setpoint = getRPMSetpoint();
+    inputs.angularVelocityCurrent = rpm;
+    inputs.angularVelocitySetpoint = RPM.of(motor.getClosedLoopController().getSetpoint());
   }
 }

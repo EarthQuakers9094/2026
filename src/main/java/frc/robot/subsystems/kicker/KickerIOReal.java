@@ -1,5 +1,7 @@
 package frc.robot.subsystems.kicker;
 
+import static edu.wpi.first.units.Units.RPM;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -21,7 +23,7 @@ public class KickerIOReal implements KickerIO {
             .inverted(false)
             .apply(
                 new EncoderConfig()
-                    .velocityConversionFactor(Constants.KickerConstants.encoder_conversion_factor))
+                    .velocityConversionFactor(Constants.KickerConstants.encoderConversionFactorRPM))
             .apply(
                 new ClosedLoopConfig()
                     .pid(
@@ -39,23 +41,15 @@ public class KickerIOReal implements KickerIO {
   public void startKicker() {
     motor
         .getClosedLoopController()
-        .setSetpoint(Constants.KickerConstants.activeRPM, ControlType.kVelocity);
+        .setSetpoint(Constants.KickerConstants.velocitySetpoint.in(RPM), ControlType.kVelocity);
   }
 
   public void stopKicker() {
     motor.getClosedLoopController().setSetpoint(0.0d, ControlType.kVelocity);
   }
 
-  public double getRPM() {
-    return motor.getEncoder().getVelocity();
-  }
-
-  public double getRPMSetpoint() {
-    return motor.getClosedLoopController().getSetpoint();
-  }
-
   public void updateInputs(KickerIOInputs inputs) {
-    inputs.rpm_present = getRPM();
-    inputs.rpm_setpoint = getRPMSetpoint();
+    inputs.angularVelocityCurrent = RPM.of(motor.getEncoder().getVelocity());
+    inputs.angularVelocitySetpoint = RPM.of(motor.getClosedLoopController().getSetpoint());
   }
 }

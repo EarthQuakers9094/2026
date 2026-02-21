@@ -47,9 +47,14 @@ public final class Constants {
         new Translation3d(Inches.of(0.0), Inches.of(5.0), Inches.of(0.0));
     public static final AngularVelocity launchSpeed = RPM.of(2000.0);
     public static final AngularVelocity minLaunchSpeed = RPM.of(1500.);
-    public static final double flywheelMOI = 0.0018687377;//0.0011705586; // 28122.783131854398;
+    public static final double flywheelMOI = 0.0018687377; // 0.0011705586; // 28122.783131854398;
     public static final double flywheelGearing = 1;
     public static final int motorId = 0;
     public static final Distance flywheelDiameter = Inches.of(2.0);
+  }
+
+  public static class SpindexerConstants {
+    public static final int motor1Id = 69;
+    public static final int motor2Id = 70;
   }
 }

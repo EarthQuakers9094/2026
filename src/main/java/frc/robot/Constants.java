@@ -7,7 +7,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -120,8 +122,8 @@ public final class Constants {
     public static int intakeSpinMotor = 54; // made up value
     public static double intakeMOI = 0.0011705586; // made up value
     public static double intakeGearing = 2.0; // made up value
-    public static double armLength = 3 / 12 / 12; // made up value
-    public static double maxRad = Math.PI/3; // made up value //60 degrees
+    public static Distance armLength = Meters.of(1); // made up value
+    public static Angle maxAngle = Degrees.of(60); // made up value //60 degrees
 
     public static double pivotkP = 0.1; // made up value
     public static double pivotkD = 0.01; // made up value

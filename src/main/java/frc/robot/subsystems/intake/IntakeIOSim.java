@@ -1,6 +1,8 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.Rotation;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -38,9 +40,9 @@ public class IntakeIOSim implements IntakeIO {
               Constants.IntakeConstants.intakeGearing),
           pivotGearbox,
           Constants.IntakeConstants.intakeGearing,
-          Constants.IntakeConstants.armLength,
+          Constants.IntakeConstants.armLength.in(Meters),
           0,
-          Constants.IntakeConstants.maxRad,
+          Constants.IntakeConstants.maxAngle.in(Radians),
           true,
           0);
 
@@ -95,6 +97,6 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   public void pivotIntake(Angle rotation) {
-    pivotMotor.setControl(new PositionVoltage(rotation.in(Rotation)).withSlot(0));
+    pivotMotor.setControl(new PositionVoltage(rotation).withSlot(0));
   }
 }

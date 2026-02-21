@@ -49,6 +49,6 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   public void pivotIntake(Angle rotation) {
-    pivotMotor.setControl(new PositionVoltage(rotation.in(Rotation)).withSlot(0));
+    pivotMotor.setControl(new PositionVoltage(rotation).withSlot(0));
   }
 }

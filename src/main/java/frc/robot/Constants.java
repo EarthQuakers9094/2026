@@ -112,4 +112,23 @@ public final class Constants {
     public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
     public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
+
+  public static class KickerConstants {
+    // TODO set actual CAN Id.
+    public static final int motorId = 53;
+    // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
+    // angular velocity.
+    public static final double flywheelGearing = 1.0d;
+    public static final double encoderConversionFactor = 1.0 / flywheelGearing;
+    public static final AngularVelocity velocitySetpoint = RPM.of(1250d);
+
+    public static final double kP = 0.0d;
+    public static final double kI = 0.0d;
+    public static final double kD = 0.0d;
+    public static final double kS = 0.0d;
+    public static final double kV = 0.00174d;
+
+    // SIM SPECIFIC, get cadder for MOI
+    public static final double simFlywheelMOI = 0.0011705586;
+  }
 }

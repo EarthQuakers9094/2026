@@ -5,6 +5,7 @@ import static edu.wpi.first.units.Units.Meters;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants;
@@ -13,7 +14,7 @@ import org.littletonrobotics.junction.Logger;
 public class FieldUtil {
   public static boolean isNearTrench(Pose2d pose) {
     Pose2d normalizedPose =
-        normalizePose2d(pose, DriverStation.getAlliance().orElse(Alliance.Blue));
+        normalizePose2d(pose, DriverStation.getAlliance().orElse(Alliance.Blue), false);
 
     Translation2d translation = normalizedPose.getTranslation();
 
@@ -33,7 +34,8 @@ public class FieldUtil {
     return true;
   }
 
-  public static Translation2d normalizeTranslation2d(Translation2d translation, Alliance alliance) {
+  public static Translation2d normalizeTranslation2d(
+      Translation2d translation, Alliance alliance, boolean allianceMatters) {
     double x = translation.getX();
     double y = translation.getY();
     if (alliance.equals(Alliance.Red)) {
@@ -43,6 +45,13 @@ public class FieldUtil {
     if (y > Constants.Field.fieldWidth / 2) {
       y = Constants.Field.fieldWidth - y;
     }
+    if (!allianceMatters) {
+      if (x > Constants.Field.fieldLength / 2) {
+        x = Constants.Field.fieldLength - x;
+      }
+    }
+
+    Logger.recordOutput("NormalizedTranslation", new Translation3d(x, y, 0.0));
     return new Translation2d(x, y);
   }
 
@@ -54,8 +63,9 @@ public class FieldUtil {
     return theta;
   }
 
-  public static Pose2d normalizePose2d(Pose2d pose, Alliance alliance) {
-    Translation2d translation = normalizeTranslation2d(pose.getTranslation(), alliance);
+  public static Pose2d normalizePose2d(Pose2d pose, Alliance alliance, boolean allianceMatters) {
+    Translation2d translation =
+        normalizeTranslation2d(pose.getTranslation(), alliance, allianceMatters);
     Rotation2d rotation = pose.getRotation();
     if (translation.getY() > Constants.Field.fieldWidth / 2) {
       rotation = rotation.plus(Rotation2d.kCCW_90deg);

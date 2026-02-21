@@ -132,5 +132,6 @@ public final class Constants {
     public static double spinkP = 0.1; // made up value
     public static double spinkD = 0.01; // made up value
     public static double spinkV = 0.06; // made up value
+    public static double intakeSpeed = 20;
   }
 }

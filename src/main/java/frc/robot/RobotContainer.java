@@ -278,6 +278,11 @@ public class RobotContainer {
 
     controller
         .button(10)
+        .onTrue( // See above comment
+            new PivotIntakeCommand(intake, Radians.of(-0.1))); // temporary constant
+
+    controller
+        .button(11)
         .whileTrue( // See above comment
             new RunIntakeCommand(intake, RPM.of(1)));
   }

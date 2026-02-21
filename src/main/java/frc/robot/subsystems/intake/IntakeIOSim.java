@@ -77,6 +77,9 @@ public class IntakeIOSim implements IntakeIO {
     intakeMotorSim.setSupplyVoltage(RoboRioSim.getVInVoltage());
     pivotMotorSim.setSupplyVoltage(RoboRioSim.getVInVoltage());
 
+    double intakeVoltage;
+    intakeVoltage = intakeMotorSim.getMotorVoltage();
+
     armSim.update(0.02);
 
     RoboRioSim.setVInVoltage(

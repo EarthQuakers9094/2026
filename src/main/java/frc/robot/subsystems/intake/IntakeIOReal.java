@@ -10,6 +10,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.simulation.BatterySim;
+import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
@@ -42,7 +44,21 @@ public class IntakeIOReal implements IntakeIO {
                 .withKV(Constants.IntakeConstants.spinkV));
   }
 
-  public void updateInputs(IntakeIOInputs inputs) {}
+  public void updateInputs(IntakeIOInputs inputs) {
+    spinMotor.getSupplyVoltage();
+    pivotMotor.getSupplyVoltage();
+
+
+    boolean isIntaking;
+    if (spinMotor.getSupplyVoltage().getValueAsDouble() == 0.0) {
+      isIntaking = false;
+    } else {
+      isIntaking = true;
+    }
+
+    inputs.isIntaking = isIntaking;
+  
+  }
 
   public void runIntake(AngularVelocity rotations) { 
     spinMotor.setControl(new VelocityVoltage(rotations));

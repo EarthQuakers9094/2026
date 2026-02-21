@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.intake.PivotIntakeCommand;
 import frc.robot.commands.intake.RunIntakeCommand;
@@ -40,6 +41,10 @@ import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOReal;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -70,6 +75,7 @@ public class RobotContainer {
 
   private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
+  private final KickerSubsystem kicker;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -116,6 +122,7 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIOReal());
         intake = new IntakeSubsystem(new IntakeIOReal());
         vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        kicker = new KickerSubsystem(new KickerIOReal());
         break;
 
       case SIM:
@@ -151,6 +158,7 @@ public class RobotContainer {
                     "Back",
                     new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
                     drive::getPose));
+        kicker = new KickerSubsystem(new KickerIOSim());
         break;
 
       default:
@@ -165,6 +173,7 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIO() {});
         intake = new IntakeSubsystem(new IntakeIO() {});
         vision = new Vision(drive::addVisionMeasurement);
+        kicker = new KickerSubsystem(new KickerIO() {});
         break;
     }
 
@@ -285,6 +294,7 @@ public class RobotContainer {
         .button(11)
         .whileTrue( // See above comment
             new RunIntakeCommand(intake, RPM.of(Constants.IntakeConstants.intakeSpeed)));
+    controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
   }
 
   /**

@@ -274,17 +274,17 @@ public class RobotContainer {
     controller
         .button(9)
         .onTrue( // No clue what button 9 is
-            new PivotIntakeCommand(intake, Radians.of(0.1))); // temporary constant
+            new PivotIntakeCommand(intake, Constants.IntakeConstants.forwardPivotAmount)); // temporary constant
 
     controller
         .button(10)
         .onTrue( // See above comment
-            new PivotIntakeCommand(intake, Radians.of(-0.1))); // temporary constant
+            new PivotIntakeCommand(intake, Constants.IntakeConstants.backwardPivotAmount)); // temporary constant
 
     controller
         .button(11)
         .whileTrue( // See above comment
-            new RunIntakeCommand(intake, RPM.of(1)));
+            new RunIntakeCommand(intake, RPM.of(Constants.IntakeConstants.intakeSpeed)));
   }
 
   /**

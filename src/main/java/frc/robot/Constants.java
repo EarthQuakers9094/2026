@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -133,5 +134,7 @@ public final class Constants {
     public static double spinkD = 0.01; // made up value
     public static double spinkV = 0.06; // made up value
     public static double intakeSpeed = 20;
+    public static Angle forwardPivotAmount = Radians.of(0.1);
+    public static Angle backwardPivotAmount = Radians.of(-0.1);
   }
 }

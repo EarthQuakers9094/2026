@@ -1,14 +1,15 @@
 package frc.robot.commands.intake;
 
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
 public class PivotIntakeCommand extends Command {
 
   private final IntakeSubsystem intake;
-  private final double rotation;
+  private final Angle rotation;
 
-  public PivotIntakeCommand(IntakeSubsystem intake, double rotation) {
+  public PivotIntakeCommand(IntakeSubsystem intake, Angle rotation) {
     this.intake = intake;
     this.rotation = rotation;
   }

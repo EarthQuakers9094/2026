@@ -78,7 +78,7 @@ public class KickerIOSim implements KickerIO {
     flywheelSIM.setInputVoltage(motorVoltage);
     flywheelSIM.update(0.020);
 
-    AngularVelocity rpm = RPM.of(flywheelSIM.getAngularVelocityRPM());
+    AngularVelocity rpm = flywheelSIM.getAngularVelocity();
 
     motorSIM.iterate(rpm.in(RPM), RoboRioSim.getVInVoltage(), 0.020);
 

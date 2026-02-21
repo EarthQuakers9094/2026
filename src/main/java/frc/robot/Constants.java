@@ -119,7 +119,7 @@ public final class Constants {
     // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
     // angular velocity.
     public static final double flywheelGearing = 1.0d;
-    public static final double encoderConversionFactorRPM = 1.0 / flywheelGearing;
+    public static final double encoderConversionFactor = 1.0 / flywheelGearing;
     public static final AngularVelocity velocitySetpoint = RPM.of(1250d);
 
     public static final double kP = 0.0d;

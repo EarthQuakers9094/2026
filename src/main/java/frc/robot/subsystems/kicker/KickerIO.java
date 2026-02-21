@@ -8,8 +8,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface KickerIO {
   @AutoLog
   public static class KickerIOInputs {
-    public AngularVelocity angularVelocityCurrent = RPM.of(-1);
-    public AngularVelocity angularVelocitySetpoint = RPM.of(-1);
+    public AngularVelocity angularVelocityCurrent = RPM.of(0d);
+    public AngularVelocity angularVelocitySetpoint = RPM.of(0d);
   }
 
   public default void startKicker() {}

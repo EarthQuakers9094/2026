@@ -13,12 +13,10 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 
 public class SpindexerIOReal implements SpindexerIO {
-  private DCMotor spindexeDcMotor = DCMotor.getNeoVortex(1);
   private final SparkFlex spindexerMotor =
       new SparkFlex(Constants.SpindexerConstants.spindexerMotorId, MotorType.kBrushless);
   private final SparkFlexConfig spindexerMotorConfig = new SparkFlexConfig();
@@ -31,7 +29,7 @@ public class SpindexerIOReal implements SpindexerIO {
   }
 
   public void updateInputs(SpindexerIOInputs inputs) {
-    inputs.spindexerCurrentSpeed = spindexerMotor.getEncoder().getVelocity();
+    inputs.spindexerCurrentSpeed = RPM.of(spindexerMotor.getEncoder().getVelocity());
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {

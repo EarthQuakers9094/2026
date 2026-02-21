@@ -19,11 +19,11 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 
 public class SpindexerIOSim implements SpindexerIO {
-  private DCMotor spindexeDcMotor = DCMotor.getNeoVortex(1);
-  private final SparkFlex spindexerMotor = new SparkFlex(0, MotorType.kBrushless);
-  private final SparkFlexSim spindexerMotorSim = new SparkFlexSim(spindexerMotor, spindexeDcMotor);
+  private DCMotor spindexerDcMotor = DCMotor.getNeoVortex(1);
+  private final SparkFlex spindexerMotor =
+      new SparkFlex(Constants.SpindexerConstants.spindexerMotorId, MotorType.kBrushless);
+  private final SparkFlexSim spindexerMotorSim = new SparkFlexSim(spindexerMotor, spindexerDcMotor);
   private final SparkFlexConfig spindexerMotorConfig = new SparkFlexConfig();
-  private double setSpeed;
 
   private FlywheelSim flywheelSim =
       new FlywheelSim(
@@ -31,12 +31,17 @@ public class SpindexerIOSim implements SpindexerIO {
               DCMotor.getNeoVortex(1),
               Constants.SpindexerConstants.spindexerMOI,
               Constants.SpindexerConstants.spindexerGearing),
-          spindexeDcMotor,
+          spindexerDcMotor,
           1);
 
   public SpindexerIOSim() {
     spindexerMotor.configure(
-        spindexerMotorConfig.apply(new ClosedLoopConfig().pid(0.1, 0, 0.1)),
+        spindexerMotorConfig.apply(
+            new ClosedLoopConfig()
+                .pid(
+                    Constants.SpindexerConstants.kP,
+                    Constants.SpindexerConstants.kI,
+                    Constants.SpindexerConstants.kD)),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
   }
@@ -47,7 +52,7 @@ public class SpindexerIOSim implements SpindexerIO {
     spindexerMotorSim.iterate(flywheelSim.getAngularVelocityRPM(), 12, 0.02);
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
-    inputs.spindexerCurrentSpeed = setSpeed;
+    inputs.spindexerCurrentSpeed = flywheelSim.getAngularVelocity();
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {

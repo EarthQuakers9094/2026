@@ -30,93 +30,99 @@ import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
 
 public class ShooterIOSim implements ShooterIO {
 
-        private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
-        private Rotation2d yaw = new Rotation2d();
+  private Rotation2d pitch = new Rotation2d(Math.PI / 4.);
+  private Rotation2d yaw = new Rotation2d();
 
-        private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
+  private DCMotor flywheelMotor = DCMotor.getNeoVortex(1);
 
-        private final SparkFlex flex = new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
-        private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
+  private final SparkFlex flex =
+      new SparkFlex(Constants.ShooterConstants.motorId, MotorType.kBrushless);
+  private final SparkFlexSim flexSim = new SparkFlexSim(flex, flywheelMotor);
 
-        private FlywheelSim flywheelSim = new FlywheelSim(
-                        LinearSystemId.createFlywheelSystem(
-                                        DCMotor.getNeoVortex(1),
-                                        Constants.ShooterConstants.flywheelMOI,
-                                        Constants.ShooterConstants.flywheelGearing),
-                        flywheelMotor);
+  private FlywheelSim flywheelSim =
+      new FlywheelSim(
+          LinearSystemId.createFlywheelSystem(
+              DCMotor.getNeoVortex(1),
+              Constants.ShooterConstants.flywheelMOI,
+              Constants.ShooterConstants.flywheelGearing),
+          flywheelMotor);
 
-        private final Supplier<Translation2d> robotPositionSupplier;
-        private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
+  private final Supplier<Translation2d> robotPositionSupplier;
+  private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
 
-        private boolean isIndexing = false;
-        private double lastShotFuelS = Timer.getFPGATimestamp();
+  private boolean isIndexing = false;
+  private double lastShotFuelS = Timer.getFPGATimestamp();
 
-        public ShooterIOSim(
-                        Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
-                this.robotPositionSupplier = () -> robotPositionSupplier.get().getTranslation();
-                this.chassisSpeedsSupplier = chassisSpeedsSupplier;
+  public ShooterIOSim(
+      Supplier<Pose2d> robotPositionSupplier, Supplier<ChassisSpeeds> chassisSpeedsSupplier) {
+    this.robotPositionSupplier = () -> robotPositionSupplier.get().getTranslation();
+    this.chassisSpeedsSupplier = chassisSpeedsSupplier;
 
-                flex.configure(
-                                new SparkFlexConfig().apply(new ClosedLoopConfig().pid(0.0025, 0.0, 0.0)),
-                                ResetMode.kResetSafeParameters,
-                                PersistMode.kNoPersistParameters);
-        }
+    flex.configure(
+        new SparkFlexConfig().apply(new ClosedLoopConfig().pid(0.0025, 0.0, 0.0)),
+        ResetMode.kResetSafeParameters,
+        PersistMode.kNoPersistParameters);
+  }
 
-        public void updateInputs(ShooterIOInputs inputs) {
+  public void updateInputs(ShooterIOInputs inputs) {
 
-                flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
+    flywheelSim.setInput(flexSim.getAppliedOutput() * RoboRioSim.getVInVoltage());
 
-                flywheelSim.update(0.02);
+    flywheelSim.update(0.02);
 
-                flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
+    flexSim.iterate(flywheelSim.getAngularVelocityRPM(), RoboRioSim.getVInVoltage(), 0.02);
 
-                RoboRioSim.setVInVoltage(
-                                BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
+    RoboRioSim.setVInVoltage(
+        BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
 
-                inputs.currentPitch = pitch;
-                inputs.shooterSpeed = flywheelSim.getAngularVelocity();
+    inputs.currentPitch = pitch;
+    inputs.shooterSpeed = flywheelSim.getAngularVelocity();
 
-                double newTime = Timer.getFPGATimestamp();
-                double delta = newTime - lastShotFuelS;
+    double newTime = Timer.getFPGATimestamp();
+    double delta = newTime - lastShotFuelS;
 
-                if (isIndexing && delta >= 0.1) {
-                        lastShotFuelS = newTime;
-                        RebuiltFuelOnFly fuel = new RebuiltFuelOnFly(
-                                        robotPositionSupplier.get(),
-                                        Constants.ShooterConstants.positionOnRobot.toTranslation2d(),
-                                        chassisSpeedsSupplier.get(),
-                                        yaw,
-                                        Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
-                                        MetersPerSecond.of(
-                                                        flywheelSim.getAngularVelocityRadPerSec()
-                                                                        * Constants.ShooterConstants.flywheelDiameter
-                                                                                        .in(Meters)),
-                                        pitch.getMeasure());
-                        SimulatedArena.getInstance().addGamePieceProjectile(fuel);
-                }
-        }
+    if (isIndexing && delta >= 0.1) {
+      lastShotFuelS = newTime;
+      RebuiltFuelOnFly fuel =
+          new RebuiltFuelOnFly(
+              robotPositionSupplier.get(),
+              Constants.ShooterConstants.positionOnRobot.toTranslation2d(),
+              chassisSpeedsSupplier.get(),
+              yaw,
+              Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
+              MetersPerSecond.of(
+                  flywheelSim.getAngularVelocityRadPerSec()
+                      * Constants.ShooterConstants.flywheelDiameter.in(Meters)),
+              pitch.getMeasure());
+      SimulatedArena.getInstance().addGamePieceProjectile(fuel);
+    }
+  }
 
-        public void setPitch(Rotation2d pitch) {
-                this.pitch = pitch;
-        }
+  public void setPitch(Rotation2d pitch) {
+    this.pitch = pitch;
+  }
 
-        public void setYaw(Rotation2d yaw) {
-                this.yaw = yaw;
-        }
+  public void setYaw(Rotation2d yaw) {
+    this.yaw = yaw;
+  }
 
-        public void setVelocitySetpoint(AngularVelocity speed) {
-                flex.getClosedLoopController().setSetpoint(speed.in(RPM), ControlType.kVelocity);
-        };
+  public void setVelocitySetpoint(AngularVelocity speed) {
+    flex.getClosedLoopController().setSetpoint(speed.in(RPM), ControlType.kVelocity);
+  }
+  ;
 
-        public void stopShooter() {
-                flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
-        };
+  public void stopShooter() {
+    flex.getClosedLoopController().setSetpoint(0.0, ControlType.kVelocity);
+  }
+  ;
 
-        public void startIndexing() {
-                isIndexing = true;
-        };
+  public void startIndexing() {
+    isIndexing = true;
+  }
+  ;
 
-        public void stopIndexing() {
-                isIndexing = false;
-        };
+  public void stopIndexing() {
+    isIndexing = false;
+  }
+  ;
 }

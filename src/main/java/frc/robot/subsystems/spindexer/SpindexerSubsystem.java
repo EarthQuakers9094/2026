@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class SpindexerSubsystem extends SubsystemBase {
   private final SpindexerIO spindexerIO;
-  private final SpindexerIOInputsAutoLogged autoLogged = new SpindexerIOInputsAutoLogged();
+  private final SpindexerIOInputsAutoLogged inputs = new SpindexerIOInputsAutoLogged();
 
   public SpindexerSubsystem(SpindexerIO spindexerIO) {
     this.spindexerIO = spindexerIO;
@@ -19,5 +19,9 @@ public class SpindexerSubsystem extends SubsystemBase {
 
   public void stop() {
     spindexerIO.run(RPM.of(0));
+  }
+
+  public void periodic() {
+    spindexerIO.updateInputs(inputs);
   }
 }

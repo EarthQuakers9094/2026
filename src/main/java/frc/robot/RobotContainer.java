@@ -28,6 +28,10 @@ import frc.robot.subsystems.drive.ModuleIOTalonFX;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.spindexer.SpindexerIO;
+import frc.robot.subsystems.spindexer.SpindexerIOReal;
+import frc.robot.subsystems.spindexer.SpindexerIOSim;
+import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -40,6 +44,7 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final SpindexerSubsystem spindexer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -80,6 +85,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = null;
+        spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
 
       case SIM:
@@ -97,6 +103,7 @@ public class RobotContainer {
                 new ShooterIOSim(drive::getPose, drive::getChassisSpeeds),
                 drive::getPose,
                 () -> true);
+        spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         break;
 
       default:
@@ -109,6 +116,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose, () -> true);
+        spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
     }
 

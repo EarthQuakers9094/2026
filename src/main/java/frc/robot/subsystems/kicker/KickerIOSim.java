@@ -82,7 +82,7 @@ public class KickerIOSim implements KickerIO {
 
     motorSIM.iterate(rpm.in(RPM), RoboRioSim.getVInVoltage(), 0.020);
 
-    inputs.angularVelocityCurrent = rpm;
+    inputs.angularVelocity = rpm;
     inputs.angularVelocitySetpoint = RPM.of(motor.getClosedLoopController().getSetpoint());
   }
 }

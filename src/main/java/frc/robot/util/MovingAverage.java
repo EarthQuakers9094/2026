@@ -20,4 +20,12 @@ public class MovingAverage {
 
     return currentSum / values.length;
   }
+
+  public double getStandardDeviation(double currentMean) {
+    double sum = 0;
+    for (int i = 0; i < values.length; i++) {
+      sum += Math.abs(currentMean - values[i]);
+    }
+    return sum / values.length;
+  }
 }

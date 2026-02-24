@@ -7,7 +7,10 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
@@ -124,6 +127,12 @@ public class Robot extends LoggedRobot {
     if (autonomousCommand != null) {
       autonomousCommand.cancel();
     }
+
+    Logger.recordOutput(
+        "Field length",
+        new Translation3d[] {
+          new Translation3d(), new Translation3d(Constants.Field.fieldLength, 0, 0)
+        });
   }
 
   /** This function is called periodically during operator control. */
@@ -152,9 +161,10 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
 
-    Pose3d[] notesPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
+    Pose3d[] fuelPoses = SimulatedArena.getInstance().getGamePiecesArrayByType("Fuel");
     // Publish to telemetry using AdvantageKit
-    Logger.recordOutput("FieldSimulation/NotesPositions", notesPoses);
+    Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }

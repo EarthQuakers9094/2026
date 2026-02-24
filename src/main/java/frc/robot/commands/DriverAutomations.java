@@ -17,6 +17,7 @@ import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
 
 public class DriverAutomations {
+
   public static Command targetHubOrFerry(
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPoseSupplier,
@@ -49,7 +50,7 @@ public class DriverAutomations {
     return new Translation3d(Inches.of(120.0), Meters.of(targetY), Meters.zero());
   }
 
-  //   @AutoLogOutput
+  // @AutoLogOutput
   public static boolean inAllianceZone(Pose2d pose, Alliance alliance) {
     double x = pose.getMeasureX().in(Meters);
     if (alliance.equals(Alliance.Red)) {

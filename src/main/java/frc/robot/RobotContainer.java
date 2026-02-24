@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
@@ -34,6 +35,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOReal;
 import frc.robot.subsystems.kicker.KickerIOSim;
@@ -60,6 +65,8 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake;
+
   private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
@@ -107,6 +114,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
+        intake = new IntakeSubsystem(new IntakeIOReal());
         vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         kicker = new KickerSubsystem(new KickerIOReal());
         break;
@@ -122,6 +130,8 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
 
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
+        intake = new IntakeSubsystem(new IntakeIOSim()); // fix
+
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -155,6 +165,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
+        intake = new IntakeSubsystem(new IntakeIO() {});
         vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         break;
@@ -221,12 +232,12 @@ public class RobotContainer {
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));
     // new ShooterTrackTarget(
-    //     shooter,
-    //     drive::getPose,
-    //     drive::getChassisSpeeds,
-    //     targeter,
-    //     Constants.Field.hubTarget,
-    //     true));
+    // shooter,
+    // drive::getPose,
+    // drive::getChassisSpeeds,
+    // targeter,
+    // Constants.Field.hubTarget,
+    // true));
 
     controller.button(8).whileTrue(new ShootFuel(shooter));
 
@@ -262,6 +273,8 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
     controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
   }

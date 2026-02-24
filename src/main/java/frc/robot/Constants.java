@@ -7,7 +7,9 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -15,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -113,10 +116,32 @@ public final class Constants {
     public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
 
+  public static class IntakeConstants {
+
+    public static int intakePivotMotor = 53; // made up value
+    public static int intakeSpinMotor = 54; // made up value
+    public static double intakeMOI = 0.0011705586; // made up value
+    public static double intakeGearing = 1.0; // made up value
+    public static Distance armLength = Meters.of(1); // made up value
+    public static Angle maxAngle = Degrees.of(60); // made up value //60 degrees
+
+    public static double pivotkP = 1000.0; // made up value
+    public static double pivotkD = 0.00; // made up value
+    public static double pivotkV = 0.00; // made up value
+
+    public static double spinkP = 0.1; // made up value
+    public static double spinkD = 0.01; // made up value
+    public static double spinkV = 0.06; // made up value
+    public static AngularVelocity intakeSpeed = RPM.of(1000.0);
+    public static Angle deployedAngle = Degrees.of(60);
+    public static Angle retractedAngle = Degrees.of(0);
+  }
+
   public static class KickerConstants {
     // TODO set actual CAN Id.
     public static final int motorId = 53;
-    // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
+    // TODO make a conversion factor, or ask a cadder, that works consistently with
+    // the internal RPM
     // angular velocity.
     public static final double flywheelGearing = 1.0d;
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;

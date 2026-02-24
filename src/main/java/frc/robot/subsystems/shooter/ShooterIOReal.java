@@ -96,5 +96,4 @@ public class ShooterIOReal implements ShooterIO {
   public void stopIndexing() {
     indexerMotor.setControl(new DutyCycleOut(0.0));
   }
-
 }

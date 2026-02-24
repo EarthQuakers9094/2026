@@ -156,4 +156,16 @@ public final class Constants {
     // SIM SPECIFIC, get cadder for MOI
     public static final double simFlywheelMOI = 0.0011705586;
   }
+
+  public static class SpindexerConstants {
+    public static final int spindexerMotorId = 59;
+    public static final double spindexerMOI = 0.0012; // TBD
+    public static final double spindexerGearing = 1;
+    public static final double spindexerConversionFactor = 1 / spindexerGearing;
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kV = 0.00174;
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(1000);
+  }
 }

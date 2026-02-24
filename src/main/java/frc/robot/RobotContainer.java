@@ -28,6 +28,7 @@ import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.SpindexerCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -49,6 +50,10 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.spindexer.SpindexerIO;
+import frc.robot.subsystems.spindexer.SpindexerIOReal;
+import frc.robot.subsystems.spindexer.SpindexerIOSim;
+import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
@@ -66,10 +71,10 @@ public class RobotContainer {
   private final Drive drive;
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
-
   private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
+  private final SpindexerSubsystem spindexer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -117,6 +122,7 @@ public class RobotContainer {
         intake = new IntakeSubsystem(new IntakeIOReal());
         vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         kicker = new KickerSubsystem(new KickerIOReal());
+        spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
 
       case SIM:
@@ -128,7 +134,6 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
 
@@ -153,6 +158,7 @@ public class RobotContainer {
                     new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
                     drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
+        spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         break;
 
       default:
@@ -168,6 +174,7 @@ public class RobotContainer {
         intake = new IntakeSubsystem(new IntakeIO() {});
         vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
+        spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
     }
 
@@ -277,6 +284,8 @@ public class RobotContainer {
     controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
     controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
+
+    controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
   }
 
   /**

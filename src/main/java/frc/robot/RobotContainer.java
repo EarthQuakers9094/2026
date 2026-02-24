@@ -8,16 +8,26 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.IntakeFuel;
+import frc.robot.commands.KickerTemporaryCommand;
+import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -25,13 +35,28 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOReal;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.intake.IntakeSubsystem;
+import frc.robot.subsystems.kicker.KickerIO;
+import frc.robot.subsystems.kicker.KickerIOReal;
+import frc.robot.subsystems.kicker.KickerIOSim;
+import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
+import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
+import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
+import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 /**
@@ -44,16 +69,24 @@ public class RobotContainer {
   // Subsystems
   private final Drive drive;
   private final ShooterSubsystem shooter;
+  private final IntakeSubsystem intake;
+  private final Vision vision;
+  private final Targeter targeter = new EeshwarkTargeter();
+  private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
+  private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
+  private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+
     switch (Constants.currentMode) {
       case REAL:
         // Real robot, instantiate hardware IO implementations
@@ -84,7 +117,10 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.FrontRight),
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
-        shooter = null;
+        shooter = new ShooterSubsystem(new ShooterIOReal());
+        intake = new IntakeSubsystem(new IntakeIOReal());
+        vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
 
@@ -97,12 +133,30 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
+        shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
+        intake = new IntakeSubsystem(new IntakeIOSim()); // fix
 
-        shooter =
-            new ShooterSubsystem(
-                new ShooterIOSim(drive::getPose, drive::getChassisSpeeds),
-                drive::getPose,
-                () -> true);
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "Front",
+                    new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Left",
+                    new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI / 2.)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Right",
+                    new Transform3d(
+                        0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Back",
+                    new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+                    drive::getPose));
+        kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         break;
 
@@ -115,10 +169,22 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose, () -> true);
+        shooter = new ShooterSubsystem(new ShooterIO() {});
+        intake = new IntakeSubsystem(new IntakeIO() {});
+        vision = new Vision(drive::addVisionMeasurement);
+        kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
     }
+
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter));
+    NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
+    NamedCommands.registerCommand(
+        "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
+    NamedCommands.registerCommand(
+        "reset_shot_count", new InstantCommand(() -> shooter.shotCount = 0));
+
+    NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -139,6 +205,9 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
+        .whileTrue(Commands.run(shooter::retractHood, shooter));
+
     // Configure the button bindings
     configureButtonBindings();
   }
@@ -154,14 +223,38 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -controller.getLeftY(),
-            () -> -controller.getLeftX(),
+            () ->
+                -1
+                    * (shooter.isActivelyShooting()
+                        ? yInputAverage.calculate(controller.getLeftY())
+                        : controller.getLeftY()),
+            () ->
+                -1
+                    * (shooter.isActivelyShooting()
+                        ? xInputAverage.calculate(controller.getLeftX())
+                        : controller.getLeftX()),
             () -> -controller.getRightX()));
+    shooter.setDefaultCommand(
+        DriverAutomations.targetHubOrFerry(
+            shooter, drive::getPose, drive::getChassisSpeeds, targeter));
+    // new ShooterTrackTarget(
+    // shooter,
+    // drive::getPose,
+    // drive::getChassisSpeeds,
+    // targeter,
+    // Constants.Field.hubTarget,
+    // true));
+
+    controller.button(8).whileTrue(new ShootFuel(shooter));
 
     controller
-        .button(8)
-        .onTrue(new InstantCommand(shooter::beginShooting))
-        .onFalse(new InstantCommand(shooter::endShooting));
+        .button(7)
+        .toggleOnTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -controller.getLeftY(),
+                () -> -controller.getLeftX(),
+                () -> new Rotation2d(Math.atan2(controller.getLeftX(), controller.getLeftY()))));
 
     // Lock to 0° when A button is held
     controller
@@ -186,6 +279,10 @@ public class RobotContainer {
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
                 .ignoringDisable(true));
+
+    controller.button(9).toggleOnTrue(new IntakeFuel(intake));
+
+    controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
   }
 
   /**

@@ -36,11 +36,11 @@
             clang
             wpilib.glass
             wpilib.sysid
+            elastic-dashboard
             # jdk17
             stdenv.cc.cc.lib
             advantagescope
             wpilib.allwpilibSources
-            wpilib.wpilib-utility
             (vscode-with-extensions.override {
               vscodeExtensions = with vscode-extensions; [
                 wpilib.vscode-wpilib

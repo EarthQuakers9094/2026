@@ -1,6 +1,7 @@
 package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -26,6 +27,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void pivotIntake(Angle angle) {
     io.pivotIntake(angle);
+    Logger.recordOutput("Intake/PivotSetpointRad", angle.in(Radians));
   }
 
   @Override

@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.RPM;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
@@ -27,10 +25,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.intake.PivotIntakeCommand;
-import frc.robot.commands.intake.RunIntakeCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -235,12 +232,12 @@ public class RobotContainer {
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));
     // new ShooterTrackTarget(
-    //     shooter,
-    //     drive::getPose,
-    //     drive::getChassisSpeeds,
-    //     targeter,
-    //     Constants.Field.hubTarget,
-    //     true));
+    // shooter,
+    // drive::getPose,
+    // drive::getChassisSpeeds,
+    // targeter,
+    // Constants.Field.hubTarget,
+    // true));
 
     controller.button(8).whileTrue(new ShootFuel(shooter));
 
@@ -277,22 +274,8 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller
-        .button(9)
-        .onTrue( // No clue what button 9 is
-            new PivotIntakeCommand(
-                intake, Constants.IntakeConstants.forwardPivotAmount)); // temporary constant
+    controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
-    controller
-        .button(10)
-        .onTrue( // See above comment
-            new PivotIntakeCommand(
-                intake, Constants.IntakeConstants.backwardPivotAmount)); // temporary constant
-
-    controller
-        .button(11)
-        .whileTrue( // See above comment
-            new RunIntakeCommand(intake, RPM.of(Constants.IntakeConstants.intakeSpeed)));
     controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
   }
 

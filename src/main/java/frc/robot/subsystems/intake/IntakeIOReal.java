@@ -4,16 +4,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOReal implements IntakeIO {
-
-  DCMotor spinGearbox = DCMotor.getKrakenX60(1); // make sure this is the right kraken
-  DCMotor pivotGearbox = DCMotor.getKrakenX60(1);
 
   private final TalonFX pivotMotor = new TalonFX(IntakeConstants.intakePivotMotor);
   private final TalonFX spinMotor = new TalonFX(IntakeConstants.intakeSpinMotor);
@@ -40,8 +36,6 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
-    spinMotor.getSupplyVoltage();
-    pivotMotor.getSupplyVoltage();
 
     boolean isIntaking;
     if (spinMotor.getSupplyVoltage().getValueAsDouble() == 0.0) {

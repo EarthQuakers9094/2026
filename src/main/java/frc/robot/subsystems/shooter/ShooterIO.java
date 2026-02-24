@@ -5,7 +5,6 @@ import static edu.wpi.first.units.Units.RPM;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {

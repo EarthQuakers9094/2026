@@ -12,6 +12,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
@@ -23,12 +25,18 @@ public class SpindexerIOReal implements SpindexerIO {
   /** Creates a new SpindexerIOReal. */
   public SpindexerIOReal() {
     spindexerMotor.configure(
-        spindexerMotorConfig.apply(
-            new ClosedLoopConfig()
-                .pid(
-                    Constants.SpindexerConstants.kP,
-                    Constants.SpindexerConstants.kI,
-                    Constants.SpindexerConstants.kD)),
+        spindexerMotorConfig
+            .apply(
+                new ClosedLoopConfig()
+                    .pid(
+                        Constants.SpindexerConstants.kP,
+                        Constants.SpindexerConstants.kI,
+                        Constants.SpindexerConstants.kD)
+                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kV)))
+            .apply(
+                new EncoderConfig()
+                    .velocityConversionFactor(
+                        Constants.SpindexerConstants.spindexerConversionFactor)),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
   }

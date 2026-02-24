@@ -9,6 +9,8 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
@@ -19,29 +21,34 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
 
 public class SpindexerIOSim implements SpindexerIO {
-  private DCMotor spindexerDcMotor = DCMotor.getNeoVortex(1);
+  private DCMotor dcMotor = DCMotor.getNeoVortex(1);
   private final SparkFlex spindexerMotor =
       new SparkFlex(Constants.SpindexerConstants.spindexerMotorId, MotorType.kBrushless);
-  private final SparkFlexSim spindexerMotorSim = new SparkFlexSim(spindexerMotor, spindexerDcMotor);
+  private final SparkFlexSim spindexerMotorSim = new SparkFlexSim(spindexerMotor, dcMotor);
   private final SparkFlexConfig spindexerMotorConfig = new SparkFlexConfig();
 
   private FlywheelSim flywheelSim =
       new FlywheelSim(
           LinearSystemId.createFlywheelSystem(
-              DCMotor.getNeoVortex(1),
+              dcMotor,
               Constants.SpindexerConstants.spindexerMOI,
               Constants.SpindexerConstants.spindexerGearing),
-          spindexerDcMotor,
-          1);
+          dcMotor);
 
   public SpindexerIOSim() {
     spindexerMotor.configure(
-        spindexerMotorConfig.apply(
-            new ClosedLoopConfig()
-                .pid(
-                    Constants.SpindexerConstants.kP,
-                    Constants.SpindexerConstants.kI,
-                    Constants.SpindexerConstants.kD)),
+        spindexerMotorConfig
+            .apply(
+                new ClosedLoopConfig()
+                    .pid(
+                        Constants.SpindexerConstants.kP,
+                        Constants.SpindexerConstants.kI,
+                        Constants.SpindexerConstants.kD)
+                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kV)))
+            .apply(
+                new EncoderConfig()
+                    .velocityConversionFactor(
+                        Constants.SpindexerConstants.spindexerConversionFactor)),
         ResetMode.kNoResetSafeParameters,
         PersistMode.kPersistParameters);
   }

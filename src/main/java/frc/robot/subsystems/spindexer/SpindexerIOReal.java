@@ -35,6 +35,8 @@ public class SpindexerIOReal implements SpindexerIO {
 
   public void updateInputs(SpindexerIOInputs inputs) {
     inputs.spindexerCurrentSpeed = RPM.of(spindexerMotor.getEncoder().getVelocity());
+    inputs.spinexerVelocitySetpoint =
+        RPM.of(spindexerMotor.getClosedLoopController().getSetpoint());
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {

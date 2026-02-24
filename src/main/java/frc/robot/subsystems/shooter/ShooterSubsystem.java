@@ -121,4 +121,16 @@ public class ShooterSubsystem extends SubsystemBase {
   public void retractHood() {
     io.retractHood();
   }
+
+  public void slowlyMoveTowardsLimit() {
+    io.slowlyMoveTowardsLimit();
+  }
+
+  public boolean isAtTurretLimit() {
+    return inputs.isAtTurretLimit;
+  }
+
+  public void zeroTurret() {
+    io.setMeasuredTurretYaw(Constants.ShooterConstants.turretZeroYaw);
+  }
 }

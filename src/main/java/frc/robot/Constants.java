@@ -9,12 +9,14 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -111,12 +113,20 @@ public final class Constants {
     public static final Rotation2d maxTurretYaw = new Rotation2d(Math.PI);
     public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
     public static final Rotation2d safeHoodAngle = new Rotation2d();
+    public static final double hoodStartPosition = 0.0;
+    public static final double turretKP = 0;
+    public static final double turretKI = 0;
+    public static final double turretKD = 0;
+    public static final int turretYawLimitPort = 0;
+    public static final double crawlSpeed = 0;
+    public static final Angle turretZeroYaw = Radians.of(0.0);
   }
 
   public static class KickerConstants {
     // TODO set actual CAN Id.
     public static final int motorId = 53;
-    // TODO make a conversion factor, or ask a cadder, that works consistently with the internal RPM
+    // TODO make a conversion factor, or ask a cadder, that works consistently with
+    // the internal RPM
     // angular velocity.
     public static final double flywheelGearing = 1.0d;
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;

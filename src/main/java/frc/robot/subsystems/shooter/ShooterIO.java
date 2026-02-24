@@ -3,9 +3,9 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
-
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ShooterIO {
@@ -13,6 +13,7 @@ public interface ShooterIO {
   public static class ShooterIOInputs {
     public AngularVelocity shooterSpeed = RPM.of(0.);
     public boolean isFuelInShooter = false;
+    public boolean isAtTurretLimit = false;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}
@@ -30,4 +31,8 @@ public interface ShooterIO {
   public default void retractHood() {
     this.setPitch(Constants.ShooterConstants.safeHoodAngle);
   }
+
+  public default void setMeasuredTurretYaw(Angle newYaw) {}
+
+  public default void slowlyMoveTowardsLimit() {}
 }

@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -27,6 +28,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ZeroTurret;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -188,6 +190,8 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    CommandScheduler.getInstance().schedule(new ZeroTurret(shooter));
+
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
         .whileTrue(Commands.run(shooter::retractHood, shooter));
 
@@ -221,12 +225,12 @@ public class RobotContainer {
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));
     // new ShooterTrackTarget(
-    //     shooter,
-    //     drive::getPose,
-    //     drive::getChassisSpeeds,
-    //     targeter,
-    //     Constants.Field.hubTarget,
-    //     true));
+    // shooter,
+    // drive::getPose,
+    // drive::getChassisSpeeds,
+    // targeter,
+    // Constants.Field.hubTarget,
+    // true));
 
     controller.button(8).whileTrue(new ShootFuel(shooter));
 

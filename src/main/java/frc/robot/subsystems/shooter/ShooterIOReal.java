@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -11,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -26,6 +28,8 @@ public class ShooterIOReal implements ShooterIO {
 
   private final DigitalInput shooterBeamBrake =
       new DigitalInput(Constants.ShooterConstants.shooterBeamBrakePort);
+  private final DigitalInput turretYawLimit =
+      new DigitalInput(Constants.ShooterConstants.turretYawLimitPort);
 
   private final TalonFX indexerMotor = new TalonFX(Constants.IndexerConstants.indexerMotorId);
 
@@ -46,13 +50,21 @@ public class ShooterIOReal implements ShooterIO {
                 .withKD(Constants.ShooterConstants.flywheelKD)
                 .withKV(Constants.ShooterConstants.flywheelKV));
 
-    hoodPivot
+    TalonFXConfigurator hoodConfigurator = hoodPivot.getConfigurator();
+    hoodConfigurator.apply(
+        new Slot0Configs()
+            .withKP(Constants.ShooterConstants.hoodKP)
+            .withKI(Constants.ShooterConstants.hoodKI)
+            .withKD(Constants.ShooterConstants.hoodKD));
+    hoodPivot.setPosition(Constants.ShooterConstants.hoodStartPosition);
+
+    turretPivot
         .getConfigurator()
         .apply(
             new Slot0Configs()
-                .withKP(Constants.ShooterConstants.hoodKP)
-                .withKI(Constants.ShooterConstants.hoodKI)
-                .withKD(Constants.ShooterConstants.hoodKD));
+                .withKP(Constants.ShooterConstants.turretKP)
+                .withKI(Constants.ShooterConstants.turretKI)
+                .withKD(Constants.ShooterConstants.turretKD));
 
     // TODO: Fill out on actual robot. See:
     // https://www.desmos.com/calculator/btzzpyy6r2
@@ -65,6 +77,7 @@ public class ShooterIOReal implements ShooterIO {
   public void updateInputs(ShooterIOInputs inputs) {
     inputs.shooterSpeed = flywheelLeadMotor.getRotorVelocity().getValue();
     inputs.isFuelInShooter = shooterBeamBrake.get();
+    inputs.isAtTurretLimit = turretYawLimit.get();
   }
 
   public void setPitch(Rotation2d pitch) {
@@ -97,4 +110,11 @@ public class ShooterIOReal implements ShooterIO {
     indexerMotor.setControl(new DutyCycleOut(0.0));
   }
 
+  public void setMeasuredTurretYaw(Angle newYaw) {
+    turretPivot.setPosition(newYaw);
+  }
+
+  public void slowlyMoveTowardsLimit() {
+    turretPivot.set(Constants.ShooterConstants.crawlSpeed);
+  }
 }

@@ -162,10 +162,10 @@ public final class Constants {
     public static final double spindexerMOI = 0.0012; // TBD
     public static final double spindexerGearing = 1;
     public static final double spindexerConversionFactor = 1 / spindexerGearing;
-    public static final double kP = 0.1;
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kV = 0.5;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(500);
+    public static final double kV = 0.00174;
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(1000);
   }
 }

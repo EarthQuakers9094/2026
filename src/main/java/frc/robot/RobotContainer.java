@@ -28,6 +28,7 @@ import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.SpindexerCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -47,12 +48,12 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
+import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
-import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
-import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
@@ -283,6 +284,8 @@ public class RobotContainer {
     controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
     controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
+
+    controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
   }
 
   /**

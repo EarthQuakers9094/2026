@@ -1,18 +1,22 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
 
@@ -34,19 +38,38 @@ public class IntakeIOReal implements IntakeIO {
     //             .withKV(Constants.IntakeConstants.pivotkV));
     pivotMotor.configure(
         new SparkFlexConfig()
+            .smartCurrentLimit(60)
             .apply(
                 new ClosedLoopConfig()
                     .pid(
                         Constants.IntakeConstants.pivotkP,
                         Constants.IntakeConstants.pivotkI,
                         Constants.IntakeConstants.pivotkD)
-                    .apply(new FeedForwardConfig().kV(Constants.IntakeConstants.pivotkV)))
-        /*  .apply(
-        new EncoderConfig()
-            .positionConversionFactor(Constants.IntakeConstants.intakeConversionFactor)),*/ ,
+                    .apply(
+                        new FeedForwardConfig()
+                            .kV(Constants.IntakeConstants.pivotkV)
+                            .kCos(Constants.IntakeConstants.pivotkCos)))
+            .apply(
+                new EncoderConfig()
+                    .positionConversionFactor(
+                        Constants.IntakeConstants.intakePivotConversionFactor)),
+        ResetMode.kResetSafeParameters,
+        PersistMode.kNoPersistParameters);
+    spinMotor.configure(
+        new SparkFlexConfig()
+            .inverted(true)
+            .smartCurrentLimit(60)
+            .apply(
+                new ClosedLoopConfig()
+                    .pid(Constants.IntakeConstants.spinkP, 0, Constants.IntakeConstants.spinkD)
+                    .apply(new FeedForwardConfig().kV(Constants.IntakeConstants.spinkV)))
+            .apply(
+                new EncoderConfig()
+                    .velocityConversionFactor(Constants.IntakeConstants.intakeConversionFactor)),
         ResetMode.kResetSafeParameters,
         PersistMode.kNoPersistParameters);
 
+    pivotMotor.getEncoder().setPosition(Constants.IntakeConstants.startAngle.in(Rotations));
     // find gear ratios
     // spinMotor
     //     .getConfigurator()
@@ -69,13 +92,19 @@ public class IntakeIOReal implements IntakeIO {
 
     // inputs.isIntaking = isIntaking;
     inputs.pivotAngle = Rotations.of(pivotMotor.getEncoder().getPosition());
+    inputs.pivotCurrent = pivotMotor.getOutputCurrent();
+    inputs.intakeSpeed = RPM.of(spinMotor.getEncoder().getVelocity());
+    Logger.recordOutput("Intake/PivotAngleDegrees", pivotMotor.getEncoder().getPosition() * 360);
+    Logger.recordOutput("Intake/PivotOutput", pivotMotor.getAppliedOutput());
   }
 
   public void runIntake(AngularVelocity rotations) {
     // spinMotor.setControl(new VelocityVoltage(rotations));
+    spinMotor.getClosedLoopController().setSetpoint(rotations.in(RPM), ControlType.kVelocity);
   }
 
   public void pivotIntake(Angle rotation) {
+    pivotMotor.getClosedLoopController().setSetpoint(rotation.in(Rotations), ControlType.kPosition);
     // pivotMotor.setControl(new PositionVoltage(rotation).withSlot(0));
   }
 }

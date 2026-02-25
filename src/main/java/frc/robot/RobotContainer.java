@@ -211,22 +211,23 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    controller
+    /*controller
         .b()
         .onTrue(
             Commands.parallel(
                 new InstantCommand(() -> shooter.beginShooting()),
-                new InstantCommand(kicker::startKicker),
-                new InstantCommand(spindexer::start)))
-        .onFalse(
+                new InstantCommand(kicker::startKicker)));
+                new InstantCommand(spindexer::start)));
+
+    controller
+        .y()
+        .onTrue(
             Commands.parallel(
                 new InstantCommand(() -> shooter.endShooting()),
-                new InstantCommand(kicker::stopKicker),
-                new InstantCommand(spindexer::stop)));
-    // controller
-    //     .y()
-    //     .onTrue(new InstantCommand(() -> kicker.startKicker()))
-    //     .onFalse(new InstantCommand(kicker::stopKicker));
+                new InstantCommand(kicker::stopKicker)));
+    // new InstantCommand(spindexer::stop)));*/
+    controller.y().onTrue(new InstantCommand(intake::startIntake));
+    controller.a().onTrue(new InstantCommand(intake::stopIntake));
   }
 
   /**

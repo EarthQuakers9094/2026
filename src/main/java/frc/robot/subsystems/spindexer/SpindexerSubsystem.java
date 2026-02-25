@@ -24,7 +24,7 @@ public class SpindexerSubsystem extends SubsystemBase {
   }
 
   public void start() {
-    this.run(Constants.IndexerConstants.spindexerSpeed);
+    this.run(Constants.SpindexerConstants.spindexerSetSpeed);
   }
 
   public void periodic() {

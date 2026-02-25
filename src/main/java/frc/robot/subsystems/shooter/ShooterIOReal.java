@@ -4,7 +4,6 @@ import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -31,8 +30,6 @@ public class ShooterIOReal implements ShooterIO {
 
   private final DigitalInput shooterBeamBrake =
       new DigitalInput(Constants.ShooterConstants.shooterBeamBrakePort);
-
-  private final TalonFX indexerMotor = new TalonFX(Constants.IndexerConstants.indexerMotorId);
 
   private final InterpolatingDoubleTreeMap flywheelVelocityToLinearVelocity =
       new InterpolatingDoubleTreeMap();
@@ -98,10 +95,10 @@ public class ShooterIOReal implements ShooterIO {
   }
 
   public void startIndexing() {
-    indexerMotor.setControl(new DutyCycleOut(1.0));
+    // indexerMotor.setControl(new DutyCycleOut(1.0));
   }
 
   public void stopIndexing() {
-    indexerMotor.setControl(new DutyCycleOut(0.0));
+    // indexerMotor.setControl(new DutyCycleOut(0.0));
   }
 }

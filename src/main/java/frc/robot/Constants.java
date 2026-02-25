@@ -81,11 +81,11 @@ public final class Constants {
     public static final Distance trenchHeight = Inches.of(49.48);
   }
 
-  public static class IndexerConstants {
-    // TODO: set on real robot
-    public static final int indexerMotorId = 50;
-    public static final AngularVelocity spindexerSpeed = RPM.of(1500.0);
-  }
+  // public static class IndexerConstants {
+  //   // TODO: set on real robot
+  //   public static final int indexerMotorId = 50;
+  //   public static final AngularVelocity spindexerSpeed = RPM.of(1500.0);
+  // }
 
   public static class ShooterConstants {
     public static final AngularVelocity launchSpeed = RPM.of(3500.0);
@@ -119,25 +119,32 @@ public final class Constants {
 
   public static class IntakeConstants {
 
-    public static final double intakeConversionFactor = 0;
+    // 4.5
+
     public static int intakePivotMotor = 52; // made up value
     public static int intakeSpinMotor = 51; // made up value
     public static double intakeMOI = 0.0011705586; // made up value
-    public static double intakeGearing = 1.0; // made up value
+    public static double intakePivotGearing = 26.84933149230769;
+    public static final double intakePivotConversionFactor = 1 / intakePivotGearing;
+    public static final double intakeGearing = 4.5;
+    public static final double intakeConversionFactor = 1 / intakeGearing;
+
     public static Distance armLength = Meters.of(1); // made up value
     public static Angle maxAngle = Degrees.of(60); // made up value //60 degrees
 
-    public static double pivotkP = 1000.0; // made up value
+    public static double pivotkP = 1.0; // made up value
     public static final double pivotkI = 0;
+    public static final double pivotkCos = 0.4;
     public static double pivotkD = 0.00; // made up value
     public static double pivotkV = 0.00; // made up value
 
-    public static double spinkP = 0.2; // made up value
-    public static double spinkD = 0.01; // made up value
-    public static double spinkV = 0.06; // made up value
+    public static double spinkP = 0.0; // made up value
+    public static double spinkD = 0.00; // made up value
+    public static double spinkV = 0.4; // made up value
     public static AngularVelocity intakeSpeed = RPM.of(1000.0);
-    public static Angle deployedAngle = Degrees.of(60);
-    public static Angle retractedAngle = Degrees.of(0);
+    public static Angle deployedAngle = Degrees.of(0);
+    public static Angle retractedAngle = Degrees.of(130);
+    public static Angle startAngle = Degrees.of(131.76767); // Degrees.of(60.212);
   }
 
   public static class KickerConstants {
@@ -146,14 +153,14 @@ public final class Constants {
     // TODO make a conversion factor, or ask a cadder, that works consistently with
     // the internal RPM
     // angular velocity.
-    public static final double flywheelGearing = 1.0d;
+    public static final double flywheelGearing = 2.0d;
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;
-    public static final AngularVelocity velocitySetpoint = RPM.of(2000d);
+    public static final AngularVelocity velocitySetpoint = RPM.of(3500d);
 
-    public static final double kP = 0.1d;
+    public static final double kP = 0.3d;
     public static final double kI = 0.0d;
     public static final double kD = 0.0d;
-    public static final double kS = 0.0d;
+    public static final double kS = 0.1d;
     public static final double kV = 0.1224d;
 
     // SIM SPECIFIC, get c45678900adder for MOI
@@ -163,12 +170,12 @@ public final class Constants {
   public static class SpindexerConstants {
     public static final int spindexerMotorId = 50;
     public static final double spindexerMOI = 0.0012; // TBD
-    public static final double spindexerGearing = 1;
+    public static final double spindexerGearing = 5d;
     public static final double spindexerConversionFactor = 1 / spindexerGearing;
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(1000);
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(1500);
   }
 }

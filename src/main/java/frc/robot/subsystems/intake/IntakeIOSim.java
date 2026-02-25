@@ -40,9 +40,9 @@ public class IntakeIOSim implements IntakeIO {
           LinearSystemId.createSingleJointedArmSystem(
               pivotGearbox,
               Constants.IntakeConstants.intakeMOI,
-              Constants.IntakeConstants.intakeGearing),
+              Constants.IntakeConstants.intakePivotGearing),
           pivotGearbox,
-          Constants.IntakeConstants.intakeGearing,
+          Constants.IntakeConstants.intakePivotGearing,
           Constants.IntakeConstants.armLength.in(Meters),
           0,
           Constants.IntakeConstants.maxAngle.in(Radians),

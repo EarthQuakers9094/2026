@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
+import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -30,6 +31,8 @@ import java.nio.file.Path;
  * (log replay from a file).
  */
 public final class Constants {
+  public static final CANBus shooterCANBus = new CANBus("Shooter");
+
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
 
@@ -163,8 +166,10 @@ public final class Constants {
     public static final double kS = 0.1d;
     public static final double kV = 0.1224d;
 
-    // SIM SPECIFIC, get c45678900adder for MOI
+    // SIM SPECIFIC, get cadder for MOI
     public static final double simFlywheelMOI = 0.0011705586;
+    public static final AngularVelocity simSetpoint = RPM.of(1550);
+    public static final double kVSim = 0.25;
   }
 
   public static class SpindexerConstants {

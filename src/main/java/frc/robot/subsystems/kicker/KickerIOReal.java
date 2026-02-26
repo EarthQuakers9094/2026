@@ -1,19 +1,20 @@
 package frc.robot.subsystems.kicker;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
-import org.littletonrobotics.junction.Logger;
 
 public class KickerIOReal implements KickerIO {
   private final TalonFX motor;
+  private AngularVelocity velocitySetpoint = RPM.of(0.0d);
 
   public KickerIOReal() {
-    motor = new TalonFX(Constants.KickerConstants.motorId, "Shooter");
+    motor = new TalonFX(Constants.KickerConstants.motorId, Constants.shooterCANBus);
     motor
         .getConfigurator()
         .apply(
@@ -22,6 +23,24 @@ public class KickerIOReal implements KickerIO {
                 .withKI(Constants.KickerConstants.kI)
                 .withKD(Constants.KickerConstants.kD)
                 .withKV(Constants.KickerConstants.kV));
+  }
+
+  public void startKicker() {
+    motor.setControl(new VelocityVoltage(Constants.KickerConstants.velocitySetpoint));
+    velocitySetpoint = Constants.KickerConstants.velocitySetpoint;
+  }
+
+  public void stopKicker() {
+    motor.setControl(new VelocityVoltage(0));
+    velocitySetpoint = RPM.of(0.0d);
+  }
+
+  public void updateInputs(KickerIOInputs inputs) {
+    inputs.angularVelocity = RotationsPerSecond.of(motor.getVelocity().getValueAsDouble());
+    inputs.angularVelocitySetpoint = velocitySetpoint;
+  }
+}
+
     // motor = new SparkFlex(Constants.KickerConstants.motorId, MotorType.kBrushless);
     // motor.configure(
     //     new SparkFlexConfig()
@@ -41,26 +60,3 @@ public class KickerIOReal implements KickerIO {
     //                         .kV(Constants.KickerConstants.kV))),
     //     ResetMode.kResetSafeParameters,
     //     PersistMode.kPersistParameters);
-  }
-
-  public void startKicker() {
-    motor.setControl(new VelocityVoltage(Constants.KickerConstants.velocitySetpoint));
-    Logger.recordOutput(
-        "Kicker/SetpointRadPerSec",
-        Constants.KickerConstants.velocitySetpoint.in(RadiansPerSecond));
-    // motor
-    //     .getClosedLoopController()
-    //     .setSetpoint(Constants.KickerConstants.velocitySetpoint.in(RPM), ControlType.kVelocity);
-  }
-
-  public void stopKicker() {
-    motor.setControl(new VelocityVoltage(0));
-    Logger.recordOutput("Kicker/SetpointRadPerSec", 0);
-  }
-
-  public void updateInputs(KickerIOInputs inputs) {
-    inputs.angularVelocity = RotationsPerSecond.of(motor.getVelocity().getValueAsDouble());
-
-    // inputs.angularVelocitySetpoint = RPM.of(Constants.KickerConstants.velocitySetpoint);
-  }
-}

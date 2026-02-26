@@ -12,8 +12,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -24,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.IntakeFuel;
+import frc.robot.commands.KickerShooterSpindexerCommand;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.SpindexerCommand;
@@ -211,31 +210,33 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    /*controller
-        .b()
-        .onTrue(
-            Commands.parallel(
-                new InstantCommand(() -> shooter.beginShooting()),
-                new InstantCommand(kicker::startKicker)));
-                new InstantCommand(spindexer::start)));
-
+    controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
     controller
         .y()
         .onTrue(
             Commands.parallel(
+                new InstantCommand(() -> shooter.endShooting(), shooter),
+                new InstantCommand(() -> kicker.stopKicker(), kicker),
+                new InstantCommand(() -> spindexer.stop(), spindexer)));
+
+    // TODO make this conditional command work by making a boolean condition so that when
+    // controller.a is triggered it will decide between running and stopping...
+    /*controller.a().onTrue
+    (
+        new ConditionalCommand
+        (
+            new KickerShooterSpindexerCommand(kicker, shooter, spindexer),
+            Commands.parallel
+            (
                 new InstantCommand(() -> shooter.endShooting()),
-                new InstantCommand(kicker::stopKicker)));
-    // new InstantCommand(spindexer::stop)));*/
-    controller.y().onTrue(new InstantCommand(intake::startIntake));
-    controller.a().onTrue(new InstantCommand(intake::stopIntake));
+                new InstantCommand(() -> kicker.stopKicker()),
+                new InstantCommand(() -> spindexer.stop())
+            ),
+            () -> (true)
+        )
+    );*/
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void _configureButtonBindings() {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(

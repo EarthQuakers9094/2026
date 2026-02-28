@@ -12,10 +12,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -55,8 +51,6 @@ import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -71,7 +65,7 @@ public class RobotContainer {
   private final Drive drive;
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
-  private final Vision vision;
+  private final Vision vision = null;
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
@@ -120,7 +114,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
         intake = new IntakeSubsystem(new IntakeIOReal());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        // vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
@@ -137,26 +131,27 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Left",
-                    new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Right",
-                    new Transform3d(
-                        0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Back",
-                    new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
-                    drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Left",
+        //             new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
+        // 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Right",
+        //             new Transform3d(
+        //                 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Back",
+        //             new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+        //             drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         break;
@@ -172,7 +167,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
         intake = new IntakeSubsystem(new IntakeIO() {});
-        vision = new Vision(drive::addVisionMeasurement);
+        // vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
@@ -213,13 +208,40 @@ public class RobotContainer {
     configureButtonBindings();
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
   private void configureButtonBindings() {
+    // controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
+    /*controller
+    .y()
+    .onTrue(
+        Commands.parallel(
+            new InstantCommand(() -> shooter.endShooting(), shooter),
+            new InstantCommand(() -> kicker.stopKicker(), kicker),
+            new InstantCommand(() -> spindexer.stop(), spindexer)));*/
+
+    controller.a().onTrue(new InstantCommand(() -> intake.startIntake()));
+    controller.b().onTrue(new InstantCommand(() -> intake.stopIntake()));
+    controller.x().onTrue(new InstantCommand(() -> intake.retractIntake()));
+    controller.y().onTrue(new InstantCommand(() -> intake.deployIntake()));
+
+    // TODO make this conditional command work by making a boolean condition so that when
+    // controller.a is triggered it will decide between running and stopping...
+    /*controller.a().onTrue
+    (
+        new ConditionalCommand
+        (
+            new KickerShooterSpindexerCommand(kicker, shooter, spindexer),
+            Commands.parallel
+            (
+                new InstantCommand(() -> shooter.endShooting()),
+                new InstantCommand(() -> kicker.stopKicker()),
+                new InstantCommand(() -> spindexer.stop())
+            ),
+            () -> (true)
+        )
+    );*/
+  }
+
+  private void _configureButtonBindings() {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(

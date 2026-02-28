@@ -16,7 +16,7 @@ public class RunIntakeCommand extends Command {
 
   @Override
   public void initialize() {
-    intake.runIntake(speed);
+    intake.startIntake();
   }
 
   @Override

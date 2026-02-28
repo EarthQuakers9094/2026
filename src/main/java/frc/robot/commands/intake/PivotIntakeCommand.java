@@ -16,7 +16,7 @@ public class PivotIntakeCommand extends Command {
 
   @Override
   public void initialize() {
-    intake.pivotIntake(rotation);
+    // intake.pivotIntake(rotation);
   }
 
   @Override
@@ -24,4 +24,9 @@ public class PivotIntakeCommand extends Command {
 
   @Override
   public void end(boolean wasInterrupted) {}
+
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
 }

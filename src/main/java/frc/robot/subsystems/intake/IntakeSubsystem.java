@@ -3,7 +3,6 @@ package frc.robot.subsystems.intake;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -25,25 +24,23 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeState state = IntakeState.Retracted;
   public IntakeState targetState = IntakeState.Retracted;
   private Angle pivotSetpoint = Constants.IntakeConstants.startAngle;
-  private AngularVelocity intakeSetpoint = RPM.of(0);
+  private AngularVelocity speedSetpoint = RPM.of(0);
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
   }
 
-  public void runIntake(AngularVelocity speed) {
-    this.intakeSetpoint = speed;
-    io.runIntake(speed);
-  }
-
   public void startIntake() {
-    this.runIntake(Constants.IntakeConstants.intakeSpeed);
+    io.runIntake(Constants.IntakeConstants.intakeSpeed);
+    this.speedSetpoint = Constants.IntakeConstants.intakeSpeed;
   }
 
   public void stopIntake() {
     io.runIntake(RPM.of(0));
+    this.speedSetpoint = RPM.of(0);
   }
 
+  @Deprecated
   private void pivotIntake(Angle angle) {
     io.pivotIntake(angle);
     this.state = IntakeState.Moving;
@@ -52,13 +49,15 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deployIntake() {
+    io.pivotIntake(Constants.IntakeConstants.deployedAngle);
+    pivotSetpoint = Constants.IntakeConstants.deployedAngle;
     this.targetState = IntakeState.Deployed;
-    this.pivotIntake(Constants.IntakeConstants.deployedAngle);
   }
 
   public void retractIntake() {
+    io.pivotIntake(Constants.IntakeConstants.retractedAngle);
+    pivotSetpoint = Constants.IntakeConstants.retractedAngle;
     this.targetState = IntakeState.Retracted;
-    this.pivotIntake(Constants.IntakeConstants.retractedAngle);
   }
 
   @Override
@@ -66,14 +65,17 @@ public class IntakeSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
 
     Logger.recordOutput("Intake/State", state);
-    Logger.recordOutput("Intake/SpinSpeedRadPerSec", intakeSetpoint.in(RadiansPerSecond));
+    Logger.recordOutput("Intake/SpinSpeed", speedSetpoint);
 
-    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.pivotAngle.in(Degrees)) < 4.) {
+    inputs.intakeSpinnerAngularVelocitySetpoint = speedSetpoint;
+    inputs.intakePivotAngleSetpoint = pivotSetpoint;
+
+    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.intakePivotAngle.in(Degrees)) < 4.) {
       this.state = this.targetState;
     } else {
       this.state = IntakeState.Moving;
     }
 
-    Logger.processInputs("Intake", inputs);
+    Logger.processInputs(getName(), inputs);
   }
 }

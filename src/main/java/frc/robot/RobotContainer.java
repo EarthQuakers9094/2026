@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.IntakeFuel;
-import frc.robot.commands.KickerShooterSpindexerCommand;
 import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.SpindexerCommand;
@@ -210,14 +209,19 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
-    controller
-        .y()
-        .onTrue(
-            Commands.parallel(
-                new InstantCommand(() -> shooter.endShooting(), shooter),
-                new InstantCommand(() -> kicker.stopKicker(), kicker),
-                new InstantCommand(() -> spindexer.stop(), spindexer)));
+    // controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
+    /*controller
+    .y()
+    .onTrue(
+        Commands.parallel(
+            new InstantCommand(() -> shooter.endShooting(), shooter),
+            new InstantCommand(() -> kicker.stopKicker(), kicker),
+            new InstantCommand(() -> spindexer.stop(), spindexer)));*/
+
+    controller.a().onTrue(new InstantCommand(() -> intake.startIntake()));
+    controller.b().onTrue(new InstantCommand(() -> intake.stopIntake()));
+    controller.x().onTrue(new InstantCommand(() -> intake.retractIntake()));
+    controller.y().onTrue(new InstantCommand(() -> intake.deployIntake()));
 
     // TODO make this conditional command work by making a boolean condition so that when
     // controller.a is triggered it will decide between running and stopping...

@@ -61,6 +61,7 @@ public class KickerIOSim implements KickerIO {
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSIM.getCurrentDrawAmps()));
 
+    motorSIM.setSupplyVoltage(RoboRioSim.getVInVoltage());
     double motorVoltage = motorSIM.getMotorVoltage();
 
     flywheelSIM.setInputVoltage(motorVoltage);

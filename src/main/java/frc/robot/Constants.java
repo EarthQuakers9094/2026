@@ -121,33 +121,38 @@ public final class Constants {
   }
 
   public static class IntakeConstants {
+    public static final int intakePivotMotor = 52;
+    public static final int intakeSpinMotor = 51;
 
-    // 4.5
+    public static final double pivotMOI = 0.0011705586; // made up value
+    public static final double spinMOI = 0.0011705586;
 
-    public static int intakePivotMotor = 52; // made up value
-    public static int intakeSpinMotor = 51; // made up value
-    public static double intakeMOI = 0.0011705586; // made up value
-    public static double intakePivotGearing = 26.84933149230769;
+    public static final double intakePivotGearing = 26.84933149230769;
     public static final double intakePivotConversionFactor = 1 / intakePivotGearing;
-    public static final double intakeGearing = 4.5;
-    public static final double intakeConversionFactor = 1 / intakeGearing;
 
-    public static Distance armLength = Meters.of(1); // made up value
-    public static Angle maxAngle = Degrees.of(60); // made up value //60 degrees
+    public static final double intakeSpinGearing = 4.5;
+    public static final double intakeSpinConversionFactor = 1 / intakeSpinGearing;
 
-    public static double pivotkP = 1.0; // made up value
+    public static final Distance armLength = Meters.of(1); // made up value
+
+    public static final double pivotkP = 1.0; // made up value
     public static final double pivotkI = 0;
+    public static final double pivotkD = 0.00; // made up value
+    public static final double pivotkV = 0.00; // made up value
     public static final double pivotkCos = 0.4;
-    public static double pivotkD = 0.00; // made up value
-    public static double pivotkV = 0.00; // made up value
 
-    public static double spinkP = 0.0; // made up value
-    public static double spinkD = 0.00; // made up value
-    public static double spinkV = 0.4; // made up value
-    public static AngularVelocity intakeSpeed = RPM.of(1000.0);
-    public static Angle deployedAngle = Degrees.of(0);
-    public static Angle retractedAngle = Degrees.of(130);
-    public static Angle startAngle = Degrees.of(131.76767); // Degrees.of(60.212);
+    public static final double spinkP = 0.0; // made up value
+    public static final double spinkI = 0.0; // made up value
+    public static final double spinkD = 0.0; // made up value
+    public static final double spinkV = 0.4; // made up value
+
+    public static final AngularVelocity intakeSpeed = RPM.of(1000.0);
+    public static final Angle deployedAngle = Degrees.of(0);
+    public static final Angle retractedAngle = Degrees.of(130);
+    public static final Angle startAngle = Degrees.of(131.76767); // Degrees.of(60.212);
+
+    public static final Angle maxAngle = Degrees.of(131.76767);
+    public static final Angle minAngle = Degrees.of(0);
   }
 
   public static class KickerConstants {

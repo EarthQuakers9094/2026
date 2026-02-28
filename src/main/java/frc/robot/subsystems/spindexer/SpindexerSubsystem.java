@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
 
 public class SpindexerSubsystem extends SubsystemBase {
@@ -20,6 +21,10 @@ public class SpindexerSubsystem extends SubsystemBase {
 
   public void stop() {
     spindexerIO.run(RPM.of(0));
+  }
+
+  public void start() {
+    this.run(Constants.SpindexerConstants.spindexerSetSpeed);
   }
 
   public void periodic() {

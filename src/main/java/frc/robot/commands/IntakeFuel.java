@@ -16,13 +16,15 @@ public class IntakeFuel extends Command {
 
   @Override
   public void initialize() {
-    intake.pivotIntake(Constants.IntakeConstants.deployedAngle);
+    intake.deployIntake();
+    ;
     intake.runIntake(Constants.IntakeConstants.intakeSpeed);
   }
 
   @Override
   public void end(boolean _interrupted) {
-    intake.pivotIntake(Constants.IntakeConstants.retractedAngle);
+    intake.retractIntake();
+    ;
     intake.stopIntake();
   }
 }

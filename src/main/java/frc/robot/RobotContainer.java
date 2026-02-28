@@ -12,23 +12,18 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
-import frc.robot.commands.IntakeFuel;
-import frc.robot.commands.KickerTemporaryCommand;
+import frc.robot.commands.KickerShooterSpindexerCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.SpindexerCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -55,8 +50,6 @@ import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -71,13 +64,15 @@ public class RobotContainer {
   private final Drive drive;
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
-  private final Vision vision;
+  private final Vision vision = null;
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandJoystick leftStick = new CommandJoystick(1);
+  private final CommandJoystick rightStick = new CommandJoystick(2);
 
   private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
   private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
@@ -120,7 +115,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
         intake = new IntakeSubsystem(new IntakeIOReal());
-        vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        // vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
         kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
@@ -137,26 +132,27 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
 
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Left",
-                    new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Right",
-                    new Transform3d(
-                        0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Back",
-                    new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
-                    drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Left",
+        //             new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
+        // 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Right",
+        //             new Transform3d(
+        //                 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Back",
+        //             new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+        //             drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         break;
@@ -172,7 +168,7 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
         intake = new IntakeSubsystem(new IntakeIO() {});
-        vision = new Vision(drive::addVisionMeasurement);
+        // vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
@@ -210,15 +206,41 @@ public class RobotContainer {
         .whileTrue(Commands.run(shooter::retractHood, shooter));
 
     // Configure the button bindings
-    configureButtonBindings();
+    if (!Constants.debugMode) {
+      configureButtonBindings();
+    } else {
+      configureTestingBindings();
+    }
   }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be created by
-   * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-   * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-   */
+  private void configureTestingBindings() {
+    controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
+    controller
+        .y()
+        .onTrue(
+            Commands.parallel(
+                new InstantCommand(() -> shooter.endShooting(), shooter),
+                new InstantCommand(() -> kicker.stopKicker(), kicker),
+                new InstantCommand(() -> spindexer.stop(), spindexer)));
+
+    // TODO make this conditional command work by making a boolean condition so that when
+    // controller.a is triggered it will decide between running and stopping...
+    /*controller.a().onTrue
+    (
+        new ConditionalCommand
+        (
+            new KickerShooterSpindexerCommand(kicker, shooter, spindexer),
+            Commands.parallel
+            (
+                new InstantCommand(() -> shooter.endShooting()),
+                new InstantCommand(() -> kicker.stopKicker()),
+                new InstantCommand(() -> spindexer.stop())
+            ),
+            () -> (true)
+        )
+    );*/
+  }
+
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
@@ -227,14 +249,14 @@ public class RobotContainer {
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? yInputAverage.calculate(controller.getLeftY())
-                        : controller.getLeftY()),
+                        ? yInputAverage.calculate(-leftStick.getY())
+                        : -leftStick.getY()),
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? xInputAverage.calculate(controller.getLeftX())
-                        : controller.getLeftX()),
-            () -> -controller.getRightX()));
+                        ? xInputAverage.calculate(-leftStick.getX())
+                        : -leftStick.getX()),
+            () -> -rightStick.getX()));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));
@@ -248,14 +270,14 @@ public class RobotContainer {
 
     controller.button(8).whileTrue(new ShootFuel(shooter));
 
-    controller
-        .button(7)
+    leftStick
+        .button(4)
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d(Math.atan2(controller.getLeftX(), controller.getLeftY()))));
+                () -> -rightStick.getY(),
+                () -> -rightStick.getX(),
+                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
     // Lock to 0° when A button is held
     controller
@@ -281,11 +303,17 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.button(9).toggleOnTrue(new IntakeFuel(intake));
+    // controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
-    controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
+    // controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
 
-    controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
+    // controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
+
+    rightStick.button(3).onTrue(new InstantCommand(intake::retractIntake, intake));
+    rightStick.trigger().onTrue(new InstantCommand(intake::deployIntake, intake));
+
+    leftStick.trigger().onTrue(new InstantCommand(intake::startIntake, intake));
+    leftStick.button(3).onFalse(new InstantCommand(intake::stopIntake, intake));
   }
 
   /**

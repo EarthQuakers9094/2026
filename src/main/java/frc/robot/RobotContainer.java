@@ -16,16 +16,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
-import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.KickerShooterSpindexerCommand;
-import frc.robot.commands.KickerTemporaryCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.SpindexerCommand;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -73,6 +71,8 @@ public class RobotContainer {
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+  private final CommandJoystick leftStick = new CommandJoystick(1);
+  private final CommandJoystick rightStick = new CommandJoystick(2);
 
   private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
   private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
@@ -206,10 +206,14 @@ public class RobotContainer {
         .whileTrue(Commands.run(shooter::retractHood, shooter));
 
     // Configure the button bindings
-    configureButtonBindings();
+    if (!Constants.debugMode) {
+      configureButtonBindings();
+    } else {
+      configureTestingBindings();
+    }
   }
 
-  private void configureButtonBindings() {
+  private void configureTestingBindings() {
     controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
     controller
         .y()
@@ -237,7 +241,7 @@ public class RobotContainer {
     );*/
   }
 
-  private void _configureButtonBindings() {
+  private void configureButtonBindings() {
     // Default command, normal field-relative drive
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
@@ -245,14 +249,14 @@ public class RobotContainer {
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? yInputAverage.calculate(controller.getLeftY())
-                        : controller.getLeftY()),
+                        ? yInputAverage.calculate(-leftStick.getY())
+                        : -leftStick.getY()),
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? xInputAverage.calculate(controller.getLeftX())
-                        : controller.getLeftX()),
-            () -> -controller.getRightX()));
+                        ? xInputAverage.calculate(-leftStick.getX())
+                        : -leftStick.getX()),
+            () -> -rightStick.getX()));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));
@@ -266,14 +270,14 @@ public class RobotContainer {
 
     controller.button(8).whileTrue(new ShootFuel(shooter));
 
-    controller
-        .button(7)
+    leftStick
+        .button(4)
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> new Rotation2d(Math.atan2(controller.getLeftX(), controller.getLeftY()))));
+                () -> -rightStick.getY(),
+                () -> -rightStick.getX(),
+                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
     // Lock to 0° when A button is held
     controller
@@ -299,11 +303,17 @@ public class RobotContainer {
                     drive)
                 .ignoringDisable(true));
 
-    controller.button(9).toggleOnTrue(new IntakeFuel(intake));
+    // controller.button(9).toggleOnTrue(new IntakeFuel(intake));
 
-    controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
+    // controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
 
-    controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
+    // controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
+
+    rightStick.button(3).onTrue(new InstantCommand(intake::retractIntake, intake));
+    rightStick.trigger().onTrue(new InstantCommand(intake::deployIntake, intake));
+
+    leftStick.trigger().onTrue(new InstantCommand(intake::startIntake, intake));
+    leftStick.button(3).onFalse(new InstantCommand(intake::stopIntake, intake));
   }
 
   /**

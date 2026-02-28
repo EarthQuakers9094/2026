@@ -35,6 +35,7 @@ public final class Constants {
 
   public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+  public static final boolean debugMode = false;
 
   public static enum Mode {
     /** Running on a real robot. */
@@ -144,7 +145,7 @@ public final class Constants {
     public static double spinkP = 0.0; // made up value
     public static double spinkD = 0.00; // made up value
     public static double spinkV = 0.4; // made up value
-    public static AngularVelocity intakeSpeed = RPM.of(1000.0);
+    public static AngularVelocity intakeSpeed = RPM.of(2000.0);
     public static Angle deployedAngle = Degrees.of(0);
     public static Angle retractedAngle = Degrees.of(130);
     public static Angle startAngle = Degrees.of(131.76767); // Degrees.of(60.212);

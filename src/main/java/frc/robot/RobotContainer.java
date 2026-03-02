@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
-import frc.robot.commands.KickerShooterSpindexerCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -174,7 +173,7 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter));
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, true));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
@@ -214,14 +213,14 @@ public class RobotContainer {
   }
 
   private void configureTestingBindings() {
-    controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
-    controller
-        .y()
-        .onTrue(
-            Commands.parallel(
-                new InstantCommand(() -> shooter.endShooting(), shooter),
-                new InstantCommand(() -> kicker.stopKicker(), kicker),
-                new InstantCommand(() -> spindexer.stop(), spindexer)));
+    // controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
+    // controller
+    //     .y()
+    //     .onTrue(
+    //         Commands.parallel(
+    //             new InstantCommand(() -> shooter.endShooting(), shooter),
+    //             new InstantCommand(() -> kicker.stopKicker(), kicker),
+    //             new InstantCommand(() -> spindexer.stop(), spindexer)));
 
     // TODO make this conditional command work by making a boolean condition so that when
     // controller.a is triggered it will decide between running and stopping...
@@ -268,7 +267,7 @@ public class RobotContainer {
     // Constants.Field.hubTarget,
     // true));
 
-    controller.button(8).whileTrue(new ShootFuel(shooter));
+    leftStick.button(8).whileTrue(new ShootFuel(shooter, kicker));
 
     leftStick
         .button(4)

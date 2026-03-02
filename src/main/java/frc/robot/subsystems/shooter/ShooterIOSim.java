@@ -7,10 +7,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.sim.ChassisReference;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState.MotorType;
@@ -44,10 +42,10 @@ public class ShooterIOSim implements ShooterIO {
   private DCMotor flywheelMotor = DCMotor.getKrakenX60(1);
 
   private final TalonFX flywheelLeadMotor = new TalonFX(Constants.ShooterConstants.motor1Id);
-  private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
+  // private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
 
   private final TalonFXSimState leadMotorSimState;
-  private final TalonFXSimState followerMotorSimState;
+  // private final TalonFXSimState followerMotorSimState;
 
   private FlywheelSim flywheelSim =
       new FlywheelSim(
@@ -71,20 +69,21 @@ public class ShooterIOSim implements ShooterIO {
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
 
-    flywheelFollowerMotor.setControl(
-        new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+    // flywheelFollowerMotor.setControl(
+    //     new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
     flywheelLeadMotor
         .getConfigurator()
-        .apply(new Slot0Configs().withKP(0.02).withKI(0.0).withKD(0.0).withKV(0.06));
+        .apply(new Slot0Configs().withKP(0.0).withKI(0.0).withKD(0.0).withKV(0.12));
 
     this.leadMotorSimState = flywheelLeadMotor.getSimState();
-    this.followerMotorSimState = flywheelFollowerMotor.getSimState();
+    // this.followerMotorSimState = flywheelFollowerMotor.getSimState();
 
     leadMotorSimState.Orientation = ChassisReference.CounterClockwise_Positive;
-    followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
+    // followerMotorSimState.Orientation = ChassisReference.Clockwise_Positive;
 
     leadMotorSimState.setMotorType(MotorType.KrakenX60);
+    // followerMotorSimState.setMotorType(MotorType.KrakenX60);
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
@@ -95,19 +94,19 @@ public class ShooterIOSim implements ShooterIO {
             .plus(new Transform2d(new Translation2d(1.0, yaw), new Rotation2d())));
 
     leadMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
-    followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
+    // followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
 
     Voltage leadVoltage = leadMotorSimState.getMotorVoltageMeasure();
-    Voltage followerVoltage = followerMotorSimState.getMotorVoltageMeasure();
+    // Voltage followerVoltage = followerMotorSimState.getMotorVoltageMeasure();
 
     Logger.recordOutput("ShooterSubsystem/LeadVoltage", leadVoltage);
 
-    flywheelSim.setInput(leadVoltage.in(Volts) + followerVoltage.in(Volts));
+    flywheelSim.setInput(leadVoltage.in(Volts));
 
     flywheelSim.update(0.02);
 
     leadMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
-    followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
+    // followerMotorSimState.setRotorVelocity(flywheelSim.getAngularVelocity());
 
     // leadMotorSimState.addRotorPosition(
     // flywheelSim.getAngularVelocity().in(RotationsPerSecond) * 0.02);
@@ -198,13 +197,5 @@ public class ShooterIOSim implements ShooterIO {
 
   public void stopShooter() {
     flywheelLeadMotor.setControl(new VelocityVoltage(0.0).withSlot(0));
-  }
-
-  public void startIndexing() {
-    isIndexing = true;
-  }
-
-  public void stopIndexing() {
-    isIndexing = false;
   }
 }

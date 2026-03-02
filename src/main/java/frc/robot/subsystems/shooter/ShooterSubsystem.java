@@ -29,6 +29,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
+  private boolean shouldShootWhenReady = false;
 
   public ShooterSubsystem(ShooterIO io) {
     Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 0);
@@ -41,19 +42,44 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", speed.in(RadiansPerSecond));
   }
 
-  public void beginShooting() {
+  // public void startShooter() {
+  //   if (shooterState == ShooterState.Inactive) {
+  //     Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
+
+  //     shooterState = ShooterState.Revving;
+  //     setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
+  //   }
+  // }
+
+  // public void stopShooting() {
+  //   switch (shooterState) {
+  //     case Shooting:
+  //       shooterState = ShooterState.Revving;
+  //     default:
+  //       break;
+
+  //   }
+  // }
+
+  // public void endShooter() {
+  //   Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
+  //   shooterState = ShooterState.Inactive;
+  //   setSpeedSetpoint(RPM.of(0.));
+  // }
+
+  public void revShooter() {
     if (shooterState == ShooterState.Inactive) {
       Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
-
       shooterState = ShooterState.Revving;
-      setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
     }
   }
 
-  public void endShooting() {
-    Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
+  public void stopShooter() {
     shooterState = ShooterState.Inactive;
-    setSpeedSetpoint(RPM.of(0.));
+  }
+
+  public void setReadyToShoot(boolean readyToShoot) {
+    this.shouldShootWhenReady = readyToShoot;
   }
 
   public boolean isActivelyShooting() {
@@ -64,30 +90,28 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
 
     io.updateInputs(inputs);
-    currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.baseUnitMagnitude());
-    Logger.recordOutput("Shooter/AverageSpeed", currentAverageSpeed);
+    currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.in(RadiansPerSecond));
+    Logger.recordOutput("Shooter/AverageSpeedRadPerSec", currentAverageSpeed);
+    Logger.recordOutput("Shooter/State", shooterState);
 
     switch (shooterState) {
       case Inactive:
-        io.stopIndexing();
+        setSpeedSetpoint(RPM.of(0.0));
         break;
       case Revving:
-        if (isSpunUp()) {
+        setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
+        if (isSpunUp() && shouldShootWhenReady) {
           this.shooterState = ShooterState.Shooting;
-          io.startIndexing();
-        } else {
-          io.stopIndexing();
         }
         break;
       case Shooting:
-        if (!isSpunUp()) {
+        if (!isSpunUp() || !shouldShootWhenReady) {
           this.shooterState = ShooterState.Revving;
         }
         break;
       default:
         break;
     }
-
     if (inputs.isFuelInShooter && !wasFuelInShooter) {
       shotCount += 1;
     }
@@ -100,9 +124,19 @@ public class ShooterSubsystem extends SubsystemBase {
     return inputs.shooterSpeed;
   }
 
+  @AutoLogOutput
   public boolean isSpunUp() {
-    return currentAverageSpeed >= Constants.ShooterConstants.minLaunchSpeed.baseUnitMagnitude()
-        && speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
+    return isAboveMinLaunchSpeed() && isSpeedStable();
+  }
+
+  @AutoLogOutput
+  public boolean isSpeedStable() {
+    return speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
+  }
+
+  @AutoLogOutput
+  private boolean isAboveMinLaunchSpeed() {
+    return currentAverageSpeed >= Constants.ShooterConstants.minLaunchSpeed.in(RadiansPerSecond);
   }
 
   public void setPitch(Rotation2d pitch) {

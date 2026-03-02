@@ -4,10 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
@@ -21,11 +18,11 @@ public class KickerShooterSpindexerCommand extends SequentialCommandGroup {
       KickerSubsystem kicker, ShooterSubsystem shooter, SpindexerSubsystem spindexer) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        new ParallelCommandGroup(
-            new InstantCommand(() -> kicker.startKicker(), kicker),
-            new InstantCommand(() -> shooter.beginShooting(), shooter)),
-        new WaitUntilCommand(() -> ((kicker.kickerAtSpeed() && shooter.isSpunUp()))),
-        new InstantCommand(() -> spindexer.start(), spindexer));
+    // addCommands(
+    //     new ParallelCommandGroup(
+    //         new InstantCommand(() -> kicker.startKicker(), kicker),
+    //         new InstantCommand(() -> shooter.beginShooting(), shooter)),
+    //     new WaitUntilCommand(() -> ((kicker.kickerAtSpeed() && shooter.isSpunUp()))),
+    //     new InstantCommand(() -> spindexer.start(), spindexer));
   }
 }

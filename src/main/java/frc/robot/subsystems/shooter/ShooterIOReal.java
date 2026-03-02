@@ -20,13 +20,14 @@ import frc.robot.Constants;
 public class ShooterIOReal implements ShooterIO {
 
   private final TalonFX flywheelLeadMotor =
-      new TalonFX(Constants.ShooterConstants.motor1Id, "Shooter");
+      new TalonFX(Constants.ShooterConstants.motor1Id, Constants.shooterCANBus);
   private final TalonFX flywheelFollowerMotor =
-      new TalonFX(Constants.ShooterConstants.motor2Id, "Shooter");
+      new TalonFX(Constants.ShooterConstants.motor2Id, Constants.shooterCANBus);
 
   private final TalonFX turretPivot =
-      new TalonFX(Constants.ShooterConstants.turretMotorId, "Shooter");
-  private final TalonFX hoodPivot = new TalonFX(Constants.ShooterConstants.hoodMotorId, "Shooter");
+      new TalonFX(Constants.ShooterConstants.turretMotorId, Constants.shooterCANBus);
+  private final TalonFX hoodPivot =
+      new TalonFX(Constants.ShooterConstants.hoodMotorId, Constants.shooterCANBus);
 
   private final DigitalInput shooterBeamBrake =
       new DigitalInput(Constants.ShooterConstants.shooterBeamBrakePort);
@@ -92,13 +93,5 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setVelocitySetpoint(AngularVelocity speed) {
     flywheelLeadMotor.setControl(new VelocityVoltage(speed));
-  }
-
-  public void startIndexing() {
-    // indexerMotor.setControl(new DutyCycleOut(1.0));
-  }
-
-  public void stopIndexing() {
-    // indexerMotor.setControl(new DutyCycleOut(0.0));
   }
 }

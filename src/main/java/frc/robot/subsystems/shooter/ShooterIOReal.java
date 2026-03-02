@@ -2,12 +2,13 @@ package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.Radians;
 
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -18,16 +19,18 @@ import frc.robot.Constants;
 
 public class ShooterIOReal implements ShooterIO {
 
-  private final TalonFX flywheelLeadMotor = new TalonFX(Constants.ShooterConstants.motor1Id);
-  private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
+  private final TalonFX flywheelLeadMotor =
+      new TalonFX(Constants.ShooterConstants.motor1Id, Constants.shooterCANBus);
+  private final TalonFX flywheelFollowerMotor =
+      new TalonFX(Constants.ShooterConstants.motor2Id, Constants.shooterCANBus);
 
-  private final TalonFX turretPivot = new TalonFX(Constants.ShooterConstants.turretMotorId);
-  private final TalonFX hoodPivot = new TalonFX(Constants.ShooterConstants.hoodMotorId);
+  private final TalonFX turretPivot =
+      new TalonFX(Constants.ShooterConstants.turretMotorId, Constants.shooterCANBus);
+  private final TalonFX hoodPivot =
+      new TalonFX(Constants.ShooterConstants.hoodMotorId, Constants.shooterCANBus);
 
   private final DigitalInput shooterBeamBrake =
       new DigitalInput(Constants.ShooterConstants.shooterBeamBrakePort);
-
-  private final TalonFX indexerMotor = new TalonFX(Constants.IndexerConstants.indexerMotorId);
 
   private final InterpolatingDoubleTreeMap flywheelVelocityToLinearVelocity =
       new InterpolatingDoubleTreeMap();
@@ -35,6 +38,9 @@ public class ShooterIOReal implements ShooterIO {
       new InterpolatingDoubleTreeMap();
 
   public ShooterIOReal() {
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
     flywheelFollowerMotor.setControl(
         new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
     flywheelLeadMotor
@@ -87,13 +93,5 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setVelocitySetpoint(AngularVelocity speed) {
     flywheelLeadMotor.setControl(new VelocityVoltage(speed));
-  }
-
-  public void startIndexing() {
-    indexerMotor.setControl(new DutyCycleOut(1.0));
-  }
-
-  public void stopIndexing() {
-    indexerMotor.setControl(new DutyCycleOut(0.0));
   }
 }

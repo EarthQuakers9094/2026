@@ -26,6 +26,7 @@ public class SpindexerIOReal implements SpindexerIO {
   public SpindexerIOReal() {
     spindexerMotor.configure(
         spindexerMotorConfig
+            .inverted(true)
             .apply(
                 new ClosedLoopConfig()
                     .pid(

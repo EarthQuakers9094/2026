@@ -116,8 +116,8 @@ public final class Constants {
     public static final double hoodKP = 0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
-    public static final Rotation2d maxTurretYaw = new Rotation2d(Math.PI);
-    public static final Rotation2d minTurretYaw = new Rotation2d(-Math.PI);
+    public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(90);
+    public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);
     public static final Rotation2d safeHoodAngle = new Rotation2d();
   }
 

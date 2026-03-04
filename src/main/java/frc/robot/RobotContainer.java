@@ -7,11 +7,15 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -49,6 +53,7 @@ import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -63,7 +68,7 @@ public class RobotContainer {
   private final Drive drive;
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
-  private final Vision vision = null;
+  private final Vision vision;
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
@@ -114,7 +119,27 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal());
         intake = new IntakeSubsystem(new IntakeIOReal());
-        // vision = new Vision(drive::addVisionMeasurement, new VisionIOPhotonVision("Left", null));
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVision(
+                    "Front",
+                    new Transform3d(
+                        Inches.of(12.465),
+                        Inches.of(4.915),
+                        Inches.of(12.03),
+                        new Rotation3d(0, -Math.PI / 6., 0.0))),
+                new VisionIOPhotonVision(
+                    "Front",
+                    new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0))),
+                new VisionIOPhotonVision(
+                    "Left",
+                    new Transform3d(
+                        0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.))),
+                new VisionIOPhotonVision(
+                    "Right",
+                    new Transform3d(
+                        0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.))));
         kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
         break;
@@ -130,6 +155,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
+        vision = null;
 
         // vision =
         //     new Vision(
@@ -167,7 +193,8 @@ public class RobotContainer {
                 new ModuleIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
         intake = new IntakeSubsystem(new IntakeIO() {});
-        // vision = new Vision(drive::addVisionMeasurement);
+        // vision = null;
+        vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         break;
@@ -248,13 +275,13 @@ public class RobotContainer {
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? yInputAverage.calculate(-leftStick.getY())
-                        : -leftStick.getY()),
+                        ? yInputAverage.calculate(leftStick.getY())
+                        : leftStick.getY()),
             () ->
                 -1
                     * (shooter.isActivelyShooting()
-                        ? xInputAverage.calculate(-leftStick.getX())
-                        : -leftStick.getX()),
+                        ? xInputAverage.calculate(leftStick.getX())
+                        : leftStick.getX()),
             () -> -rightStick.getX()));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(

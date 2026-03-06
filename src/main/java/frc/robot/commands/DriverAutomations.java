@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.util.FieldUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 public class DriverAutomations {
 
@@ -35,7 +35,7 @@ public class DriverAutomations {
 
   private static Translation3d selectTarget(Pose2d pose, Optional<Alliance> maybeAlliance) {
     Alliance alliance = maybeAlliance.orElse(Alliance.Blue);
-    if (inAllianceZone(pose, alliance)) {
+    if (FieldUtil.inAllianceZone(pose, alliance)) {
       return Constants.Field.hubTarget;
     }
 
@@ -51,15 +51,5 @@ public class DriverAutomations {
   }
 
   // @AutoLogOutput
-  public static boolean inAllianceZone(Pose2d pose, Alliance alliance) {
-    double x = pose.getMeasureX().in(Meters);
-    if (alliance.equals(Alliance.Red)) {
-      x = Constants.Field.fieldLength - x;
-    }
 
-    // Logger.recordOutput("Pose", null);
-
-    Logger.recordOutput("IsInAllianceZone", x < Constants.Field.allianceZoneWidth.in(Meters));
-    return x < Constants.Field.allianceZoneWidth.in(Meters);
-  }
 }

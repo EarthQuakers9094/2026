@@ -1,6 +1,5 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -11,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
@@ -37,6 +37,7 @@ public class ShooterTrackTarget extends Command {
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
       Targeter targeter,
       Translation3d target) {
+
     this(shooterSubsystem, robotPositionSupplier, chassisSpeedsSupplier, targeter, target, false);
   }
 
@@ -70,6 +71,8 @@ public class ShooterTrackTarget extends Command {
     this.targetSupplier = targetSupplier;
     this.shouldFlipTarget = shouldFlipTarget;
 
+    SmartDashboard.putNumber("HoodAngle", 0.0);
+
     addRequirements(shooterSubsystem);
   }
 
@@ -96,31 +99,39 @@ public class ShooterTrackTarget extends Command {
 
     Logger.recordOutput("Target", flippedTarget);
 
+    double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
+    if (shooterSpeed <= Constants.ShooterConstants.minLaunchSpeed.in(RadiansPerSecond)) {
+      shooterSpeed = Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond);
+    }
+
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter.getShooterTargeting(
             new TargetingData(
                 flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
                 flippedTarget.getMeasureZ(),
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
-                MetersPerSecond.of(
-                    shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)
-                        * Constants.ShooterConstants.flywheelDiameter.in(Meters))));
+                MetersPerSecond.of(ShooterSubsystem.shooterSpeedToVelocity(shooterSpeed))));
     if (maybeTargetingResult.isPresent()) {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
-
+      Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
+      // shooterSubsystem.setTargetAngularVelocity(RPM.of(targetVelocity));
+      // shooterSubsystem.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0.0));
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
-      if (targetingResult.pitchRadians() >= Math.PI / 2.) {
-        DriverStation.reportError(
-            "Targeting pitch result ("
-                + targetingResult.pitchRadians()
-                + ") is outside of physically possible range.",
-            true);
-        // TODO: Not sure what to do in this case... we're asking just too much of our
-        // shooter
-      } else {
-        shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
-      }
+      shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      // if (targetingResult.pitchRadians() >= Math.PI / 2.) {
+      //   DriverStation.reportError(
+      //       "Targeting pitch result ("
+      //           + targetingResult.pitchRadians()
+      //           + ") is outside of physically possible range.",
+      //       true);
+      //   // TODO: Not sure what to do in this case... we're asking just too much of our
+      //   // shooter
+      // } else {
+      //   // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      // }
+    } else {
+      DriverStation.reportError("AAAAAAAAAAAHA", false);
     }
   }
 

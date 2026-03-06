@@ -23,4 +23,6 @@ public interface IntakeIO {
   public default void runIntake(AngularVelocity speed) {}
 
   public default void pivotIntake(Angle angle) {}
+
+  public default void setIntakePosition(Angle position) {}
 }

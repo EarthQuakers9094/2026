@@ -107,4 +107,8 @@ public class IntakeIOReal implements IntakeIO {
     pivotMotor.getClosedLoopController().setSetpoint(rotation.in(Rotations), ControlType.kPosition);
     // pivotMotor.setControl(new PositionVoltage(rotation).withSlot(0));
   }
+
+  public void setIntakePosition(Angle position) {
+    pivotMotor.getEncoder().setPosition(position.in(Rotations));
+  }
 }

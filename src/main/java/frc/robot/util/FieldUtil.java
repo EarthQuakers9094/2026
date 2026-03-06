@@ -72,4 +72,16 @@ public class FieldUtil {
     }
     return new Pose2d(translation, normalizeRotation2d(pose.getRotation(), alliance));
   }
+
+  public static boolean inAllianceZone(Pose2d pose, Alliance alliance) {
+    double x = pose.getMeasureX().in(Meters);
+    if (alliance.equals(Alliance.Red)) {
+      x = Constants.Field.fieldLength - x;
+    }
+
+    // Logger.recordOutput("Pose", null);
+
+    Logger.recordOutput("IsInAllianceZone", x < Constants.Field.allianceZoneWidth.in(Meters));
+    return x < Constants.Field.allianceZoneWidth.in(Meters);
+  }
 }

@@ -61,6 +61,10 @@ public class IntakeSubsystem extends SubsystemBase {
     this.pivotIntake(Constants.IntakeConstants.retractedAngle);
   }
 
+  public void setIntakePosition(Angle position) {
+    io.setIntakePosition(position);
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);

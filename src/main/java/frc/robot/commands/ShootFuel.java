@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -8,19 +9,26 @@ public class ShootFuel extends Command {
   private final ShooterSubsystem shooter;
   private final KickerSubsystem kicker;
   private final boolean startShooting;
+  private final IntakeSubsystem intake;
 
-  public ShootFuel(ShooterSubsystem shooter, KickerSubsystem kicker, boolean startShooting) {
+  public ShootFuel(
+      ShooterSubsystem shooter,
+      KickerSubsystem kicker,
+      IntakeSubsystem intake,
+      boolean startShooting) {
     this.shooter = shooter;
     this.kicker = kicker;
     this.startShooting = startShooting;
-    this.addRequirements(shooter, kicker);
+    this.intake = intake;
+    this.addRequirements(kicker, shooter);
   }
 
-  public ShootFuel(ShooterSubsystem shooter, KickerSubsystem kicker) {
+  public ShootFuel(ShooterSubsystem shooter, KickerSubsystem kicker, IntakeSubsystem intake) {
     this.shooter = shooter;
     this.kicker = kicker;
     this.startShooting = true;
-    this.addRequirements(shooter, kicker);
+    this.intake = intake;
+    this.addRequirements(kicker, shooter);
   }
 
   @Override
@@ -28,6 +36,7 @@ public class ShootFuel extends Command {
     System.out.println("Starting shooter");
     this.shooter.revShooter();
     this.kicker.startKicker();
+    this.intake.startIntake();
     this.shooter.setReadyToShoot(startShooting);
   }
 
@@ -38,6 +47,8 @@ public class ShootFuel extends Command {
   public void end(boolean wasInterrupted) {
     this.shooter.setReadyToShoot(false);
     this.shooter.stopShooter();
+    this.intake.stopIntake();
+
     this.kicker.stopKicker();
   }
 }

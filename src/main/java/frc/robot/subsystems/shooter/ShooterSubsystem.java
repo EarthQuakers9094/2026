@@ -19,6 +19,9 @@ public class ShooterSubsystem extends SubsystemBase {
   private final MovingAverage speedAverage = new MovingAverage(40);
   private double currentAverageSpeed;
 
+  // private AngularVelocity targetSpeed = Constants.ShooterConstants.launchSpeed;
+  // private double speedSetpointRPM = 0.0;
+
   private boolean wasFuelInShooter = false;
   @AutoLogOutput public int shotCount = 0;
 
@@ -39,8 +42,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private void setSpeedSetpoint(AngularVelocity speed) {
     io.setVelocitySetpoint(speed);
+    // speedSetpointRPM = speed.in(RPM);
     Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", speed.in(RadiansPerSecond));
   }
+
+  // public void setTargetAngularVelocity(AngularVelocity speed) {
+  //   this.targetSpeed = speed;
+  // }
+
+  // public AngularVelocity getTargetAngularVelocity() {
+  //   return this.targetSpeed;
+  // }
 
   // public void startShooter() {
   //   if (shooterState == ShooterState.Inactive) {
@@ -93,6 +105,9 @@ public class ShooterSubsystem extends SubsystemBase {
     currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.in(RadiansPerSecond));
     Logger.recordOutput("Shooter/AverageSpeedRadPerSec", currentAverageSpeed);
     Logger.recordOutput("Shooter/State", shooterState);
+    Logger.recordOutput(
+        "Shooter/LaunchAngleDegrees",
+        hoodAngleToLaunchAngle(inputs.hoodPosition) * (180 / Math.PI));
 
     switch (shooterState) {
       case Inactive:
@@ -136,11 +151,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= Constants.ShooterConstants.minLaunchSpeed.in(RadiansPerSecond);
+    return currentAverageSpeed >= (Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond));
   }
 
   public void setPitch(Rotation2d pitch) {
-    io.setPitch(pitch);
+
+    double pitchRadians =
+        Math.max(
+            Math.min(pitch.getRadians(), Constants.ShooterConstants.maxLaunchAngle.getRadians()),
+            Constants.ShooterConstants.minLaunchAngle.getRadians());
+    Logger.recordOutput("Shooter/ClampedLaunchAngle", pitchRadians);
+
+    io.setHoodAngle(launchAngleToHoodAngle(pitchRadians));
+  }
+
+  public void setHoodAngle(double hoodAngle) {
+    io.setHoodAngle(hoodAngle);
   }
 
   public void setYaw(Rotation2d yaw) {
@@ -154,5 +180,22 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void retractHood() {
     io.retractHood();
+  }
+
+  private static double launchAngleToHoodAngle(double launchAngleRad) {
+    return 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
+  }
+
+  private static double hoodAngleToLaunchAngle(double hoodAngle) {
+    return 9.59432 * Math.pow(hoodAngle, 2) + 27.24729 * hoodAngle - 19.96681;
+    // return 0.940536 * Math.sin(5.98518 * hoodAngle + 1.78146) + 1.46627;
+  }
+
+  public static double shooterSpeedToVelocity(double shooterSpeedRadPerSec) {
+    return 0.0209048 * shooterSpeedRadPerSec + 0.742784;
+  }
+
+  public static AngularVelocity velocityToShooterSpeed(double velocityMPS) {
+    return RadiansPerSecond.of(-47.8359 * (0.742784 - velocityMPS));
   }
 }

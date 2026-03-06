@@ -24,8 +24,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.DeployIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -200,7 +202,7 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, true));
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
@@ -228,8 +230,16 @@ public class RobotContainer {
     autoChooser.addOption(
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
+    new Trigger(shooter::isActivelyShooting)
+        .onTrue(new InstantCommand(spindexer::start))
+        .onFalse(new InstantCommand(spindexer::stop));
+
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
         .whileTrue(Commands.run(shooter::retractHood, shooter));
+
+    // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
+    // DriverStation.getAlliance().orElse(Alliance.Blue)))
+    //         .whileTrue(new RevvShooter(shooter, kicker));
 
     // Configure the button bindings
     if (!Constants.debugMode) {
@@ -240,6 +250,36 @@ public class RobotContainer {
   }
 
   private void configureTestingBindings() {
+    leftStick
+        .povUp()
+        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(90))));
+    leftStick
+        .povDown()
+        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(0))));
+    leftStick
+        .povRight()
+        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees((80 + 55) / 2))));
+    // leftStick.povUp().onTrue(new InstantCommand(() ->
+    // shooter.setYaw(Rotation2d.fromDegrees(0))));
+    // leftStick
+    //     .povLeft()
+    //     .onTrue(new InstantCommand(() -> shooter.setYaw(Rotation2d.fromDegrees(45))));
+    // leftStick
+    //     .povRight()
+    //     .onTrue(new InstantCommand(() -> shooter.setYaw(Rotation2d.fromDegrees(-45))));
+    // // leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker));
+    // SmartDashboard.putNumber("HoodAngle", 0);
+    // leftStick
+    //     .trigger()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               shooter.setPitch(new Rotation2d(SmartDashboard.getNumber("HoodAngle", 90)));
+    //             }));
+
+    rightStick.trigger().toggleOnTrue(new DeployIntake(intake));
+
+    // leftStick.povUp().onTrue(new Inst)
     // controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
     // controller
     //     .y()
@@ -272,16 +312,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () ->
-                -1
-                    * (shooter.isActivelyShooting()
-                        ? yInputAverage.calculate(leftStick.getY())
-                        : leftStick.getY()),
-            () ->
-                -1
-                    * (shooter.isActivelyShooting()
-                        ? xInputAverage.calculate(leftStick.getX())
-                        : leftStick.getX()),
+            () -> -1 * (false ? yInputAverage.calculate(leftStick.getY()) : leftStick.getY()),
+            () -> -1 * (false ? xInputAverage.calculate(leftStick.getX()) : leftStick.getX()),
             () -> -rightStick.getX()));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
@@ -293,17 +325,6 @@ public class RobotContainer {
     // targeter,
     // Constants.Field.hubTarget,
     // true));
-
-    leftStick.button(8).whileTrue(new ShootFuel(shooter, kicker));
-
-    leftStick
-        .button(4)
-        .toggleOnTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -rightStick.getY(),
-                () -> -rightStick.getX(),
-                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
     // Lock to 0° when A button is held
     controller
@@ -335,11 +356,30 @@ public class RobotContainer {
 
     // controller.x().toggleOnTrue(new SpindexerCommand(spindexer));
 
-    rightStick.button(3).onTrue(new InstantCommand(intake::retractIntake, intake));
-    rightStick.trigger().onTrue(new InstantCommand(intake::deployIntake, intake));
+    /*
+     * left trigger intrake fuel -- hold
+     * right trigger deploy intake -- hold
+     * right tirigger left face button deploy intake -- toggle TODO
+     * left trigger right face button toggle drive mode
+     */
 
-    leftStick.trigger().onTrue(new InstantCommand(intake::startIntake, intake));
-    leftStick.button(3).onFalse(new InstantCommand(intake::stopIntake, intake));
+    rightStick.trigger().whileFalse(new DeployIntake(intake));
+    leftStick.trigger().whileTrue(new IntakeFuel(intake));
+    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    leftStick
+        .button(4)
+        .toggleOnTrue(
+            DriveCommands.joystickDriveAtAngle(
+                drive,
+                () -> -rightStick.getY(),
+                () -> -rightStick.getX(),
+                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
+
+    leftStick
+        .button(3)
+        .onTrue(
+            new InstantCommand(
+                () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
   }
 
   /**

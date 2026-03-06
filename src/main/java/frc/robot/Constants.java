@@ -18,6 +18,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
@@ -60,7 +62,7 @@ public final class Constants {
         new Translation3d(Inches.of(181.56), Inches.of(158.84), Inches.of(72));
 
     public static final Translation3d hubTarget =
-        hub.plus(new Translation3d(Inches.of(5), Inches.of(0), Inches.of(0)));
+        hub.plus(new Translation3d(Inches.of(0), Inches.of(0), Inches.of(0)));
 
     public static final AprilTagFieldLayout aprilTagLayout = getFieldLayout();
 
@@ -93,7 +95,9 @@ public final class Constants {
 
   public static class ShooterConstants {
     public static final AngularVelocity launchSpeed = RPM.of(3500.0);
-    public static final AngularVelocity minLaunchSpeed = RPM.of(3200.0);
+    public static final AngularVelocity minLaunchSpeed = RPM.of(3000.0);
+    public static final AngularVelocity nearSpeed = RPM.of(2500.0);
+    public static final AngularVelocity farSpeed = RPM.of(4500.0);
     public static final double flywheelMOI = 0.0011705586; // 28122.783131854398;
     public static final double flywheelGearing = 1;
     public static final int motor1Id = 56;
@@ -104,21 +108,37 @@ public final class Constants {
     // TODO: set on real robot
     public static final Transform3d positionOnRobot =
         new Transform3d(
-            new Translation3d(Inches.of(0.0), Inches.of(5.0), Inches.of(0.0)), new Rotation3d());
+            new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
+            new Rotation3d());
     public static final double robotPositionAnticipationSeconds = 0.0;
-    public static final double flywheelKP = 0.4;
+    public static final double flywheelKP = 0.00;
     public static final double flywheelKI = 0.0;
-    public static final double flywheelKD = 0.0;
+    public static final double flywheelKD = 0.00;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
-    public static final int turretMotorId = -1;
+    public static final int turretMotorId = 54;
     public static final int hoodMotorId = 53;
-    public static final double hoodKP = 0;
+    public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
     public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(90);
     public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);
-    public static final Rotation2d safeHoodAngle = new Rotation2d();
+    // public static final Rotation2d safeHoodAngle = new Rotation2d();
+    public static final double hoodKS = 0.3;
+    public static final Rotation2d maxLaunchAngle = Rotation2d.fromDegrees(77);
+    public static final Rotation2d minLaunchAngle = Rotation2d.fromDegrees(55);
+
+    public static final double safeHoodAngle = 0.0;
+    public static final double turretConversionFactor = 45;
+    public static final double hoodConversionFactor = 1 / (3 * 250 / 22);
+
+    public static final double turretKP = 128.0;
+    public static final double turretKI = 0;
+    public static final double turretKD = 1.0;
+    public static final Constraints turretConstraints =
+        new TrapezoidProfile.Constraints(16.0, 16.0);
+
+    public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(4.0, 4.0);
   }
 
   public static class IntakeConstants {
@@ -161,10 +181,10 @@ public final class Constants {
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;
     public static final AngularVelocity velocitySetpoint = RPM.of(3500d);
 
-    public static final double kP = 0.3d;
+    public static final double kP = 0; // 0.2d;
     public static final double kI = 0.0d;
     public static final double kD = 0.0d;
-    public static final double kS = 0.1d;
+    public static final double kS = 0; // 0.1d;
     public static final double kV = 0.1224d;
 
     // SIM SPECIFIC, get cadder for MOI
@@ -182,6 +202,6 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(1500);
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(2000);
   }
 }

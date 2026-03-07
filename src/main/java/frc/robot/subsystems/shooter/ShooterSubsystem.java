@@ -151,7 +151,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond));
+    return currentAverageSpeed >= (Constants.ShooterConstants.minLaunchSpeed.in(RadiansPerSecond));
   }
 
   public void setPitch(Rotation2d pitch) {
@@ -183,7 +183,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private static double launchAngleToHoodAngle(double launchAngleRad) {
-    return 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
+    return -4.84013 * launchAngleRad
+        + 7.57876; // 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
   }
 
   private static double hoodAngleToLaunchAngle(double hoodAngle) {

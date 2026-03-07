@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DeployIntake;
+import frc.robot.commands.DispenseFuel;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.IntakeFuel;
@@ -202,6 +203,11 @@ public class RobotContainer {
         break;
     }
 
+    NamedCommands.registerCommand("deploy_intake", new InstantCommand(() -> intake.deployIntake()));
+    NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
+    NamedCommands.registerCommand("stop_intake", new InstantCommand(() -> intake.stopIntake()));
+    NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood, shooter));
+
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
@@ -366,6 +372,8 @@ public class RobotContainer {
     rightStick.trigger().whileFalse(new DeployIntake(intake));
     leftStick.trigger().whileTrue(new IntakeFuel(intake));
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    rightStick.button(2).whileTrue(new DispenseFuel(intake));
+
     leftStick
         .button(4)
         .toggleOnTrue(

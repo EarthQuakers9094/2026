@@ -136,9 +136,9 @@ public final class Constants {
     public static final double turretKI = 0;
     public static final double turretKD = 1.0;
     public static final Constraints turretConstraints =
-        new TrapezoidProfile.Constraints(16.0, 16.0);
+        new TrapezoidProfile.Constraints(52.0, 52.0);
 
-    public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(4.0, 4.0);
+    public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(24.0, 24.0);
   }
 
   public static class IntakeConstants {

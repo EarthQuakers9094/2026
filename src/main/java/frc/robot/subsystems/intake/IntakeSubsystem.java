@@ -40,6 +40,10 @@ public class IntakeSubsystem extends SubsystemBase {
     this.runIntake(Constants.IntakeConstants.intakeSpeed);
   }
 
+  public void reverseIntake() {
+    this.runIntake(Constants.IntakeConstants.intakeSpeed.unaryMinus());
+  }
+
   public void stopIntake() {
     io.runIntake(RPM.of(0));
   }

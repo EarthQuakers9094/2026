@@ -47,7 +47,7 @@ public class DriverAutomations {
     if (y < Constants.Field.fieldWidth / 2) {
       targetY = Constants.Field.fieldWidth - targetY;
     }
-    return new Translation3d(Inches.of(120.0), Meters.of(targetY), Meters.zero());
+    return new Translation3d(Inches.of(50.0), Meters.of(targetY), Meters.zero());
   }
 
   // @AutoLogOutput

@@ -18,9 +18,9 @@ public class FieldUtil {
 
     Translation2d translation = normalizedPose.getTranslation();
 
-    if (translation.getX() < Constants.Field.trenchOrigin.in(Meters)
+    if (translation.getX() < Constants.Field.trenchOrigin.in(Meters) - 1.0
         || translation.getX()
-            > Constants.Field.trenchOrigin.plus(Constants.Field.trenchWidth).in(Meters)) {
+            > Constants.Field.trenchOrigin.plus(Constants.Field.trenchWidth).in(Meters) + 1.0) {
       Logger.recordOutput("IsNearTrench", false);
       return false;
     }

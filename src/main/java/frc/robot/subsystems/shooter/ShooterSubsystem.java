@@ -19,7 +19,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final MovingAverage speedAverage = new MovingAverage(40);
   private double currentAverageSpeed;
 
-  // private AngularVelocity targetSpeed = Constants.ShooterConstants.launchSpeed;
+  private AngularVelocity targetSpeed = Constants.ShooterConstants.launchSpeed;
   // private double speedSetpointRPM = 0.0;
 
   private boolean wasFuelInShooter = false;
@@ -46,13 +46,16 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", speed.in(RadiansPerSecond));
   }
 
-  // public void setTargetAngularVelocity(AngularVelocity speed) {
-  //   this.targetSpeed = speed;
-  // }
+  public void setTargetAngularVelocity(AngularVelocity speed) {
+    if (shooterState != ShooterState.Inactive) {
+      setSpeedSetpoint(speed);
+    }
+    this.targetSpeed = speed;
+  }
 
-  // public AngularVelocity getTargetAngularVelocity() {
-  //   return this.targetSpeed;
-  // }
+  public AngularVelocity getTargetAngularVelocity() {
+    return this.targetSpeed;
+  }
 
   // public void startShooter() {
   //   if (shooterState == ShooterState.Inactive) {
@@ -114,7 +117,7 @@ public class ShooterSubsystem extends SubsystemBase {
         setSpeedSetpoint(RPM.of(0.0));
         break;
       case Revving:
-        setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
+        setSpeedSetpoint(targetSpeed);
         if (isSpunUp() && shouldShootWhenReady) {
           this.shooterState = ShooterState.Shooting;
         }
@@ -151,7 +154,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond));
+    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.9);
   }
 
   public void setPitch(Rotation2d pitch) {
@@ -198,4 +201,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public static AngularVelocity velocityToShooterSpeed(double velocityMPS) {
     return RadiansPerSecond.of(-47.8359 * (0.742784 - velocityMPS));
   }
+
+  public static AngularVelocity getIdealShooterSpeed(double distanceToTarget) {
+    if (distanceToTarget > 1.0) {
+      return RPM.of(3500);
+    } else {
+      return RPM.of(2500);
+    }
+}
 }

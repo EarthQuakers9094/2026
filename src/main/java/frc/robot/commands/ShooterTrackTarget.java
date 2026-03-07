@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -97,17 +98,23 @@ public class ShooterTrackTarget extends Command {
     Translation3d flippedTarget =
         shouldFlipTarget ? AllianceFlipUtil.apply(targetSupplier.get()) : targetSupplier.get();
 
+    Translation2d shooterToTarget = flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
+    double distanceToTarget = shooterToTarget.getNorm();
+
     Logger.recordOutput("Target", flippedTarget);
 
+    AngularVelocity idealShooterSpeed = ShooterSubsystem.getIdealShooterSpeed(distanceToTarget);
+    shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
+
     double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
-    if (shooterSpeed <= Constants.ShooterConstants.minLaunchSpeed.in(RadiansPerSecond)) {
-      shooterSpeed = Constants.ShooterConstants.launchSpeed.in(RadiansPerSecond);
+    if (shooterSubsystem.isSpunUp()) {
+      shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
     }
 
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter.getShooterTargeting(
             new TargetingData(
-                flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation()),
+                shooterToTarget,
                 flippedTarget.getMeasureZ(),
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
                 MetersPerSecond.of(ShooterSubsystem.shooterSpeedToVelocity(shooterSpeed))));

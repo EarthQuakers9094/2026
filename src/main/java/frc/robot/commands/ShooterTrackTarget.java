@@ -98,7 +98,8 @@ public class ShooterTrackTarget extends Command {
     Translation3d flippedTarget =
         shouldFlipTarget ? AllianceFlipUtil.apply(targetSupplier.get()) : targetSupplier.get();
 
-    Translation2d shooterToTarget = flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
+    Translation2d shooterToTarget =
+        flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
     double distanceToTarget = shooterToTarget.getNorm();
 
     Logger.recordOutput("Target", flippedTarget);
@@ -107,7 +108,7 @@ public class ShooterTrackTarget extends Command {
     shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
 
     double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
-    if (shooterSubsystem.isSpunUp()) {
+    if (!shooterSubsystem.isSpunUp()) {
       shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
     }
 

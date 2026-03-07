@@ -20,7 +20,7 @@ public class ShootFuel extends Command {
     this.kicker = kicker;
     this.startShooting = startShooting;
     this.intake = intake;
-    this.addRequirements(kicker, shooter);
+    this.addRequirements(kicker);
   }
 
   public ShootFuel(ShooterSubsystem shooter, KickerSubsystem kicker, IntakeSubsystem intake) {
@@ -28,7 +28,7 @@ public class ShootFuel extends Command {
     this.kicker = kicker;
     this.startShooting = true;
     this.intake = intake;
-    this.addRequirements(kicker, shooter);
+    this.addRequirements(kicker);
   }
 
   @Override

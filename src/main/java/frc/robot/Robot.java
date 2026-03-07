@@ -14,6 +14,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
@@ -77,6 +78,8 @@ public class Robot extends LoggedRobot {
     Logger.start();
     Logger.recordOutput("ClapBoard", 1.0);
     candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296, 0.8, 1.0)));
+
+    SmartDashboard.putNumber("RPM", 0.0);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.=

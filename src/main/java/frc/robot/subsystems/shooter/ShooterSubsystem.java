@@ -186,7 +186,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   private static double launchAngleToHoodAngle(double launchAngleRad) {
-    return 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
+    return -4.84013 * launchAngleRad
+        + 7.57876; // 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
   }
 
   private static double hoodAngleToLaunchAngle(double hoodAngle) {
@@ -202,11 +203,17 @@ public class ShooterSubsystem extends SubsystemBase {
     return RadiansPerSecond.of(-47.8359 * (0.742784 - velocityMPS));
   }
 
+  @AutoLogOutput
   public static AngularVelocity getIdealShooterSpeed(double distanceToTarget) {
-    if (distanceToTarget > 1.0) {
-      return RPM.of(3500);
-    } else {
-      return RPM.of(2500);
-    }
-}
+    Logger.recordOutput("DistanceToTargetMeters", distanceToTarget);
+    double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM", 0.0);
+    return RPM.of(rpm);
+    // if (distanceToTarget > 2.0) {
+    //   Logger.recordOutput("Shooter/DistanceToTarget", "far");
+    //   return RPM.of(3500);
+    // } else {
+    //   Logger.recordOutput("Shooter/DistanceToTarget", "near");
+    //   return RPM.of(3000);
+    // }
+  }
 }

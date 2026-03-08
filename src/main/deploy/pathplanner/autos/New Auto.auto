@@ -23,41 +23,47 @@
                       "data": {
                         "pathName": "New Path"
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "deploy_intake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "start_intake"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Intake From Left Center"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "stop_intake"
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Return To Left From Center"
-                      }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "deploy_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake From Left Center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return To Left From Center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot_fuel"
           }
         }
       ]

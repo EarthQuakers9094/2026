@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.691483594869661,
-        "y": 7.366704707558633
+        "x": 5.937303243711499,
+        "y": 7.37780981294918
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.6767760342419855,
-        "y": 7.302011412266194
+        "x": 2.9225956830838236,
+        "y": 7.3131165176567405
       },
       "isLocked": false,
       "linkedName": "LeftCenterPostIntake"
@@ -64,7 +64,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -74.206
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

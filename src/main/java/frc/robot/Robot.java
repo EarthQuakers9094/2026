@@ -22,6 +22,10 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
+import com.ctre.phoenix6.signals.RGBWColor;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -31,7 +35,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-  // private CANdle candle;
+  private CANdle candle;
 
   public Robot() {
     // Record metadata
@@ -54,7 +58,7 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
-        // this.candle = new CANdle(3, Constants.shooterCANBus);
+        this.candle = new CANdle(3, Constants.shooterCANBus);
         break;
 
       case SIM:
@@ -74,8 +78,7 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
     Logger.recordOutput("ClapBoard", 1.0);
-    // candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296,
-    // 0.8, 1.0)));
+    candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296,0.8, 1.0)));
 
     SmartDashboard.putNumber("RPM", 0.0);
 

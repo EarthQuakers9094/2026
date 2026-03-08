@@ -1,7 +1,6 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,7 +8,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -104,13 +102,15 @@ public class ShooterTrackTarget extends Command {
 
     Logger.recordOutput("Target", flippedTarget);
 
-    AngularVelocity idealShooterSpeed = ShooterSubsystem.getIdealShooterSpeed(distanceToTarget);
-    shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
+    // AngularVelocity idealShooterSpeed = ShooterSubsystem.getIdealShooterSpeed(distanceToTarget);
+    double targetPitch = ShooterSubsystem.getIdealPitch(distanceToTarget);
+    // shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
+    shooterSubsystem.setPitch(new Rotation2d(targetPitch));
 
-    double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
-    if (!shooterSubsystem.isSpunUp()) {
-      shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
-    }
+    // double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
+    // if (!shooterSubsystem.isSpunUp()) {
+    //   shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
+    // }
 
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter.getShooterTargeting(
@@ -118,15 +118,17 @@ public class ShooterTrackTarget extends Command {
                 shooterToTarget,
                 flippedTarget.getMeasureZ(),
                 new Translation2d(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond),
-                MetersPerSecond.of(ShooterSubsystem.shooterSpeedToVelocity(shooterSpeed))));
+                new Rotation2d(targetPitch)));
     if (maybeTargetingResult.isPresent()) {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
-      Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
-      // shooterSubsystem.setTargetAngularVelocity(RPM.of(targetVelocity));
+      // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
+      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+      // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0. / 0)));
+
       // shooterSubsystem.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0.0));
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
-      shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
       // if (targetingResult.pitchRadians() >= Math.PI / 2.) {
       //   DriverStation.reportError(
       //       "Targeting pitch result ("

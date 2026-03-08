@@ -110,7 +110,7 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.2;
+    public static final double robotPositionAnticipationSeconds = 0.1;
     public static final double flywheelKP = 0.00;
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.00;

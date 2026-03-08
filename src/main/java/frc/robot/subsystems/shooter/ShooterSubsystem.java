@@ -149,12 +149,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   public boolean isSpeedStable() {
-    return speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
+    return true;
+    // return speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
   }
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.9);
+    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.85);
   }
 
   public void setPitch(Rotation2d pitch) {
@@ -216,4 +217,18 @@ public class ShooterSubsystem extends SubsystemBase {
     //   return RPM.of(3000);
     // }
   }
+
+  public static double getIdealPitch(double distanceToTarget) {
+    return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
+  }
+  //   if (distanceToTarget <= 2.0) {
+  //     return Math.PI / 2;
+  //   } else if (distanceToTarget <= 4.0) {
+  //     // Logger.recordOutput("Shooter/DistanceToTarget", "near");
+  //     return 9 * Math.PI / 20;
+  //   }
+  //   return 0;
+  //   // TODO Auto-generated method stub
+  //   // throw new UnsupportedOperationException("Unimplemented method 'getIdealPitch'");
+  // }
 }

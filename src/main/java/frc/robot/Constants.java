@@ -110,7 +110,7 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.0;
+    public static final double robotPositionAnticipationSeconds = 0.2;
     public static final double flywheelKP = 0.00;
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.00;
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
-    public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(90);
+    public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(175);
     public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);
     // public static final Rotation2d safeHoodAngle = new Rotation2d();
     public static final double hoodKS = 0.3;
@@ -134,7 +134,7 @@ public final class Constants {
 
     public static final double turretKP = 128.0;
     public static final double turretKI = 0;
-    public static final double turretKD = 1.0;
+    public static final double turretKD = 10.0;
     public static final Constraints turretConstraints =
         new TrapezoidProfile.Constraints(52.0, 52.0);
 

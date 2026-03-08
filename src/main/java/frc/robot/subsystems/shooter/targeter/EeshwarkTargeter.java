@@ -28,7 +28,7 @@ public class EeshwarkTargeter implements KinematicTargeter {
 
     Translation2d staticShotVelocity = directionToTarget.times(staticHorizontalVelocity);
 
-    Translation2d shotVector = staticShotVelocity.minus(targetingData.robotVelocity());
+    Translation2d shotVector = staticShotVelocity.plus(targetingData.robotVelocity());
 
     if (shotVector.getSquaredNorm() == 0
         || Double.isNaN(shotVector.getX())

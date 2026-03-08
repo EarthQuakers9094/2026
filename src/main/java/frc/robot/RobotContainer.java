@@ -319,9 +319,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -1 * (false ? yInputAverage.calculate(leftStick.getY()) : leftStick.getY()),
-            () -> -1 * (false ? xInputAverage.calculate(leftStick.getX()) : leftStick.getX()),
-            () -> -rightStick.getX()));
+            () -> -1 * (shooter.isActivelyShooting() ? 0.5 * leftStick.getY() : leftStick.getY()),
+            () -> -1 * (shooter.isActivelyShooting() ? 0.5 * leftStick.getX() : leftStick.getX()),
+            () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
             shooter, drive::getPose, drive::getChassisSpeeds, targeter));

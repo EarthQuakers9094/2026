@@ -203,10 +203,11 @@ public class RobotContainer {
         break;
     }
 
-    NamedCommands.registerCommand("deploy_intake", new InstantCommand(() -> intake.deployIntake()));
+    NamedCommands.registerCommand(
+        "deploy_intake", new InstantCommand(() -> intake.deployIntake(), intake));
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
     NamedCommands.registerCommand("stop_intake", new InstantCommand(() -> intake.stopIntake()));
-    NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood, shooter));
+    NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));

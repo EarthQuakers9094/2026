@@ -7,6 +7,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -56,6 +57,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deployIntake() {
+    DriverStation.reportError("DEPLOYED UINTAKE", false);
     this.targetState = IntakeState.Deployed;
     this.pivotIntake(Constants.IntakeConstants.deployedAngle);
   }
@@ -76,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.recordOutput("Intake/State", state);
     Logger.recordOutput("Intake/SpinSpeedRadPerSec", intakeSetpoint.in(RadiansPerSecond));
 
-    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.pivotAngle.in(Degrees)) < 4.) {
+    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.pivotAngle.in(Degrees)) < 8.) {
       this.state = this.targetState;
     } else {
       this.state = IntakeState.Moving;

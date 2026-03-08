@@ -1,8 +1,6 @@
 package frc.robot.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -29,6 +27,7 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
+import frc.robot.SimState;
 import java.util.function.Supplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.seasonspecific.rebuilt2026.RebuiltFuelOnFly;
@@ -42,7 +41,8 @@ public class ShooterIOSim implements ShooterIO {
   private DCMotor flywheelMotor = DCMotor.getKrakenX60(1);
 
   private final TalonFX flywheelLeadMotor = new TalonFX(Constants.ShooterConstants.motor1Id);
-  // private final TalonFX flywheelFollowerMotor = new TalonFX(Constants.ShooterConstants.motor2Id);
+  // private final TalonFX flywheelFollowerMotor = new
+  // TalonFX(Constants.ShooterConstants.motor2Id);
 
   private final TalonFXSimState leadMotorSimState;
   // private final TalonFXSimState followerMotorSimState;
@@ -70,7 +70,7 @@ public class ShooterIOSim implements ShooterIO {
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
 
     // flywheelFollowerMotor.setControl(
-    //     new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
+    // new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
 
     flywheelLeadMotor
         .getConfigurator()
@@ -120,7 +120,7 @@ public class ShooterIOSim implements ShooterIO {
     double newTime = Timer.getFPGATimestamp();
     double delta = newTime - lastShotFuelS;
     inputs.isFuelInShooter = false;
-    if (isIndexing && delta >= 0.1) {
+    if (SimState.getInstance().isIndexing && delta >= 0.1) {
       inputs.isFuelInShooter = true;
       lastShotFuelS = newTime;
       RebuiltFuelOnFly fuel =
@@ -131,8 +131,8 @@ public class ShooterIOSim implements ShooterIO {
               yaw.plus(robotPositionSupplier.get().getRotation()),
               Constants.ShooterConstants.positionOnRobot.getMeasureZ(),
               MetersPerSecond.of(
-                  flywheelSim.getAngularVelocityRadPerSec()
-                      * Constants.ShooterConstants.flywheelDiameter.in(Meters)),
+                  ShooterSubsystem.shooterSpeedToVelocity(
+                      flywheelSim.getAngularVelocityRadPerSec())),
               pitch.getMeasure());
       SimulatedArena.getInstance().addGamePieceProjectile(fuel);
     }
@@ -147,8 +147,7 @@ public class ShooterIOSim implements ShooterIO {
         chassisSpeedsSupplier.get(),
         yaw.plus(robotPositionSupplier.get().getRotation()),
         pitch.getRadians(),
-        inputs.shooterSpeed.in(RadiansPerSecond)
-            * Constants.ShooterConstants.flywheelDiameter.in(Meters));
+        ShooterSubsystem.shooterSpeedToVelocity(flywheelSim.getAngularVelocityRadPerSec()));
   }
 
   public void drawTrajectory(

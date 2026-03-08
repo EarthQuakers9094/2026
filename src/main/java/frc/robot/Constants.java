@@ -88,9 +88,9 @@ public final class Constants {
   }
 
   // public static class IndexerConstants {
-  //   // TODO: set on real robot
-  //   public static final int indexerMotorId = 50;
-  //   public static final AngularVelocity spindexerSpeed = RPM.of(1500.0);
+  // // TODO: set on real robot
+  // public static final int indexerMotorId = 50;
+  // public static final AngularVelocity spindexerSpeed = RPM.of(1500.0);
   // }
 
   public static class ShooterConstants {

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import frc.robot.Constants;
+import frc.robot.SimState;
 
 public class SpindexerIOSim implements SpindexerIO {
   private DCMotor dcMotor = DCMotor.getNeoVortex(1);
@@ -69,5 +70,7 @@ public class SpindexerIOSim implements SpindexerIO {
     spindexerMotor
         .getClosedLoopController()
         .setSetpoint(spindexerSetSpeed.in(RPM), ControlType.kVelocity);
+
+    SimState.getInstance().isIndexing = spindexerSetSpeed.baseUnitMagnitude() != 0;
   }
 }

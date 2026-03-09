@@ -107,7 +107,7 @@ public class EeshwarkTargeter implements KinematicTargeter {
 
     return Optional.of(
         new TargetingResult3d(
-            calculateAdjustedRpm(requiredHorizontalVelocity),
+            baseRPM, // calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));
   }

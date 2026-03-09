@@ -35,7 +35,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.SIM;
+  public static final Mode simMode = Mode.REPLAY;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -110,7 +110,7 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.1;
+    public static final double robotPositionAnticipationSeconds = 0.05;
     public static final double flywheelKP = 0.00;
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.00;
@@ -121,6 +121,8 @@ public final class Constants {
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
+    public static final Rotation2d turretZeroYaw = Rotation2d.fromDegrees(90);
+
     public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(175);
     public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);
     // public static final Rotation2d safeHoodAngle = new Rotation2d();
@@ -135,6 +137,8 @@ public final class Constants {
     public static final double turretKP = 128.0;
     public static final double turretKI = 0;
     public static final double turretKD = 10.0;
+    // public static final Constraints turretConstraints =
+    //     new TrapezoidProfile.Constraints(99999.0, 99999.0);
     public static final Constraints turretConstraints =
         new TrapezoidProfile.Constraints(52.0, 52.0);
 
@@ -202,6 +206,6 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(2000);
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(2500);
   }
 }

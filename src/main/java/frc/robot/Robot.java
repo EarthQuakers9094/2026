@@ -61,11 +61,15 @@ public class Robot extends LoggedRobot {
         break;
 
       case SIM:
+        this.candle = new CANdle(3, Constants.shooterCANBus);
+
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
       case REPLAY:
+        this.candle = new CANdle(3, Constants.shooterCANBus);
+
         // Replaying a log, set up replay source
         setUseTiming(false); // Run as fast as possible
         String logPath = LogFileUtil.findReplayLog();

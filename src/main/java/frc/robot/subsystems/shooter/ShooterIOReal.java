@@ -110,7 +110,7 @@ public class ShooterIOReal implements ShooterIO {
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
 
-    turretPivot.setPosition(0);
+    turretPivot.setPosition(Constants.ShooterConstants.turretZeroYaw.getMeasure());
 
     // TODO: Fill out on actual robot. See:
     // https://www.desmos.com/calculator/btzzpyy6r2

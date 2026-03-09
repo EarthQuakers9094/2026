@@ -123,9 +123,10 @@ public class ShooterTrackTarget extends Command {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
       shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
-      // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0. / 0)));
+      // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0)));
+      // shooterSubsystem.setHoodAngle(targetingResult.hoodAngle());
+      // shooterSubsystem.setHoodAngle(targetingResult.hoodAngle());
 
-      // shooterSubsystem.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0.0));
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
       // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));

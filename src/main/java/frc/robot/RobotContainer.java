@@ -81,8 +81,8 @@ public class RobotContainer {
   private final CommandJoystick leftStick = new CommandJoystick(1);
   private final CommandJoystick rightStick = new CommandJoystick(2);
 
-  private LinearFilter xInputAverage = LinearFilter.movingAverage(100);
-  private LinearFilter yInputAverage = LinearFilter.movingAverage(100);
+  private LinearFilter xInputAverage = LinearFilter.movingAverage(15);
+  private LinearFilter yInputAverage = LinearFilter.movingAverage(15);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -319,8 +319,16 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -1 * (shooter.isActivelyShooting() ? 0.5 * leftStick.getY() : leftStick.getY()),
-            () -> -1 * (shooter.isActivelyShooting() ? 0.5 * leftStick.getX() : leftStick.getX()),
+            () -> {
+              double y = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getY();
+              double smoothedY = yInputAverage.calculate(y);
+              return -1 * (shooter.isActivelyShooting() ? smoothedY : y);
+            },
+            () -> {
+              double x = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getX();
+              double smoothedX = xInputAverage.calculate(x);
+              return -1 * (shooter.isActivelyShooting() ? smoothedX : x);
+            },
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(

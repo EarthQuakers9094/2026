@@ -29,6 +29,7 @@ import frc.robot.commands.DeployIntake;
 import frc.robot.commands.DispenseFuel;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
+import frc.robot.commands.EjectLooseFuel;
 import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
@@ -244,6 +245,8 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
     NamedCommands.registerCommand("stop_intake", new InstantCommand(() -> intake.stopIntake()));
+    NamedCommands.registerCommand("eject_loose_fuel", new EjectLooseFuel(shooter));
+
     NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
@@ -278,8 +281,8 @@ public class RobotContainer {
         .onTrue(new InstantCommand(spindexer::start).ignoringDisable(true))
         .onFalse(new InstantCommand(spindexer::stop).ignoringDisable(true));
 
-    new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
-        .whileTrue(Commands.run(shooter::retractHood, shooter).ignoringDisable(true));
+    // new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
+    //     .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
@@ -369,7 +372,7 @@ public class RobotContainer {
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-            shooter, drive::getPose, drive::getChassisSpeeds, targeter));
+            shooter, drive::getPose, drive::getChassisSpeeds, targeter).onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
     // new ShooterTrackTarget(
     // shooter,
     // drive::getPose,

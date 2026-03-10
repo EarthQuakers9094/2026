@@ -119,7 +119,7 @@
         {
           "type": "named",
           "data": {
-            "name": "retract_intake"
+            "name": "deploy_intake"
           }
         },
         {

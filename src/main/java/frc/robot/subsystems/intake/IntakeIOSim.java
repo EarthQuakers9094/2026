@@ -19,10 +19,6 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class IntakeIOSim implements IntakeIO {
 
@@ -48,13 +44,6 @@ public class IntakeIOSim implements IntakeIO {
           Constants.IntakeConstants.maxAngle.in(Radians),
           true,
           0);
-  private final LoggedMechanism2d armMechanism = new LoggedMechanism2d(3, 3);
-  private final LoggedMechanismRoot2d armMechanismRoot =
-      armMechanism.getRoot("intakeArm", 1.5, 1.5);
-  private final LoggedMechanismLigament2d intakeArmVisualization =
-      armMechanismRoot.append(
-          new LoggedMechanismLigament2d(
-              "intakeArm", Constants.IntakeConstants.armLength.in(Meters), 0));
 
   public IntakeIOSim() {
     pivotMotor
@@ -98,8 +87,8 @@ public class IntakeIOSim implements IntakeIO {
 
     inputs.pivotAngle = Radians.of(armSim.getAngleRads());
 
-    intakeArmVisualization.setAngle(inputs.pivotAngle);
-    Logger.recordOutput("Intake/Arm", armMechanism);
+    // intakeArmVisualization.setAngle(inputs.pivotAngle);
+    // Logger.recordOutput("Intake/Arm", armMechanism);
 
     RoboRioSim.setVInVoltage(
         BatterySim.calculateDefaultBatteryLoadedVoltage(armSim.getCurrentDrawAmps()));

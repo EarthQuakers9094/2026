@@ -2,7 +2,10 @@ package frc.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Constants;
 import frc.robot.subsystems.vision.Vision.PoseObservation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
@@ -23,6 +26,10 @@ public class VisionIOPhotonVision implements VisionIO {
     this.name = name;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
   @Override
   public void updateInputs(VisionIOInputs inputs) {
     inputs.isCameraConnected = camera.isConnected();
@@ -33,36 +40,49 @@ public class VisionIOPhotonVision implements VisionIO {
       Transform3d bestTransform = null;
       double totalTagDistance = 0;
       int tagCount = 0;
+      List<Pose3d> targets = new ArrayList<>();
       if (maybeMultiTagResult.isPresent()) {
         MultiTargetPNPResult multiTagResult = maybeMultiTagResult.get();
 
         // double totalTagDistance = 0.0;
         for (PhotonTrackedTarget target : result.targets) {
           totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
+          targets.add(Constants.Field.aprilTagLayout.getTagPose(target.fiducialId).get());
         }
 
         tagCount = multiTagResult.fiducialIDsUsed.size();
 
         bestTransform = multiTagResult.estimatedPose.best.plus(robotToCamera.inverse());
-      } /*else {
-          if (!result.targets.isEmpty()) {
-            PhotonTrackedTarget target = result.targets.get(0);
+      } else {
+        if (!result.targets.isEmpty()) {
+          PhotonTrackedTarget target = result.targets.get(0);
 
-            var tagPose = Constants.Field.aprilTagLayout.getTagPose(target.fiducialId);
-            if (tagPose.isPresent()) {
-              Transform3d fieldToTarget =
-                  new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
-              Transform3d cameraToTarget = target.getBestCameraToTarget();
-              Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
-              bestTransform = fieldToCamera.plus(robotToCamera.inverse());
-            }
-            // Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(),
-            // fieldToRobot.getRotation());
-            // bestTransform =
-            // target.getBestCameraToTarget()//.bestCameraToTarget.plus(robotToCamera.);
-            tagCount = 1;
+          var tagPose = Constants.Field.aprilTagLayout.getTagPose(target.fiducialId);
+          if (tagPose.isPresent()) {
+            Transform3d fieldToTarget =
+                new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+            // System.out.println("64" + fieldToTarget);
+            Transform3d cameraToTarget = target.getBestCameraToTarget();
+            // System.out.println("66" + cameraToTarget);
+
+            totalTagDistance += cameraToTarget.getTranslation().getNorm();
+
+            Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+            // System.out.println("69" + fieldToCamera);
+
+            bestTransform = fieldToCamera.plus(robotToCamera.inverse());
+            // System.out.println("72" + bestTransform);
+
+            targets.add(tagPose.get());
           }
-        }*/
+          // Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(),
+          // fieldToRobot.getRotation());
+          // bestTransform =
+          // target.getBestCameraToTarget()//.bestCameraToTarget.plus(robotToCamera.);
+          tagCount = 1;
+        }
+      }
+      inputs.targetPoses = targets.toArray(new Pose3d[0]);
 
       if (bestTransform != null) {
         Logger.recordOutput(

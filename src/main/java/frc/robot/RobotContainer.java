@@ -58,6 +58,7 @@ import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -121,7 +122,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.FrontRight),
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
-        shooter = new ShooterSubsystem(new ShooterIOReal());
+        shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
         vision =
             new Vision(
@@ -157,9 +158,35 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        shooter = new ShooterSubsystem(new ShooterIOSim(drive::getPose, drive::getChassisSpeeds));
+        shooter =
+            new ShooterSubsystem(
+                new ShooterIOSim(drive::getPose, drive::getChassisSpeeds), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
-        vision = null;
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(
+                    "Front",
+                    new Transform3d(
+                        Inches.of(12.465),
+                        Inches.of(4.915),
+                        Inches.of(12.03),
+                        new Rotation3d(0, -Math.PI / 6., 0.0)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Front",
+                    new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Left",
+                    new Transform3d(
+                        0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.)),
+                    drive::getPose),
+                new VisionIOPhotonVisionSim(
+                    "Right",
+                    new Transform3d(
+                        0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.)),
+                    drive::getPose));
 
         // vision =
         //     new Vision(
@@ -195,7 +222,7 @@ public class RobotContainer {
                 new ModuleIO() {},
                 new ModuleIO() {},
                 new ModuleIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {});
+        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose);
         intake = new IntakeSubsystem(new IntakeIO() {});
         // vision = null;
         vision = new Vision(drive::addVisionMeasurement);

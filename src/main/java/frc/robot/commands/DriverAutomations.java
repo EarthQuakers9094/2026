@@ -47,6 +47,20 @@ public class DriverAutomations {
     if (y < Constants.Field.fieldWidth / 2) {
       targetY = Constants.Field.fieldWidth - targetY;
     }
+    Alliance otherAlliance = null;
+    switch (alliance) {
+      case Red:
+        otherAlliance = Alliance.Blue;
+        break;
+      default:
+        otherAlliance = Alliance.Red;
+        break;
+    }
+    if (!FieldUtil.inAllianceZone(pose, otherAlliance)) {
+      // return Constants.Field.hubTarget;
+      return new Translation3d(Inches.of(50.0), Meters.of(targetY), Meters.zero());
+    }
+
     return new Translation3d(Inches.of(50.0), Meters.of(targetY), Meters.zero());
   }
 

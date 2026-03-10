@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -87,11 +86,6 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   public void updateInputs(ShooterIOInputs inputs) {
-    Logger.recordOutput(
-        "TurretVisualization",
-        robotPositionSupplier
-            .get()
-            .plus(new Transform2d(new Translation2d(1.0, yaw), new Rotation2d())));
 
     leadMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());
     // followerMotorSimState.setSupplyVoltage(RoboRioSim.getVInVoltage());

@@ -9,7 +9,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 
 import com.ctre.phoenix6.CANBus;
@@ -35,7 +34,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -157,7 +156,7 @@ public final class Constants {
     public static final double intakeGearing = 4.5;
     public static final double intakeConversionFactor = 1 / intakeGearing;
 
-    public static Distance armLength = Meters.of(1); // made up value
+    public static Distance armLength = Inches.of(11.25); // made up value
     public static Angle maxAngle = Degrees.of(60); // made up value //60 degrees
 
     public static double pivotkP = 1.0; // made up value
@@ -206,6 +205,6 @@ public final class Constants {
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(2500);
+    public static final AngularVelocity spindexerSetSpeed = RPM.of(3000);
   }
 }

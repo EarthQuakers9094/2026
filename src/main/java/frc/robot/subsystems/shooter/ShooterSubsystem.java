@@ -3,11 +3,15 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MovingAverage;
+import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -34,8 +38,12 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
   private boolean shouldShootWhenReady = false;
 
-  public ShooterSubsystem(ShooterIO io) {
+  private final Supplier<Pose2d> robotPositionSupplier;
+
+  public ShooterSubsystem(ShooterIO io, Supplier<Pose2d> robotPositionSupplier) {
     Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 0);
+
+    this.robotPositionSupplier = robotPositionSupplier;
 
     this.io = io;
   }
@@ -103,7 +111,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    Logger.recordOutput(
+        "TurretVisualization",
+        robotPositionSupplier
+            .get()
+            .plus(
+                new Transform2d(
+                    new Translation2d(1.0, new Rotation2d(inputs.yaw)), new Rotation2d())));
     io.updateInputs(inputs);
     currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.in(RadiansPerSecond));
     Logger.recordOutput("Shooter/AverageSpeedRadPerSec", currentAverageSpeed);

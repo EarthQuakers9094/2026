@@ -3,16 +3,32 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.2017689015730078,
-        "y": 7.069115549219191
+        "x": 2.175891583452211,
+        "y": 7.198502139800285
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0594436519296417,
-        "y": 9.475706134097933
+        "x": 3.52151212553495,
+        "y": 7.625477888730385
       },
       "isLocked": false,
       "linkedName": "LeftShootingPosition"
+    },
+    {
+      "anchor": {
+        "x": 4.348641154389116,
+        "y": 7.4575102268352165
+      },
+      "prevControl": {
+        "x": 3.7664014967571626,
+        "y": 7.4575102268352165
+      },
+      "nextControl": {
+        "x": 6.4968092762453375,
+        "y": 7.4575102268352165
+      },
+      "isLocked": false,
+      "linkedName": "UnderTrenchSpot"
     },
     {
       "anchor": {
@@ -20,8 +36,8 @@
         "y": 7.0820542082738935
       },
       "prevControl": {
-        "x": 3.353309557774609,
-        "y": 7.936005706134096
+        "x": 5.009457917261056,
+        "y": 7.4572753209700435
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +46,11 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.9125799573560665,
+      "waypointRelativePos": 0.22,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.8464818763326003,
       "rotationDegrees": 0.0
     }
   ],

@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -205,6 +206,15 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "deploy_intake", new InstantCommand(() -> intake.deployIntake(), intake));
+    NamedCommands.registerCommand(
+        "retract_intake", new InstantCommand(() -> intake.retractIntake(), intake));
+    NamedCommands.registerCommand(
+        "jiggle_intake",
+        Commands.sequence(
+            new InstantCommand(() -> intake.retractIntake()),
+            new WaitCommand(0.5),
+            new InstantCommand(() -> intake.deployIntake())));
+
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
     NamedCommands.registerCommand("stop_intake", new InstantCommand(() -> intake.stopIntake()));
     NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood));
@@ -238,11 +248,11 @@ public class RobotContainer {
         "Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
 
     new Trigger(shooter::isActivelyShooting)
-        .onTrue(new InstantCommand(spindexer::start))
-        .onFalse(new InstantCommand(spindexer::stop));
+        .onTrue(new InstantCommand(spindexer::start).ignoringDisable(true))
+        .onFalse(new InstantCommand(spindexer::stop).ignoringDisable(true));
 
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
-        .whileTrue(Commands.run(shooter::retractHood, shooter));
+        .whileTrue(Commands.run(shooter::retractHood, shooter).ignoringDisable(true));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))

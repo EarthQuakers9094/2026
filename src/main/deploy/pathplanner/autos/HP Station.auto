@@ -7,13 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "Right to Center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center To Right"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "deploy_intake"
+            "name": "shoot_fuel"
           }
         }
       ]

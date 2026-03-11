@@ -372,7 +372,8 @@ public class RobotContainer {
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-            shooter, drive::getPose, drive::getChassisSpeeds, targeter).onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
+                shooter, drive::getPose, drive::getChassisSpeeds, targeter)
+            .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
     // new ShooterTrackTarget(
     // shooter,
     // drive::getPose,

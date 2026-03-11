@@ -157,7 +157,7 @@ public final class Constants {
     public static final double intakeSpinGearing = 4.5;
     public static final double intakeSpinConversionFactor = 1 / intakeSpinGearing;
 
-    public final static Distance armLength = Inches.of(11.25);
+    public static final Distance armLength = Inches.of(11.25);
 
     public static final double pivotkP = 1.0; // made up value
     public static final double pivotkI = 0;

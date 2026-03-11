@@ -52,6 +52,11 @@ public class KickerIOSim implements KickerIO {
     velocitySetpoint = Constants.KickerConstants.simSetpoint;
   }
 
+  public void reverseKicker() {
+    motor.setControl(new VelocityVoltage(Constants.KickerConstants.simSetpoint.unaryMinus()));
+    velocitySetpoint = Constants.KickerConstants.simSetpoint.unaryMinus();
+  }
+
   public void stopKicker() {
     motor.setControl(new VelocityVoltage(RPM.of(0.0d)));
     velocitySetpoint = RPM.of(0.0d);

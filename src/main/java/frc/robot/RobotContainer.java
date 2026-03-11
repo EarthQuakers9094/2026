@@ -12,7 +12,6 @@ import static edu.wpi.first.units.Units.Inches;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.filter.LinearFilter;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -26,11 +25,11 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DeployIntake;
-import frc.robot.commands.DispenseFuel;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.EjectLooseFuel;
-import frc.robot.commands.IntakeFuel;
+import frc.robot.commands.ReverseKickerSpindexer;
+import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -356,7 +355,7 @@ public class RobotContainer {
                 () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+    /*controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
 
     // Reset gyro to 0° when B button is pressed
     controller
@@ -367,9 +366,9 @@ public class RobotContainer {
                         drive.setPose(
                             new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
                     drive)
-                .ignoringDisable(true));
+                .ignoringDisable(true));*/
 
-    // controller.button(9).toggleOnTrue(new IntakeFuel(intake));
+    // controller.button(9).toggleOnTrue(new RunIntakeSpinnerCommand(intake));
 
     // controller.y().toggleOnTrue(new KickerTemporaryCommand(kicker));
 
@@ -382,10 +381,19 @@ public class RobotContainer {
      * left trigger right face button toggle drive mode
      */
 
+    /** Keeps the Intake Deployed when the Right Trigger is not pressed. */
     rightStick.trigger().whileFalse(new DeployIntake(intake));
-    leftStick.trigger().whileTrue(new IntakeFuel(intake));
+
+    /** Enables the Intake spinners FORWARD */
+    leftStick.trigger().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
+    // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
+
+    /** Enables the Intake spinners BACKWARDS */
+    rightStick.button(2).whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+
+    /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
-    rightStick.button(2).whileTrue(new DispenseFuel(intake));
 
     leftStick
         .button(4)
@@ -396,11 +404,14 @@ public class RobotContainer {
                 () -> -rightStick.getX(),
                 () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
-    leftStick
-        .button(3)
+    /** Zero Intake To Ground Position */
+    controller
+        .povUp()
         .onTrue(
             new InstantCommand(
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
+
+    controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
   }
 
   /**

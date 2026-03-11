@@ -24,8 +24,6 @@ public class IntakeIOReal implements IntakeIO {
       new SparkFlex(IntakeConstants.intakePivotMotor, MotorType.kBrushless);
   private final SparkFlex spinMotor =
       new SparkFlex(IntakeConstants.intakeSpinMotor, MotorType.kBrushless);
-  // private final TalonFX pivotMotor = new TalonFX(IntakeConstants.intakePivotMotor);
-  // private final TalonFX spinMotor = new TalonFX(IntakeConstants.intakeSpinMotor);
 
   public IntakeIOReal() {
     pivotMotor.configure(
@@ -79,13 +77,11 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   public void runIntake(AngularVelocity rotations) {
-    // spinMotor.setControl(new VelocityVoltage(rotations));
     spinMotor.getClosedLoopController().setSetpoint(rotations.in(RPM), ControlType.kVelocity);
   }
 
   public void pivotIntake(Angle rotation) {
     pivotMotor.getClosedLoopController().setSetpoint(rotation.in(Rotations), ControlType.kPosition);
-    // pivotMotor.setControl(new PositionVoltage(rotation).withSlot(0));
   }
 
   public void setIntakePosition(Angle position) {

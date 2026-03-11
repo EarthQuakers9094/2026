@@ -7,7 +7,6 @@ import static edu.wpi.first.units.Units.Radians;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -89,7 +88,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeArmVisualization.setAngle(inputs.intakePivotAngle.unaryMinus().plus(Degrees.of(180.0)));
     Logger.recordOutput("Intake/State", state);
     Logger.recordOutput("Intake/Visualization", armMechanism);
-    
+
     inputs.intakeSpinnerAngularVelocitySetpoint = speedSetpoint;
     inputs.intakePivotAngleSetpoint = pivotSetpoint;
 

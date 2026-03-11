@@ -7,11 +7,6 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.sim.SparkFlexSim;
@@ -31,6 +26,10 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class IntakeIOSim implements IntakeIO {
 
@@ -167,5 +166,9 @@ public class IntakeIOSim implements IntakeIO {
 
   public void pivotIntake(Angle rotation) {
     pivotMotor.getClosedLoopController().setSetpoint(rotation.in(Rotations), ControlType.kPosition);
+  }
+
+  public void setIntakePosition(Angle position) {
+    pivotMotorSim.setPosition(position.in(Rotations));
   }
 }

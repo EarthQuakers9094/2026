@@ -110,6 +110,9 @@ public class ShooterIOSim implements ShooterIO {
         BatterySim.calculateDefaultBatteryLoadedVoltage(flywheelSim.getCurrentDrawAmps()));
 
     inputs.shooterSpeed = flywheelSim.getAngularVelocity();
+    inputs.yaw = yaw.getMeasure();
+
+    inputs.hoodPosition = ShooterSubsystem.launchAngleToHoodAngle(this.pitch.getRadians());
 
     double newTime = Timer.getFPGATimestamp();
     double delta = newTime - lastShotFuelS;
@@ -175,8 +178,15 @@ public class ShooterIOSim implements ShooterIO {
     Logger.recordOutput("Shooter Trajectory", poses);
   }
 
-  public void setPitch(Rotation2d pitch) {
-    this.pitch = pitch;
+  public void setHoodAngle(double pitch) {
+    // double requiredHoodAngle = launchAngleToHoodAngle.get(pitch.getRadians());
+    double clampedPitch = Math.max(Math.min(2.407227, pitch), 0.2);
+
+    // System.out.println("setting hood angle");
+
+    Logger.recordOutput("Shooter/LastHoodSetpoint", clampedPitch);
+
+    this.pitch = new Rotation2d(ShooterSubsystem.hoodAngleToLaunchAngle(pitch));
   }
 
   public void setYaw(Rotation2d yaw) {

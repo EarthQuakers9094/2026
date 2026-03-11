@@ -1,5 +1,7 @@
 package frc.robot.subsystems.shooter;
 
+import static edu.wpi.first.units.Units.Inches;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
@@ -15,6 +17,9 @@ import frc.robot.util.MovingAverage;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -25,6 +30,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private double currentAverageSpeed;
 
   private AngularVelocity targetSpeed = Constants.ShooterConstants.launchSpeed;
+
+  private final LoggedMechanism2d hoodMechanism = new LoggedMechanism2d(3, 3);
+  private final LoggedMechanismRoot2d hoodMechanismRoot =
+      hoodMechanism.getRoot("hoodRoot", 1.5, .5);
+  private final LoggedMechanismLigament2d hoodVisualization =
+      hoodMechanismRoot.append(
+          new LoggedMechanismLigament2d("hood", Inches.of(0.0).in(Meters), 90));
+
   // private double speedSetpointRPM = 0.0;
 
   private boolean wasFuelInShooter = false;
@@ -67,28 +80,28 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   // public void startShooter() {
-  //   if (shooterState == ShooterState.Inactive) {
-  //     Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
+  // if (shooterState == ShooterState.Inactive) {
+  // Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", 1);
 
-  //     shooterState = ShooterState.Revving;
-  //     setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
-  //   }
+  // shooterState = ShooterState.Revving;
+  // setSpeedSetpoint(Constants.ShooterConstants.launchSpeed);
+  // }
   // }
 
   // public void stopShooting() {
-  //   switch (shooterState) {
-  //     case Shooting:
-  //       shooterState = ShooterState.Revving;
-  //     default:
-  //       break;
+  // switch (shooterState) {
+  // case Shooting:
+  // shooterState = ShooterState.Revving;
+  // default:
+  // break;
 
-  //   }
+  // }
   // }
 
   // public void endShooter() {
-  //   Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
-  //   shooterState = ShooterState.Inactive;
-  //   setSpeedSetpoint(RPM.of(0.));
+  // Logger.recordOutput("ShooterSubsystem/ShootingIsHappening", -1);
+  // shooterState = ShooterState.Inactive;
+  // setSpeedSetpoint(RPM.of(0.));
   // }
 
   public void revShooter() {
@@ -112,6 +125,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     Logger.recordOutput(
         "TurretVisualization",
         robotPositionSupplier
@@ -121,6 +135,10 @@ public class ShooterSubsystem extends SubsystemBase {
                     new Translation2d(1.0, new Rotation2d(inputs.yaw)), new Rotation2d())));
     io.updateInputs(inputs);
     currentAverageSpeed = speedAverage.addValue(inputs.shooterSpeed.in(RadiansPerSecond));
+
+    hoodVisualization.setLength(Inches.of(inputs.hoodPosition));
+
+    Logger.recordOutput("Shooter/HoodVisualization", hoodMechanism);
     Logger.recordOutput("Shooter/AverageSpeedRadPerSec", currentAverageSpeed);
     Logger.recordOutput("Shooter/State", shooterState);
     Logger.recordOutput(
@@ -181,7 +199,7 @@ public class ShooterSubsystem extends SubsystemBase {
             Constants.ShooterConstants.minLaunchAngle.getRadians());
     Logger.recordOutput("Shooter/ClampedLaunchAngle", pitchRadians);
     Logger.recordOutput("Setting launch angle", Timer.getFPGATimestamp());
-    io.setHoodAngle(launchAngleToHoodAngle(pitchRadians));
+    setHoodAngle(launchAngleToHoodAngle(pitchRadians));
   }
 
   public void setHoodAngle(double hoodAngle) {
@@ -203,13 +221,16 @@ public class ShooterSubsystem extends SubsystemBase {
     io.retractHood();
   }
 
-  private static double launchAngleToHoodAngle(double launchAngleRad) {
+  public static double launchAngleToHoodAngle(double launchAngleRad) {
+
     return -4.84013 * launchAngleRad
         + 7.57876; // 0.940536 * Math.sin(5.98518 * launchAngleRad + 1.78146) + 1.46627;
   }
 
-  private static double hoodAngleToLaunchAngle(double hoodAngle) {
-    return 9.59432 * Math.pow(hoodAngle, 2) + 27.24729 * hoodAngle - 19.96681;
+  public static double hoodAngleToLaunchAngle(double hoodAngle) {
+
+    return 0.206606 * (7.57876 - hoodAngle); // return 9.59432 * Math.pow(hoodAngle, 2) + 27.24729 *
+    // hoodAngle - 19.96681;
     // return 0.940536 * Math.sin(5.98518 * hoodAngle + 1.78146) + 1.46627;
   }
 
@@ -227,25 +248,26 @@ public class ShooterSubsystem extends SubsystemBase {
     double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM", 0.0);
     return RPM.of(rpm);
     // if (distanceToTarget > 2.0) {
-    //   Logger.recordOutput("Shooter/DistanceToTarget", "far");
-    //   return RPM.of(3500);
+    // Logger.recordOutput("Shooter/DistanceToTarget", "far");
+    // return RPM.of(3500);
     // } else {
-    //   Logger.recordOutput("Shooter/DistanceToTarget", "near");
-    //   return RPM.of(3000);
+    // Logger.recordOutput("Shooter/DistanceToTarget", "near");
+    // return RPM.of(3000);
     // }
   }
 
   public static double getIdealPitch(double distanceToTarget) {
     return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
   }
-  //   if (distanceToTarget <= 2.0) {
-  //     return Math.PI / 2;
-  //   } else if (distanceToTarget <= 4.0) {
-  //     // Logger.recordOutput("Shooter/DistanceToTarget", "near");
-  //     return 9 * Math.PI / 20;
-  //   }
-  //   return 0;
-  //   // TODO Auto-generated method stub
-  //   // throw new UnsupportedOperationException("Unimplemented method 'getIdealPitch'");
+  // if (distanceToTarget <= 2.0) {
+  // return Math.PI / 2;
+  // } else if (distanceToTarget <= 4.0) {
+  // // Logger.recordOutput("Shooter/DistanceToTarget", "near");
+  // return 9 * Math.PI / 20;
+  // }
+  // return 0;
+  // // TODO Auto-generated method stub
+  // // throw new UnsupportedOperationException("Unimplemented method
+  // 'getIdealPitch'");
   // }
 }

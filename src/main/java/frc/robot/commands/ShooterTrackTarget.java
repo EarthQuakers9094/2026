@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -105,6 +106,9 @@ public class ShooterTrackTarget extends Command {
     // AngularVelocity idealShooterSpeed = ShooterSubsystem.getIdealShooterSpeed(distanceToTarget);
     double targetPitch = ShooterSubsystem.getIdealPitch(distanceToTarget);
     // shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
+    // Logger.recordOutput("Terri", null);
+    // System.out.println("About to set thing");
+    Logger.recordOutput("Setting Pitch", Timer.getFPGATimestamp());
     shooterSubsystem.setPitch(new Rotation2d(targetPitch));
 
     // double shooterSpeed = shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);

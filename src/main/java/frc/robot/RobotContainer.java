@@ -247,7 +247,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("stop_intake", new InstantCommand(() -> intake.stopIntake()));
     NamedCommands.registerCommand("eject_loose_fuel", new EjectLooseFuel(shooter));
 
-    NamedCommands.registerCommand("retract_hood", Commands.run(shooter::retractHood));
+    NamedCommands.registerCommand(
+        "retract_hood",
+        Commands.run(
+            () -> {
+              shooter.retractHood();
+              //   System.out.println("retract hood");
+            },
+            shooter));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
@@ -281,8 +288,8 @@ public class RobotContainer {
         .onTrue(new InstantCommand(spindexer::start).ignoringDisable(true))
         .onFalse(new InstantCommand(spindexer::stop).ignoringDisable(true));
 
-    // new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
-    //     .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
+    new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
+        .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))

@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MovingAverage;
@@ -179,11 +180,13 @@ public class ShooterSubsystem extends SubsystemBase {
             Math.min(pitch.getRadians(), Constants.ShooterConstants.maxLaunchAngle.getRadians()),
             Constants.ShooterConstants.minLaunchAngle.getRadians());
     Logger.recordOutput("Shooter/ClampedLaunchAngle", pitchRadians);
-
+    Logger.recordOutput("Setting launch angle", Timer.getFPGATimestamp());
     io.setHoodAngle(launchAngleToHoodAngle(pitchRadians));
   }
 
   public void setHoodAngle(double hoodAngle) {
+    Logger.recordOutput("Setting hood angle", Timer.getFPGATimestamp());
+
     io.setHoodAngle(hoodAngle);
   }
 

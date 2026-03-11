@@ -34,7 +34,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.SIM;
+  public static final Mode simMode = Mode.REPLAY;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -115,8 +115,8 @@ public final class Constants {
     public static final double flywheelKD = 0.00;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
-    public static final int turretMotorId = 54;
-    public static final int hoodMotorId = 53;
+    public static final int turretMotorId = -1; // 54;
+    public static final int hoodMotorId = -1; // 53;
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;

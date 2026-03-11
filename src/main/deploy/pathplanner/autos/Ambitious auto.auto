@@ -21,31 +21,13 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "New Path"
+                        "pathName": "Ambitious Part One"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "deploy_intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "start_intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intake From Left Center"
           }
         },
         {

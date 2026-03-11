@@ -445,6 +445,23 @@ public class RobotContainer {
         .onTrue(
             new InstantCommand(
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
+
+    controller
+        .start()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  shooter.setYaw(
+                      new Rotation2d(Math.atan2(controller.getLeftY(), controller.getLeftX())));
+                },
+                shooter));
+
+    controller
+        .leftTrigger()
+        .whileTrue(
+            Commands.run(
+                shooter::retractHood,
+                shooter));
   }
 
   /**

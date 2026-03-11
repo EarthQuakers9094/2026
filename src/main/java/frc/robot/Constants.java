@@ -142,6 +142,7 @@ public final class Constants {
         new TrapezoidProfile.Constraints(52.0, 52.0);
 
     public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(24.0, 24.0);
+    public static final Angle yawThreshold = Degrees.of(2.0);
   }
 
   public static class IntakeConstants {

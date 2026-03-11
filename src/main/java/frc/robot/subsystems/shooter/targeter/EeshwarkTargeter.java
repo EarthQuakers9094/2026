@@ -5,14 +5,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
-import java.util.List;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
 
 public class EeshwarkTargeter implements KinematicTargeter {
 
   private InterpolatingDoubleTreeMap distanceToRPM = new InterpolatingDoubleTreeMap();
-  private InterpolatingDoubleTreeMap distanceToTOF = new InterpolatingDoubleTreeMap();
+  // private InterpolatingDoubleTreeMap distanceToTOF = new
+  // InterpolatingDoubleTreeMap();
 
   private InterpolatingDoubleTreeMap velocityToDistance = new InterpolatingDoubleTreeMap();
 
@@ -33,19 +33,8 @@ public class EeshwarkTargeter implements KinematicTargeter {
 
     distanceToRPM.put(1.918899, 2600d);
 
-    distanceToTOF.put(5.234883, 3.5 - 2.03);
-    distanceToTOF.put(4.625298, 3.05 - 1.68);
-    distanceToTOF.put(4.396989, 1.49 - 0.22); // 1.27
-    // distanceToTOF.put(4.159497, 3.98 - 2.7); // 1.28
-    // distanceToTOF.put(3.842914, 3.54 - 2.37); // 1.17
-    distanceToTOF.put(3.454697, 2.53 - 1.5); // 1.03
-    // distanceToTOF.put(3.150055, 6.95 - 5.92);
-    distanceToTOF.put(2.70487, 2.69 - 1.67); // 1.02
-    distanceToTOF.put(2.398314, 2.99 - 1.95); // 1.04
-    distanceToTOF.put(1.847699, 3.02 - 2.04);
-
-    double minTOFDistance = 1.847699;
-    double maxTOFDistance = 5.234883;
+    double minDistance = 1.918899;
+    double maxDistance = 4.776835;
 
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);
@@ -55,11 +44,18 @@ public class EeshwarkTargeter implements KinematicTargeter {
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);
 
-    for (double distance :
-        List.of(5.234883, 4.625298, 4.396989, 3.454697, 2.70487, 2.398314, 1.847699)) {
-      // double distance = ((maxTOFDistance - minTOFDistance) / 10) * i + minTOFDistance;
-      double velocity = distance / distanceToTOF.get(distance);
-      velocityToDistance.put(velocity, distance);
+    for (int i = 0; i < 10; i++) {
+      // double distance = ((maxTOFDistance - minTOFDistance) / 10) * i +
+      double distance = (((maxDistance - minDistance) / 10) * i) + minDistance;
+
+      double launchAngle = ShooterSubsystem.getIdealPitch(distance);
+
+      double velocity =
+          ShooterSubsystem.shooterSpeedToVelocity(distanceToRPM.get(distance) * (Math.PI / 30.));
+      double xVelocity = Math.cos(launchAngle) * velocity;
+
+      // minTOFDistance;
+      velocityToDistance.put(xVelocity, distance);
     }
   }
 
@@ -71,18 +67,19 @@ public class EeshwarkTargeter implements KinematicTargeter {
 
   @Override
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData) {
-    // double projectileVelocity = targetingData.projectileVelocity().in(MetersPerSecond);
+    // double projectileVelocity =
+    // targetingData.projectileVelocity().in(MetersPerSecond);
     double distance = targetingData.target().getNorm();
     Logger.recordOutput("DistancePassedToTargeter", distance);
-    Logger.recordOutput("TOF", distanceToTOF.get(distance));
+    // Logger.recordOutput("TOF", distanceToTOF.get(distance));
 
     Translation2d directionToTarget = targetingData.target().div(distance);
     // TargetingResult2d staticVelocity =
-    //     this.getShooterTargetingWithoutVelocity(
-    //         distance,
-    //         targetingData.targetHeight().in(Meters)
-    //             - Constants.ShooterConstants.positionOnRobot.getZ(),
-    //         projectileVelocity);
+    // this.getShooterTargetingWithoutVelocity(
+    // distance,
+    // targetingData.targetHeight().in(Meters)
+    // - Constants.ShooterConstants.positionOnRobot.getZ(),
+    // projectileVelocity);
     double baseRPM = distanceToRPM.get(distance);
     double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM * (Math.PI / 30.));
     double staticHorizontalVelocity =
@@ -101,13 +98,14 @@ public class EeshwarkTargeter implements KinematicTargeter {
     Rotation2d shotYaw = shotVector.getAngle();
     double fieldRelativeYaw = shotYaw.getRadians();
     double requiredHorizontalVelocity = shotVector.getNorm();
-    // double requiredVelocity = requiredHorizontalVelocity / targetingData.launchAngle().getCos();
+    // double requiredVelocity = requiredHorizontalVelocity /
+    // targetingData.launchAngle().getCos();
 
     double requiredPitch = Math.acos((requiredHorizontalVelocity / projectileVelocity));
 
     return Optional.of(
         new TargetingResult3d(
-            baseRPM, // calculateAdjustedRpm(requiredHorizontalVelocity),
+            calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));
   }

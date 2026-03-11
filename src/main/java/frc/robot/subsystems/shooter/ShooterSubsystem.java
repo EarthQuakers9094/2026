@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -41,6 +42,9 @@ public class ShooterSubsystem extends SubsystemBase {
   // private double speedSetpointRPM = 0.0;
 
   private boolean wasFuelInShooter = false;
+
+  @AutoLogOutput public Rotation2d idealYaw = new Rotation2d();
+
   @AutoLogOutput public int shotCount = 0;
 
   public enum ShooterState {
@@ -49,7 +53,15 @@ public class ShooterSubsystem extends SubsystemBase {
     Shooting
   }
 
+  public enum TurretState {
+    NotTargeting,
+    OnTarget,
+    OffTarget
+  }
+
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
+  @AutoLogOutput private TurretState turretState = TurretState.NotTargeting;
+
   private boolean shouldShootWhenReady = false;
 
   private final Supplier<Pose2d> robotPositionSupplier;
@@ -151,12 +163,12 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case Revving:
         setSpeedSetpoint(targetSpeed);
-        if (isSpunUp() && shouldShootWhenReady) {
+        if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
         }
         break;
       case Shooting:
-        if (!isSpunUp() || !shouldShootWhenReady) {
+        if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
           this.shooterState = ShooterState.Revving;
         }
         break;
@@ -173,6 +185,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public AngularVelocity getShooterSpeed() {
     return inputs.shooterSpeed;
+  }
+
+  @AutoLogOutput
+  public boolean isOnTarget() {
+    return turretState == TurretState.OnTarget;
+  }
+
+  @AutoLogOutput
+  public boolean isYawNearIdeal() {
+    return inputs.yaw.minus(idealYaw.getMeasure()).abs(Radians)
+        <= Constants.ShooterConstants.yawThreshold.in(Radians);
   }
 
   @AutoLogOutput
@@ -209,6 +232,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void setYaw(Rotation2d yaw) {
+    this.idealYaw = yaw;
     double yawRadians =
         Math.max(
             Math.min(yaw.getRadians(), Constants.ShooterConstants.maxTurretYaw.getRadians()),
@@ -258,6 +282,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static double getIdealPitch(double distanceToTarget) {
     return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
+  }
+
+  public TurretState getTurretState() {
+    return this.turretState;
+  }
+
+  public void setTurretState(TurretState state) {
+    this.turretState = state;
   }
   // if (distanceToTarget <= 2.0) {
   // return Math.PI / 2;

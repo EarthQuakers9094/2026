@@ -8,7 +8,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -78,7 +77,9 @@ public class ShooterTrackTarget extends Command {
   }
 
   @Override
-  public void initialize() {}
+  public void initialize() {
+    shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
+  }
 
   @Override
   public void execute() {
@@ -142,6 +143,7 @@ public class ShooterTrackTarget extends Command {
                 // do.
                 new Rotation2d(targetPitch)));
     if (maybeTargetingResult.isPresent()) {
+      shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
       shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
@@ -152,6 +154,10 @@ public class ShooterTrackTarget extends Command {
 
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
+
+      if (shooterSubsystem.isYawNearIdeal()) {
+        shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OnTarget);
+      }
       // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
       // if (targetingResult.pitchRadians() >= Math.PI / 2.) {
       // DriverStation.reportError(
@@ -166,12 +172,14 @@ public class ShooterTrackTarget extends Command {
       // // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
       // }
     } else {
-      DriverStation.reportError("AAAAAAAAAAAHA", false);
+      shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.NotTargeting);
     }
   }
 
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.NotTargeting);
+  }
 
   @Override
   public boolean isFinished() {

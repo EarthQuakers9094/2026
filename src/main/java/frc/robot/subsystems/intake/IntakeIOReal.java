@@ -1,5 +1,6 @@
 package frc.robot.subsystems.intake;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 
@@ -16,7 +17,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
-import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOReal implements IntakeIO {
 
@@ -28,14 +28,6 @@ public class IntakeIOReal implements IntakeIO {
   // private final TalonFX spinMotor = new TalonFX(IntakeConstants.intakeSpinMotor);
 
   public IntakeIOReal() {
-    // pivotMotor
-    //     .getConfigurator()
-    //     .apply(
-    //         new Slot0Configs()
-    //             .withKP(Constants.IntakeConstants.pivotkP)
-    //             .withKI(0.0)
-    //             .withKD(Constants.IntakeConstants.pivotkD)
-    //             .withKV(Constants.IntakeConstants.pivotkV));
     pivotMotor.configure(
         new SparkFlexConfig()
             .smartCurrentLimit(60)
@@ -55,47 +47,35 @@ public class IntakeIOReal implements IntakeIO {
                         Constants.IntakeConstants.intakePivotConversionFactor)),
         ResetMode.kResetSafeParameters,
         PersistMode.kNoPersistParameters);
+
     spinMotor.configure(
         new SparkFlexConfig()
             .inverted(true)
             .smartCurrentLimit(60)
             .apply(
                 new ClosedLoopConfig()
-                    .pid(Constants.IntakeConstants.spinkP, 0, Constants.IntakeConstants.spinkD)
+                    .pid(
+                        Constants.IntakeConstants.spinkP,
+                        Constants.IntakeConstants.spinkI,
+                        Constants.IntakeConstants.spinkD)
                     .apply(new FeedForwardConfig().kV(Constants.IntakeConstants.spinkV)))
             .apply(
                 new EncoderConfig()
-                    .velocityConversionFactor(Constants.IntakeConstants.intakeConversionFactor)),
+                    .velocityConversionFactor(
+                        Constants.IntakeConstants.intakeSpinConversionFactor)),
         ResetMode.kResetSafeParameters,
         PersistMode.kNoPersistParameters);
 
     pivotMotor.getEncoder().setPosition(Constants.IntakeConstants.startAngle.in(Rotations));
-    // find gear ratios
-    // spinMotor
-    //     .getConfigurator()
-    //     .apply(
-    //         new Slot0Configs()
-    //             .withKP(Constants.IntakeConstants.spinkP)
-    //             .withKI(0.0)
-    //             .withKD(Constants.IntakeConstants.spinkD)
-    //             .withKV(Constants.IntakeConstants.spinkV));
   }
 
   public void updateInputs(IntakeIOInputs inputs) {
+    inputs.intakePivotAngle = Rotations.of(pivotMotor.getEncoder().getPosition());
+    inputs.intakePivotCurrent = Amps.of(pivotMotor.getOutputCurrent());
+    inputs.intakePivotAngularVelocity = RPM.of(pivotMotor.getEncoder().getVelocity());
 
-    // boolean isIntaking;
-    // if (spinMotor.getSupplyVoltage().getValueAsDouble() == 0.0) {
-    //   isIntaking = false;
-    // } else {
-    //   isIntaking = true;
-    // }
-
-    // inputs.isIntaking = isIntaking;
-    inputs.pivotAngle = Rotations.of(pivotMotor.getEncoder().getPosition());
-    inputs.pivotCurrent = pivotMotor.getOutputCurrent();
-    inputs.intakeSpeed = RPM.of(spinMotor.getEncoder().getVelocity());
-    Logger.recordOutput("Intake/PivotAngleDegrees", pivotMotor.getEncoder().getPosition() * 360);
-    Logger.recordOutput("Intake/PivotOutput", pivotMotor.getAppliedOutput());
+    inputs.intakeSpinnerAngularVelocity = RPM.of(spinMotor.getEncoder().getVelocity());
+    inputs.intakeSpinnerCurrent = Amps.of(spinMotor.getOutputCurrent());
   }
 
   public void runIntake(AngularVelocity rotations) {

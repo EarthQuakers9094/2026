@@ -9,13 +9,12 @@ public class IntakeFuel extends Command {
 
   public IntakeFuel(IntakeSubsystem intake) {
     this.intake = intake;
-
-    // addRequirements(intake);
+    //addRequirements(intake);
   }
 
   @Override
   public void initialize() {
-    intake.startIntake();
+    intake.deployIntake();
   }
 
   @Override

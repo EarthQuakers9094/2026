@@ -313,52 +313,8 @@ public class RobotContainer {
     leftStick
         .povRight()
         .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees((80 + 55) / 2))));
-    // leftStick.povUp().onTrue(new InstantCommand(() ->
-    // shooter.setYaw(Rotation2d.fromDegrees(0))));
-    // leftStick
-    //     .povLeft()
-    //     .onTrue(new InstantCommand(() -> shooter.setYaw(Rotation2d.fromDegrees(45))));
-    // leftStick
-    //     .povRight()
-    //     .onTrue(new InstantCommand(() -> shooter.setYaw(Rotation2d.fromDegrees(-45))));
-    // // leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker));
-    // SmartDashboard.putNumber("HoodAngle", 0);
-    // leftStick
-    //     .trigger()
-    //     .onTrue(
-    //         new InstantCommand(
-    //             () -> {
-    //               shooter.setPitch(new Rotation2d(SmartDashboard.getNumber("HoodAngle", 90)));
-    //             }));
 
     rightStick.trigger().toggleOnTrue(new DeployIntake(intake));
-
-    // leftStick.povUp().onTrue(new Inst)
-    // controller.x().onTrue(new KickerShooterSpindexerCommand(kicker, shooter, spindexer));
-    // controller
-    //     .y()
-    //     .onTrue(
-    //         Commands.parallel(
-    //             new InstantCommand(() -> shooter.endShooting(), shooter),
-    //             new InstantCommand(() -> kicker.stopKicker(), kicker),
-    //             new InstantCommand(() -> spindexer.stop(), spindexer)));
-
-    // TODO make this conditional command work by making a boolean condition so that when
-    // controller.a is triggered it will decide between running and stopping...
-    /*controller.a().onTrue
-    (
-        new ConditionalCommand
-        (
-            new KickerShooterSpindexerCommand(kicker, shooter, spindexer),
-            Commands.parallel
-            (
-                new InstantCommand(() -> shooter.endShooting()),
-                new InstantCommand(() -> kicker.stopKicker()),
-                new InstantCommand(() -> spindexer.stop())
-            ),
-            () -> (true)
-        )
-    );*/
   }
 
   private void configureButtonBindings() {

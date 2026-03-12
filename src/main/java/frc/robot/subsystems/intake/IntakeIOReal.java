@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
@@ -42,7 +43,8 @@ public class IntakeIOReal implements IntakeIO {
             .apply(
                 new EncoderConfig()
                     .positionConversionFactor(
-                        Constants.IntakeConstants.intakePivotConversionFactor)),
+                        Constants.IntakeConstants.intakePivotConversionFactor))
+            .idleMode(IdleMode.kBrake),
         ResetMode.kResetSafeParameters,
         PersistMode.kNoPersistParameters);
 

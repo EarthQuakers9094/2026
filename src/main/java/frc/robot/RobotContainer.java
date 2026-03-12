@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -38,6 +39,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.hopperservo.HopperServoIO;
+import frc.robot.subsystems.hopperservo.HopperServoIOReal;
+import frc.robot.subsystems.hopperservo.HopperServoIOSim;
+import frc.robot.subsystems.hopperservo.HopperServoSubsystem;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -77,6 +82,7 @@ public class RobotContainer {
   private final Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
+  private final HopperServoSubsystem servo;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -147,6 +153,7 @@ public class RobotContainer {
                         0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.))));
         kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
+        servo = new HopperServoSubsystem(new HopperServoIOReal());
         break;
 
       case SIM:
@@ -211,6 +218,7 @@ public class RobotContainer {
         //             drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
+        servo = new HopperServoSubsystem(new HopperServoIOSim());
         break;
 
       default:
@@ -228,6 +236,7 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
+        servo = new HopperServoSubsystem(new HopperServoIO() {});
         break;
     }
 
@@ -412,6 +421,11 @@ public class RobotContainer {
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+
+    NamedCommands.registerCommand(
+        "Release Expandable Hopper", new InstantCommand(() -> servo.setSetpoint(Degrees.of(0))));
+
+    controller.y().onTrue(NamedCommands.getCommand("Release Expandable Hopper"));
   }
 
   /**

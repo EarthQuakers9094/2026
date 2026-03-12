@@ -59,8 +59,7 @@ public class IntakeSubsystem extends SubsystemBase {
     this.runIntake(RPM.of(0));
   }
 
-  @Deprecated
-  private void pivotIntake(Angle angle) {
+  public void pivotIntake(Angle angle) {
     io.pivotIntake(angle);
     this.state = IntakeState.Moving;
     pivotSetpoint = angle;

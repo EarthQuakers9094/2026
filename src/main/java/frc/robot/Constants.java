@@ -212,4 +212,9 @@ public final class Constants {
     public static final double kV = 0.00174;
     public static final AngularVelocity spindexerSetSpeed = RPM.of(3000);
   }
+
+  public static class ServoConstants {
+    public static final int PWMPort = 9;
+    public static final Angle servoMaxAngle = Degrees.of(180);
+  }
 }

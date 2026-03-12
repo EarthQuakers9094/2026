@@ -29,6 +29,8 @@ import frc.robot.commands.DeployIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.EjectLooseFuel;
+import frc.robot.commands.ManualServoMoveCommand;
+import frc.robot.commands.ManualServoMoveCommand.ServoMoveDirection;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
@@ -403,6 +405,7 @@ public class RobotContainer {
 
     /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    //controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
 
     leftStick
         .button(4)
@@ -414,18 +417,31 @@ public class RobotContainer {
                 () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
     /** Zero Intake To Ground Position */
-    controller
-        .povUp()
-        .onTrue(
-            new InstantCommand(
-                () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
-
-    controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+    leftStick
+    .button(3)
+    .onTrue(
+        new InstantCommand(
+            () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
 
     NamedCommands.registerCommand(
         "Release Expandable Hopper", new InstantCommand(() -> servo.setSetpoint(Degrees.of(0))));
 
+    //TODO REMOVE IT IS ONLY A TEMP TRIGGER
     controller.y().onTrue(NamedCommands.getCommand("Release Expandable Hopper"));
+
+    controller
+        .rightBumper()
+        .whileTrue(new ManualServoMoveCommand(servo, ServoMoveDirection.TOWARDS_180));
+    controller
+        .leftBumper()
+        .whileTrue(new ManualServoMoveCommand(servo, ServoMoveDirection.TOWARDS_0));
+
+    controller
+        .b()
+        .whileTrue(Commands.run(shooter::reverseShooter, shooter))
+        .onFalse(new InstantCommand(() -> shooter.stopShooter()));
+
+    controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
   }
 
   /**

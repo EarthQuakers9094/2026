@@ -46,7 +46,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public enum ShooterState {
     Inactive,
     Revving,
-    Shooting
+    Shooting,
+    Reversing
   }
 
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
@@ -111,6 +112,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public void reverseShooter() {
+    shooterState = ShooterState.Reversing;
+  }
+
   public void stopShooter() {
     shooterState = ShooterState.Inactive;
   }
@@ -160,6 +165,8 @@ public class ShooterSubsystem extends SubsystemBase {
           this.shooterState = ShooterState.Revving;
         }
         break;
+      case Reversing:
+        setSpeedSetpoint(targetSpeed.unaryMinus());
       default:
         break;
     }

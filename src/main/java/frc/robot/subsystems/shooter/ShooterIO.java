@@ -27,6 +27,6 @@ public interface ShooterIO {
   public default void setVelocitySetpoint(AngularVelocity speed) {}
 
   public default void retractHood() {
-    this.setHoodAngle(Constants.ShooterConstants.safeHoodAngle);
+    setHoodAngle(Constants.ShooterConstants.safeHoodAngle);
   }
 }

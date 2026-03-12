@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -205,6 +206,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setHoodAngle(double hoodAngle) {
     Logger.recordOutput("Setting hood angle", Timer.getFPGATimestamp());
 
+    // if (hoodAngle != 0) {
+    //   System.out.println(DriverStation.getMatchTime());
+    // }
+
     io.setHoodAngle(hoodAngle);
   }
 
@@ -215,6 +220,10 @@ public class ShooterSubsystem extends SubsystemBase {
             Constants.ShooterConstants.minTurretYaw.getRadians());
 
     io.setYaw(new Rotation2d(yawRadians));
+  }
+
+  public Angle getYaw() {
+    return inputs.yaw;
   }
 
   public void retractHood() {

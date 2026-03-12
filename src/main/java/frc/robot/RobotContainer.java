@@ -31,6 +31,7 @@ import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.EjectLooseFuel;
 import frc.robot.commands.IntakeFuel;
+import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ShootFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
@@ -449,19 +450,9 @@ public class RobotContainer {
     controller
         .start()
         .whileTrue(
-            Commands.run(
-                () -> {
-                  shooter.setYaw(
-                      new Rotation2d(Math.atan2(controller.getLeftY(), controller.getLeftX())));
-                },
-                shooter));
+             new ManualTurret(shooter, controller::getLeftX));
 
-    controller
-        .leftTrigger()
-        .whileTrue(
-            Commands.run(
-                shooter::retractHood,
-                shooter));
+    controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
   }
 
   /**

@@ -33,6 +33,7 @@ import frc.robot.commands.EjectLooseFuel;
 import frc.robot.commands.IntakeFuel;
 import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ZeroHood;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -52,6 +53,7 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.spindexer.SpindexerIO;
@@ -76,7 +78,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
   private final Vision vision;
-  private final Targeter targeter = new EeshwarkTargeter();
+  private Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
 
@@ -448,9 +450,37 @@ public class RobotContainer {
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
 
     controller
-        .start()
+        .a()
         .whileTrue(
              new ManualTurret(shooter, controller::getLeftX));
+    controller
+        .povUp()
+        .whileTrue(
+             Commands.run(() -> {
+                shooter.setHoodAngle(shooter.getHoodAngle() + 0.1);
+             }, shooter));
+    controller
+        .povDown()
+        .whileTrue(
+             Commands.run(() -> {
+                shooter.setHoodAngle(shooter.getHoodAngle() - 0.1);
+             }, shooter));
+ controller
+        .povLeft()
+        .onTrue(new ZeroHood(shooter));
+                 controller
+        .povRight()
+        .onTrue(
+             new InstantCommand(() -> {targeter = new ConstantTargeter();})
+            );
+
+  controller
+        .start()
+        .onTrue(
+             new InstantCommand(() -> {targeter = new EeshwarkTargeter();})
+            );
+    
+    
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
   }

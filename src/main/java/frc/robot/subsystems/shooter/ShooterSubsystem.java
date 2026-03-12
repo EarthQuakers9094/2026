@@ -5,6 +5,14 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -15,12 +23,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MovingAverage;
-import java.util.function.Supplier;
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -230,6 +232,22 @@ public class ShooterSubsystem extends SubsystemBase {
     io.retractHood();
   }
 
+  public void runHoodDown() {
+    io.setHoodSpeed(-0.1);
+  }
+
+  public void zeroHood() {
+    io.zeroHood();
+  }
+
+  public void stopHood() {
+    io.setHoodSpeed(0.0);
+  }
+
+  public double getHoodCurrent() {
+    return inputs.hoodCurrent;
+  }
+
   public static double launchAngleToHoodAngle(double launchAngleRad) {
 
     return -4.84013 * launchAngleRad
@@ -251,19 +269,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return RadiansPerSecond.of(-47.8359 * (0.742784 - velocityMPS));
   }
 
-  @AutoLogOutput
-  public static AngularVelocity getIdealShooterSpeed(double distanceToTarget) {
-    Logger.recordOutput("DistanceToTargetMeters", distanceToTarget);
-    double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM", 0.0);
-    return RPM.of(rpm);
-    // if (distanceToTarget > 2.0) {
-    // Logger.recordOutput("Shooter/DistanceToTarget", "far");
-    // return RPM.of(3500);
-    // } else {
-    // Logger.recordOutput("Shooter/DistanceToTarget", "near");
-    // return RPM.of(3000);
-    // }
-  }
+
 
   public static double getIdealPitch(double distanceToTarget) {
     return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
@@ -279,4 +285,8 @@ public class ShooterSubsystem extends SubsystemBase {
   // // throw new UnsupportedOperationException("Unimplemented method
   // 'getIdealPitch'");
   // }
+
+  public double getHoodAngle() {
+    // TODO Auto-generated method stub
+return inputs.hoodPosition;  }
 }

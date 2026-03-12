@@ -106,12 +106,11 @@ public class ShooterTrackTarget extends Command {
 
     // AngularVelocity idealShooterSpeed =
     // ShooterSubsystem.getIdealShooterSpeed(distanceToTarget);
-    double targetPitch = ShooterSubsystem.getIdealPitch(distanceToTarget);
+    // double targetPitch = ShooterSubsystem.getIdealPitch(distanceToTarget);
     // shooterSubsystem.setTargetAngularVelocity(idealShooterSpeed);
     // Logger.recordOutput("Terri", null);
     // System.out.println("About to set thing");
     Logger.recordOutput("Setting Pitch", Timer.getFPGATimestamp());
-    shooterSubsystem.setPitch(new Rotation2d(targetPitch));
 
     // double shooterSpeed =
     // shooterSubsystem.getShooterSpeed().in(RadiansPerSecond);
@@ -126,7 +125,7 @@ public class ShooterTrackTarget extends Command {
                 flippedTarget.getMeasureZ(),
                 new Translation2d(
                     chassisSpeeds.vxMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0),
-                    chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)), // I
+                    chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)) // I
                 // cannot
                 // claim
                 // to
@@ -140,7 +139,7 @@ public class ShooterTrackTarget extends Command {
                 // but
                 // i
                 // do.
-                new Rotation2d(targetPitch)));
+                ));
     if (maybeTargetingResult.isPresent()) {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
@@ -152,6 +151,8 @@ public class ShooterTrackTarget extends Command {
 
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
+              shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+
       // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
       // if (targetingResult.pitchRadians() >= Math.PI / 2.) {
       // DriverStation.reportError(

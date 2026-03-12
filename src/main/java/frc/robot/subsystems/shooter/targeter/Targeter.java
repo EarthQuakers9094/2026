@@ -10,8 +10,7 @@ public interface Targeter {
   public record TargetingData(
       Translation2d target,
       Distance targetHeight,
-      Translation2d robotVelocity,
-      Rotation2d launchAngle) {}
+      Translation2d robotVelocity) {}
 
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData);
 }

@@ -57,18 +57,18 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
-        this.candle = new CANdle(3, Constants.shooterCANBus);
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
         break;
 
       case SIM:
-        this.candle = new CANdle(3, Constants.shooterCANBus);
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
 
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
       case REPLAY:
-        this.candle = new CANdle(3, Constants.shooterCANBus);
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
 
         // Replaying a log, set up replay source
         setUseTiming(false); // Run as fast as possible
@@ -104,8 +104,7 @@ public class Robot extends LoggedRobot {
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
 
-    Logger.recordOutput("ClapBoard", 0.0);
-    candle.setControl(new SolidColor(0, 150));
+    
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);

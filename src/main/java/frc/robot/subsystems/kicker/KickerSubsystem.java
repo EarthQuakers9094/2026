@@ -21,6 +21,10 @@ public class KickerSubsystem extends SubsystemBase {
     io.stopKicker();
   }
 
+  public void reverseKicker() {
+    io.reverseKicker();
+  }
+
   public boolean kickerAtSpeed() {
     double rpm = inputs.angularVelocity.in(RPM);
     double setpoint = inputs.angularVelocitySetpoint.in(RPM);

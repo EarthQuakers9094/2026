@@ -59,7 +59,7 @@ public class ShooterIOReal implements ShooterIO {
   public ShooterIOReal() {
     flywheelLeadMotor
         .getConfigurator()
-        .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+        .apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
     flywheelFollowerMotor.setControl(
         new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
     flywheelLeadMotor

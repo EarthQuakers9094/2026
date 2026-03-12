@@ -7,9 +7,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.controls.SolidColor;
-import com.ctre.phoenix6.hardware.CANdle;
-import com.ctre.phoenix6.signals.RGBWColor;
 import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -34,7 +31,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
-  private CANdle candle;
+  // private CANdle candle;
 
   public Robot() {
     // Record metadata
@@ -80,8 +77,8 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
-    Logger.recordOutput("ClapBoard", 1.0);
-    candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296, 0.8, 1.0)));
+    // Logger.recordOutput("ClapBoard", 1.0);
+    // candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296, 0.8, 1.0)));
 
     SmartDashboard.putNumber("RPM", 0.0);
 
@@ -103,8 +100,6 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
-
-    
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);

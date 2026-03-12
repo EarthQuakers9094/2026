@@ -449,38 +449,39 @@ public class RobotContainer {
             new InstantCommand(
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
 
-    controller
-        .a()
-        .whileTrue(
-             new ManualTurret(shooter, controller::getLeftX));
+    controller.a().whileTrue(new ManualTurret(shooter, controller::getLeftX));
     controller
         .povUp()
         .whileTrue(
-             Commands.run(() -> {
-                shooter.setHoodAngle(shooter.getHoodAngle() + 0.1);
-             }, shooter));
+            Commands.run(
+                () -> {
+                  shooter.setHoodAngle(shooter.getHoodAngle() + 0.1);
+                },
+                shooter));
     controller
         .povDown()
         .whileTrue(
-             Commands.run(() -> {
-                shooter.setHoodAngle(shooter.getHoodAngle() - 0.1);
-             }, shooter));
- controller
-        .povLeft()
-        .onTrue(new ZeroHood(shooter));
-                 controller
+            Commands.run(
+                () -> {
+                  shooter.setHoodAngle(shooter.getHoodAngle() - 0.1);
+                },
+                shooter));
+    controller.povLeft().onTrue(new ZeroHood(shooter));
+    controller
         .povRight()
         .onTrue(
-             new InstantCommand(() -> {targeter = new ConstantTargeter();})
-            );
+            new InstantCommand(
+                () -> {
+                  targeter = new ConstantTargeter();
+                }));
 
-  controller
+    controller
         .start()
         .onTrue(
-             new InstantCommand(() -> {targeter = new EeshwarkTargeter();})
-            );
-    
-    
+            new InstantCommand(
+                () -> {
+                  targeter = new EeshwarkTargeter();
+                }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
   }

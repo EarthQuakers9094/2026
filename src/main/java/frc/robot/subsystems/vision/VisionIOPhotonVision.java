@@ -53,7 +53,7 @@ public class VisionIOPhotonVision implements VisionIO {
         tagCount = multiTagResult.fiducialIDsUsed.size();
 
         bestTransform = multiTagResult.estimatedPose.best.plus(robotToCamera.inverse());
-      } else {
+      }/* else {
         if (!result.targets.isEmpty()) {
           PhotonTrackedTarget target = result.targets.get(0);
 
@@ -81,7 +81,7 @@ public class VisionIOPhotonVision implements VisionIO {
           // target.getBestCameraToTarget()//.bestCameraToTarget.plus(robotToCamera.);
           tagCount = 1;
         }
-      }
+      }*/
       inputs.targetPoses = targets.toArray(new Pose3d[0]);
 
       if (bestTransform != null) {

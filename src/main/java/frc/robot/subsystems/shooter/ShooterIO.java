@@ -23,12 +23,9 @@ public interface ShooterIO {
 
   public default void setHoodAngle(double hoodAngle) {}
 
-  public default void setHoodSpeed(double speed) {
-  }
+  public default void setHoodSpeed(double speed) {}
 
-  public default void zeroHood() {
-  }
-
+  public default void zeroHood() {}
 
   public default void setYaw(Rotation2d yaw) {}
 

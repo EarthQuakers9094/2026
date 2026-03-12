@@ -151,7 +151,7 @@ public class ShooterTrackTarget extends Command {
 
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
-              shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
 
       // shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
       // if (targetingResult.pitchRadians() >= Math.PI / 2.) {

@@ -5,14 +5,6 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import java.util.function.Supplier;
-
-import org.littletonrobotics.junction.AutoLogOutput;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
-import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -23,6 +15,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.util.MovingAverage;
+import java.util.function.Supplier;
+import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.mechanism.LoggedMechanism2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismLigament2d;
+import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -269,11 +267,6 @@ public class ShooterSubsystem extends SubsystemBase {
     return RadiansPerSecond.of(-47.8359 * (0.742784 - velocityMPS));
   }
 
-
-
-  public static double getIdealPitch(double distanceToTarget) {
-    return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
-  }
   // if (distanceToTarget <= 2.0) {
   // return Math.PI / 2;
   // } else if (distanceToTarget <= 4.0) {
@@ -288,5 +281,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public double getHoodAngle() {
     // TODO Auto-generated method stub
-return inputs.hoodPosition;  }
+    return inputs.hoodPosition;
+  }
 }

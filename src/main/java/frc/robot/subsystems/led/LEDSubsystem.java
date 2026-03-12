@@ -1,13 +1,11 @@
 package frc.robot.subsystems.led;
 
+import com.ctre.phoenix6.controls.SolidColor;
+import com.ctre.phoenix6.hardware.CANdle;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.Queue;
-
 import org.littletonrobotics.junction.Logger;
-
-import com.ctre.phoenix6.controls.SolidColor;
-import com.ctre.phoenix6.hardware.CANdle;
 
 public class LEDSubsystem extends SubsystemBase {
 

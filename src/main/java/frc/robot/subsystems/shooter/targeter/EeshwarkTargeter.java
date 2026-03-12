@@ -1,15 +1,13 @@
 package frc.robot.subsystems.shooter.targeter;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
+import java.util.List;
+import java.util.Optional;
+import org.littletonrobotics.junction.Logger;
 
 public class EeshwarkTargeter implements Targeter {
 
@@ -68,7 +66,8 @@ public class EeshwarkTargeter implements Targeter {
   // @AutoLogOutput
   // public static AngularVelocity getIdealShooterSpeed(double distanceToTarget) {
   //   Logger.recordOutput("DistanceToTargetMeters", distanceToTarget);
-  //   double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM", 0.0);
+  //   double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM",
+  // 0.0);
   //   return RPM.of(rpm);
   //   // if (distanceToTarget > 2.0) {
   //   // Logger.recordOutput("Shooter/DistanceToTarget", "far");
@@ -90,7 +89,7 @@ public class EeshwarkTargeter implements Targeter {
 
   @Override
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData) {
-    
+
     // double projectileVelocity = targetingData.projectileVelocity().in(MetersPerSecond);
     double distance = targetingData.target().getNorm();
     Logger.recordOutput("DistancePassedToTargeter", distance);
@@ -107,8 +106,7 @@ public class EeshwarkTargeter implements Targeter {
     //         projectileVelocity);
     double baseRPM = distanceToRPM.get(distance);
     double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM * (Math.PI / 30.));
-    double staticHorizontalVelocity =
-        Math.cos(idealPitch) * projectileVelocity;
+    double staticHorizontalVelocity = Math.cos(idealPitch) * projectileVelocity;
 
     Translation2d staticShotVelocity = directionToTarget.times(staticHorizontalVelocity);
 
@@ -129,7 +127,7 @@ public class EeshwarkTargeter implements Targeter {
 
     return Optional.of(
         new TargetingResult3d(
-            ShooterSubsystem.launchAngleToHoodAngle(idealPitch),
+            idealPitch,
             baseRPM, // calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));

@@ -274,6 +274,8 @@ public class RobotContainer {
         "reset_shot_count", new InstantCommand(() -> shooter.shotCount = 0));
 
     NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
+    NamedCommands.registerCommand(
+        "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -458,9 +460,6 @@ public class RobotContainer {
                 }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
-
-    NamedCommands.registerCommand(
-        "Release Expandable Hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
     // TODO REMOVE IT IS ONLY A TEMP TRIGGER
     controller.y().onTrue(NamedCommands.getCommand("Release Expandable Hopper"));

@@ -68,7 +68,10 @@ public final class Constants {
     private static AprilTagFieldLayout getFieldLayout() {
       try {
         return new AprilTagFieldLayout(
-            Path.of(Filesystem.getDeployDirectory().getPath(), "apriltags", "2026-official.json"));
+            Path.of(
+                Filesystem.getDeployDirectory().getPath(),
+                "apriltags",
+                "2026-official.json"));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -109,14 +112,14 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.05;
+    public static final double robotPositionAnticipationSeconds = 0.20;
     public static final double flywheelKP = 0.00;
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.00;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
-    public static final int turretMotorId = -1; // 54;
-    public static final int hoodMotorId = -1; // 53;
+    public static final int turretMotorId = 54;
+    public static final int hoodMotorId = 53;
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
@@ -142,6 +145,7 @@ public final class Constants {
         new TrapezoidProfile.Constraints(52.0, 52.0);
 
     public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(24.0, 24.0);
+    public static final Angle yawThreshold = Degrees.of(10.0);
   }
 
   public static class IntakeConstants {
@@ -211,5 +215,10 @@ public final class Constants {
     public static final double kD = 0.0;
     public static final double kV = 0.00174;
     public static final AngularVelocity spindexerSetSpeed = RPM.of(3000);
+  }
+
+  public static class ServoConstants {
+    public static final int PWMPort = 9;
+    public static final Angle servoMaxAngle = Degrees.of(180);
   }
 }

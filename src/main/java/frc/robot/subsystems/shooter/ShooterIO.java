@@ -16,17 +16,22 @@ public interface ShooterIO {
     public boolean isFuelInShooter = false;
     public Angle yaw = Degrees.of(0);
     public double hoodPosition = 0.0;
+    public double hoodCurrent = 0.0;
   }
 
   public default void updateInputs(ShooterIOInputs inputs) {}
 
   public default void setHoodAngle(double hoodAngle) {}
 
+  public default void setHoodSpeed(double speed) {}
+
+  public default void zeroHood() {}
+
   public default void setYaw(Rotation2d yaw) {}
 
   public default void setVelocitySetpoint(AngularVelocity speed) {}
 
   public default void retractHood() {
-    this.setHoodAngle(Constants.ShooterConstants.safeHoodAngle);
+    setHoodAngle(Constants.ShooterConstants.safeHoodAngle);
   }
 }

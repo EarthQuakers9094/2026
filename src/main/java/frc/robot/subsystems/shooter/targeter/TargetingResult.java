@@ -5,9 +5,11 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class TargetingResult {
-  public record TargetingResult2d(double pitchRadians, double timeOfFlightSeconds) {}
+  public record TargetingResult2d(
+      double targetRPM, double pitchRadians, double timeOfFlightSeconds) {}
 
-  public record TargetingResult3d(double targetRPM, double yawRadians, double timeOfFlightSeconds) {
+  public record TargetingResult3d(
+      double pitchRadians, double targetRPM, double yawRadians, double timeOfFlightSeconds) {
 
     public void drawTrajectory(
         Translation3d startPosition,

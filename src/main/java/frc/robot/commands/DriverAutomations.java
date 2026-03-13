@@ -22,7 +22,7 @@ public class DriverAutomations {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPoseSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Targeter targeter) {
+      Supplier<Targeter> targeter) {
 
     return new ShooterTrackTarget(
         shooterSubsystem,

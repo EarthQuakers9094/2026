@@ -3,12 +3,14 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,15 +43,27 @@ public class ShooterSubsystem extends SubsystemBase {
   // private double speedSetpointRPM = 0.0;
 
   private boolean wasFuelInShooter = false;
+
+  @AutoLogOutput public Rotation2d idealYaw = new Rotation2d();
+
   @AutoLogOutput public int shotCount = 0;
 
   public enum ShooterState {
     Inactive,
     Revving,
-    Shooting
+    Shooting,
+    Reversing
+  }
+
+  public enum TurretState {
+    NotTargeting,
+    OnTarget,
+    OffTarget
   }
 
   @AutoLogOutput private ShooterState shooterState = ShooterState.Inactive;
+  @AutoLogOutput private TurretState turretState = TurretState.NotTargeting;
+
   private boolean shouldShootWhenReady = false;
 
   private final Supplier<Pose2d> robotPositionSupplier;
@@ -111,6 +125,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
+  public void reverseShooter() {
+    shooterState = ShooterState.Reversing;
+  }
+
   public void stopShooter() {
     shooterState = ShooterState.Inactive;
   }
@@ -151,15 +169,17 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case Revving:
         setSpeedSetpoint(targetSpeed);
-        if (isSpunUp() && shouldShootWhenReady) {
+        if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
         }
         break;
       case Shooting:
-        if (!isSpunUp() || !shouldShootWhenReady) {
+        if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
           this.shooterState = ShooterState.Revving;
         }
         break;
+      case Reversing:
+        setSpeedSetpoint(targetSpeed.unaryMinus());
       default:
         break;
     }
@@ -173,6 +193,17 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public AngularVelocity getShooterSpeed() {
     return inputs.shooterSpeed;
+  }
+
+  @AutoLogOutput
+  public boolean isOnTarget() {
+    return turretState == TurretState.OnTarget;
+  }
+
+  @AutoLogOutput
+  public boolean isYawNearIdeal() {
+    return inputs.yaw.minus(idealYaw.getMeasure()).abs(Radians)
+        <= Constants.ShooterConstants.yawThreshold.in(Radians);
   }
 
   @AutoLogOutput
@@ -205,10 +236,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public void setHoodAngle(double hoodAngle) {
     Logger.recordOutput("Setting hood angle", Timer.getFPGATimestamp());
 
+    // if (hoodAngle != 0) {
+    //   System.out.println(DriverStation.getMatchTime());
+    // }
+
     io.setHoodAngle(hoodAngle);
   }
 
   public void setYaw(Rotation2d yaw) {
+    this.idealYaw = yaw;
     double yawRadians =
         Math.max(
             Math.min(yaw.getRadians(), Constants.ShooterConstants.maxTurretYaw.getRadians()),
@@ -217,8 +253,28 @@ public class ShooterSubsystem extends SubsystemBase {
     io.setYaw(new Rotation2d(yawRadians));
   }
 
+  public Angle getYaw() {
+    return inputs.yaw;
+  }
+
   public void retractHood() {
     io.retractHood();
+  }
+
+  public void runHoodDown() {
+    io.setHoodSpeed(-0.5);
+  }
+
+  public void zeroHood() {
+    io.zeroHood();
+  }
+
+  public void stopHood() {
+    io.setHoodSpeed(0.0);
+  }
+
+  public double getHoodCurrent() {
+    return inputs.hoodCurrent;
   }
 
   public static double launchAngleToHoodAngle(double launchAngleRad) {
@@ -259,6 +315,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public static double getIdealPitch(double distanceToTarget) {
     return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
   }
+
+  public TurretState getTurretState() {
+    return this.turretState;
+  }
+
+  public void setTurretState(TurretState state) {
+    this.turretState = state;
+  }
   // if (distanceToTarget <= 2.0) {
   // return Math.PI / 2;
   // } else if (distanceToTarget <= 4.0) {
@@ -270,4 +334,9 @@ public class ShooterSubsystem extends SubsystemBase {
   // // throw new UnsupportedOperationException("Unimplemented method
   // 'getIdealPitch'");
   // }
+
+  public double getHoodAngle() {
+    // TODO Auto-generated method stub
+    return inputs.hoodPosition;
+  }
 }

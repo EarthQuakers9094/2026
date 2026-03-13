@@ -28,9 +28,11 @@ import frc.robot.commands.DeployIntake;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.EjectLooseFuel;
+import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ZeroHood;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -38,6 +40,10 @@ import frc.robot.subsystems.drive.GyroIOPigeon2;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalonFX;
+import frc.robot.subsystems.hopperservo.HopperServoIO;
+import frc.robot.subsystems.hopperservo.HopperServoIOReal;
+import frc.robot.subsystems.hopperservo.HopperServoIOSim;
+import frc.robot.subsystems.hopperservo.HopperServoSubsystem;
 import frc.robot.subsystems.intake.IntakeIO;
 import frc.robot.subsystems.intake.IntakeIOReal;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -50,6 +56,7 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.spindexer.SpindexerIO;
@@ -74,9 +81,10 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
   private final Vision vision;
-  private final Targeter targeter = new EeshwarkTargeter();
+  private Targeter targeter = new EeshwarkTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
+  private final HopperServoSubsystem servo;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -147,6 +155,7 @@ public class RobotContainer {
                         0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.))));
         kicker = new KickerSubsystem(new KickerIOReal());
         spindexer = new SpindexerSubsystem(new SpindexerIOReal());
+        servo = new HopperServoSubsystem(new HopperServoIOReal());
         break;
 
       case SIM:
@@ -211,6 +220,7 @@ public class RobotContainer {
         //             drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
+        servo = new HopperServoSubsystem(new HopperServoIOSim());
         break;
 
       default:
@@ -228,6 +238,7 @@ public class RobotContainer {
         vision = new Vision(drive::addVisionMeasurement);
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
+        servo = new HopperServoSubsystem(new HopperServoIO() {});
         break;
     }
 
@@ -263,6 +274,8 @@ public class RobotContainer {
         "reset_shot_count", new InstantCommand(() -> shooter.shotCount = 0));
 
     NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
+    NamedCommands.registerCommand(
+        "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -334,7 +347,7 @@ public class RobotContainer {
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-                shooter, drive::getPose, drive::getChassisSpeeds, targeter)
+                shooter, drive::getPose, drive::getChassisSpeeds, () -> targeter)
             .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
     // new ShooterTrackTarget(
     // shooter,
@@ -345,14 +358,14 @@ public class RobotContainer {
     // true));
 
     // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero));
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
     /*controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -394,6 +407,7 @@ public class RobotContainer {
 
     /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
 
     leftStick
         .button(4)
@@ -405,11 +419,56 @@ public class RobotContainer {
                 () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
 
     /** Zero Intake To Ground Position */
-    controller
-        .povUp()
+    leftStick
+        .button(3)
         .onTrue(
             new InstantCommand(
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
+
+    controller.a().whileTrue(new ManualTurret(shooter, controller::getLeftX));
+    controller
+        .povUp()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  shooter.setHoodAngle(shooter.getHoodAngle() + 0.1);
+                },
+                shooter));
+    controller
+        .povDown()
+        .whileTrue(
+            Commands.run(
+                () -> {
+                  shooter.setHoodAngle(shooter.getHoodAngle() - 0.1);
+                },
+                shooter));
+    controller.povLeft().onTrue(new ZeroHood(shooter));
+    controller
+        .povRight()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  targeter = new ConstantTargeter();
+                }));
+
+    controller
+        .start()
+        .onTrue(
+            new InstantCommand(
+                () -> {
+                  targeter = new EeshwarkTargeter();
+                }));
+
+    controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
+
+
+    controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
+    controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));
+
+    controller
+        .b()
+        .whileTrue(Commands.run(shooter::reverseShooter, shooter))
+        .onFalse(new InstantCommand(() -> shooter.stopShooter()));
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
   }

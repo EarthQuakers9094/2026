@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "extend_hopper"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Right to Center"

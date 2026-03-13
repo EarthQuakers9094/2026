@@ -53,35 +53,35 @@ public class VisionIOPhotonVision implements VisionIO {
         tagCount = multiTagResult.fiducialIDsUsed.size();
 
         bestTransform = multiTagResult.estimatedPose.best.plus(robotToCamera.inverse());
-      } else {
-        if (!result.targets.isEmpty()) {
-          PhotonTrackedTarget target = result.targets.get(0);
+      } /* else {
+          if (!result.targets.isEmpty()) {
+            PhotonTrackedTarget target = result.targets.get(0);
 
-          var tagPose = Constants.Field.aprilTagLayout.getTagPose(target.fiducialId);
-          if (tagPose.isPresent()) {
-            Transform3d fieldToTarget =
-                new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
-            // System.out.println("64" + fieldToTarget);
-            Transform3d cameraToTarget = target.getBestCameraToTarget();
-            // System.out.println("66" + cameraToTarget);
+            var tagPose = Constants.Field.aprilTagLayout.getTagPose(target.fiducialId);
+            if (tagPose.isPresent()) {
+              Transform3d fieldToTarget =
+                  new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+              // System.out.println("64" + fieldToTarget);
+              Transform3d cameraToTarget = target.getBestCameraToTarget();
+              // System.out.println("66" + cameraToTarget);
 
-            totalTagDistance += cameraToTarget.getTranslation().getNorm();
+              totalTagDistance += cameraToTarget.getTranslation().getNorm();
 
-            Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
-            // System.out.println("69" + fieldToCamera);
+              Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
+              // System.out.println("69" + fieldToCamera);
 
-            bestTransform = fieldToCamera.plus(robotToCamera.inverse());
-            // System.out.println("72" + bestTransform);
+              bestTransform = fieldToCamera.plus(robotToCamera.inverse());
+              // System.out.println("72" + bestTransform);
 
-            targets.add(tagPose.get());
+              targets.add(tagPose.get());
+            }
+            // Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(),
+            // fieldToRobot.getRotation());
+            // bestTransform =
+            // target.getBestCameraToTarget()//.bestCameraToTarget.plus(robotToCamera.);
+            tagCount = 1;
           }
-          // Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(),
-          // fieldToRobot.getRotation());
-          // bestTransform =
-          // target.getBestCameraToTarget()//.bestCameraToTarget.plus(robotToCamera.);
-          tagCount = 1;
-        }
-      }
+        }*/
       inputs.targetPoses = targets.toArray(new Pose3d[0]);
 
       if (bestTransform != null) {

@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Radians;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -58,7 +59,7 @@ public class ShooterIOReal implements ShooterIO {
   public ShooterIOReal() {
     flywheelLeadMotor
         .getConfigurator()
-        .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+        .apply(new MotorOutputConfigs().withInverted(InvertedValue.CounterClockwise_Positive));
     flywheelFollowerMotor.setControl(
         new Follower(flywheelLeadMotor.getDeviceID(), MotorAlignmentValue.Opposed));
     flywheelLeadMotor
@@ -139,6 +140,8 @@ public class ShooterIOReal implements ShooterIO {
     turretState = turretTrapezoidProfile.calculate(0.02, turretState, turretSetpoint);
     Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
 
+    inputs.hoodCurrent = hoodPivot.getSupplyCurrent().getValueAsDouble();
+
     // Logger.recordOutput("Shooter/HoodCurrent", hoodPivot.getCurr);
 
     turretPivot.setControl(new PositionVoltage(Radians.of(turretState.position)).withSlot(0));
@@ -154,7 +157,11 @@ public class ShooterIOReal implements ShooterIO {
   }
 
   public void setHoodSpeed(double speed) {
-    hoodPivot.set(speed);
+    hoodPivot.setControl(new DutyCycleOut(speed));
+  }
+
+  public void zeroHood() {
+    turretPivot.setPosition(Constants.ShooterConstants.turretZeroYaw.getMeasure());
   }
 
   public void setYaw(Rotation2d yaw) {

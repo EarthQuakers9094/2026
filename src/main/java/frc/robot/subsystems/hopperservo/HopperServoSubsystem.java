@@ -32,10 +32,6 @@ public class HopperServoSubsystem extends SubsystemBase {
     io.setSetpointPWM(PWM);
   }
 
-  public double getPWMPos() {
-    return io.getPWMPos();
-  }
-
   @Override
   public void periodic() {
     io.updateInputs(inputs);

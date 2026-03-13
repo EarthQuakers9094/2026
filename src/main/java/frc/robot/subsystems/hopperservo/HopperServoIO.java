@@ -14,10 +14,6 @@ public interface HopperServoIO {
 
   public default void updateInputs(HopperServoIOInputs inputs) {}
 
-  public default double getPWMPos() {
-    return 0.0;
-  }
-
   public default void setSetpointPWM(double PWM) {}
 
   public default void setSetpoint(Angle setpoint) {}

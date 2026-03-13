@@ -28,18 +28,11 @@ public class HopperServoIOReal implements HopperServoIO {
     servo.setPosition(pwmPosition);
   }
 
-  public double getPWMPos() {
-    return 0;
-    // return servo.get();
-  }
-
   public void setSetpointPWM(double PWM) {
     servo.setPosition(PWM);
   }
 
   public void updateInputs(HopperServoIOInputs inputs) {
-    // inputs.servoAngle =
-    //     Degrees.of((servo.get() * Constants.ServoConstants.servoMaxAngle.in(Degrees)));
     inputs.servoAngleSetpoint = setpoint;
   }
 }

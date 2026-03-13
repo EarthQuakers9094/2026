@@ -16,5 +16,7 @@ public interface KickerIO {
 
   public default void stopKicker() {}
 
+  public default void reverseKicker() {}
+
   public default void updateInputs(KickerIOInputs inputs) {}
 }

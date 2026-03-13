@@ -4,11 +4,9 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import org.littletonrobotics.junction.Logger;
@@ -30,7 +28,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeState state = IntakeState.Retracted;
   public IntakeState targetState = IntakeState.Retracted;
   private Angle pivotSetpoint = Constants.IntakeConstants.startAngle;
-  private AngularVelocity intakeSetpoint = RPM.of(0);
+  private AngularVelocity speedSetpoint = RPM.of(0);
+
   private final LoggedMechanism2d armMechanism = new LoggedMechanism2d(3, 3);
   private final LoggedMechanismRoot2d armMechanismRoot =
       armMechanism.getRoot("intakeArm", 1.0, 0.1);
@@ -44,8 +43,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void runIntake(AngularVelocity speed) {
-    this.intakeSetpoint = speed;
     io.runIntake(speed);
+    this.speedSetpoint = speed;
   }
 
   public void startIntake() {
@@ -57,9 +56,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void stopIntake() {
-    io.runIntake(RPM.of(0));
+    this.runIntake(RPM.of(0));
   }
 
+  @Deprecated
   private void pivotIntake(Angle angle) {
     io.pivotIntake(angle);
     this.state = IntakeState.Moving;
@@ -68,7 +68,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void deployIntake() {
-    DriverStation.reportError("DEPLOYED UINTAKE", false);
     this.targetState = IntakeState.Deployed;
     this.pivotIntake(Constants.IntakeConstants.deployedAngle);
   }
@@ -85,18 +84,20 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Intake", inputs);
 
-    intakeArmVisualization.setAngle(inputs.pivotAngle.unaryMinus().plus(Degrees.of(180.0)));
-
+    intakeArmVisualization.setAngle(inputs.intakePivotAngle.unaryMinus().plus(Degrees.of(180.0)));
     Logger.recordOutput("Intake/State", state);
-    Logger.recordOutput("Intake/SpinSpeedRadPerSec", intakeSetpoint.in(RadiansPerSecond));
     Logger.recordOutput("Intake/Visualization", armMechanism);
 
-    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.pivotAngle.in(Degrees)) < 8.) {
+    inputs.intakeSpinnerAngularVelocitySetpoint = speedSetpoint;
+    inputs.intakePivotAngleSetpoint = pivotSetpoint;
+
+    if (Math.abs(pivotSetpoint.in(Degrees) - inputs.intakePivotAngle.in(Degrees)) < 8.) {
       this.state = this.targetState;
     } else {
       this.state = IntakeState.Moving;
     }
+
+    Logger.processInputs(getName(), inputs);
   }
 }

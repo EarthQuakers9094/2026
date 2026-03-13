@@ -35,28 +35,13 @@ public class KickerIOReal implements KickerIO {
     velocitySetpoint = RPM.of(0.0d);
   }
 
+  public void reverseKicker() {
+    motor.setControl(new VelocityVoltage(Constants.KickerConstants.velocitySetpoint.unaryMinus()));
+    velocitySetpoint = Constants.KickerConstants.velocitySetpoint.unaryMinus();
+  }
+
   public void updateInputs(KickerIOInputs inputs) {
     inputs.angularVelocity = RotationsPerSecond.of(motor.getVelocity().getValueAsDouble());
     inputs.angularVelocitySetpoint = velocitySetpoint;
   }
 }
-
-    // motor = new SparkFlex(Constants.KickerConstants.motorId, MotorType.kBrushless);
-    // motor.configure(
-    //     new SparkFlexConfig()
-    //         .inverted(false)
-    //         .apply(
-    //             new EncoderConfig()
-    //                 .velocityConversionFactor(Constants.KickerConstants.encoderConversionFactor))
-    //         .apply(
-    //             new ClosedLoopConfig()
-    //                 .pid(
-    //                     Constants.KickerConstants.kP,
-    //                     Constants.KickerConstants.kI,
-    //                     Constants.KickerConstants.kD)
-    //                 .apply(
-    //                     new FeedForwardConfig()
-    //                         .kS(Constants.KickerConstants.kS)
-    //                         .kV(Constants.KickerConstants.kV))),
-    //     ResetMode.kResetSafeParameters,
-    //     PersistMode.kPersistParameters);

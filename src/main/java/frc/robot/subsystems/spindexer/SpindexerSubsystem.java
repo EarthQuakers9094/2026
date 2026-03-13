@@ -27,6 +27,10 @@ public class SpindexerSubsystem extends SubsystemBase {
     this.run(Constants.SpindexerConstants.spindexerSetSpeed);
   }
 
+  public void reverse() {
+    this.run(Constants.SpindexerConstants.spindexerSetSpeed.unaryMinus());
+  }
+
   public void periodic() {
     spindexerIO.updateInputs(inputs);
     Logger.processInputs(getName(), inputs);

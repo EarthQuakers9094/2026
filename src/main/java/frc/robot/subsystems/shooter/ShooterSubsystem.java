@@ -262,7 +262,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void runHoodDown() {
-    io.setHoodSpeed(-0.1);
+    io.setHoodSpeed(-0.5);
   }
 
   public void zeroHood() {

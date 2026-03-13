@@ -21,6 +21,6 @@ public class ManualTurret extends Command {
   @Override
   public void execute() {
     shooter.setYaw(
-        new Rotation2d(shooter.getYaw().plus(Degrees.of(rotationSupplier.getAsDouble()))));
+        new Rotation2d(shooter.getYaw().plus(Degrees.of(rotationSupplier.getAsDouble() * 10.0))));
   }
 }

@@ -345,7 +345,7 @@ public class RobotContainer {
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-                shooter, drive::getPose, drive::getChassisSpeeds, targeter)
+                shooter, drive::getPose, drive::getChassisSpeeds, () -> targeter)
             .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
     // new ShooterTrackTarget(
     // shooter,
@@ -356,14 +356,14 @@ public class RobotContainer {
     // true));
 
     // Lock to 0° when A button is held
-    controller
-        .a()
-        .whileTrue(
-            DriveCommands.joystickDriveAtAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> Rotation2d.kZero));
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         DriveCommands.joystickDriveAtAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
     /*controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
@@ -460,7 +460,7 @@ public class RobotContainer {
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
 
     NamedCommands.registerCommand(
-        "Release Expandable Hopper", new InstantCommand(() -> servo.setSetpointPWM(1.0)));
+        "Release Expandable Hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
     // TODO REMOVE IT IS ONLY A TEMP TRIGGER
     controller.y().onTrue(NamedCommands.getCommand("Release Expandable Hopper"));

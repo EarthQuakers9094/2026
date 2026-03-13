@@ -13,6 +13,7 @@ public class HopperServoIOReal implements HopperServoIO {
   public HopperServoIOReal() {
     servo = new PWM(Constants.ServoConstants.PWMPort);
     servo.setBoundsMicroseconds(2500, 0, 0, 0, 500);
+    servo.setPosition(1.0);
   }
 
   public void setSetpoint(Angle setpoint) {

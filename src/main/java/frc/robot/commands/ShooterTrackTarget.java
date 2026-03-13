@@ -26,7 +26,7 @@ import org.littletonrobotics.junction.Logger;
 public class ShooterTrackTarget extends Command {
 
   private final ShooterSubsystem shooterSubsystem;
-  private final Targeter targeter;
+  private final Supplier<Targeter> targeter;
   private final Supplier<Pose2d> robotPositionSupplier;
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Supplier<Translation3d> targetSupplier;
@@ -36,7 +36,7 @@ public class ShooterTrackTarget extends Command {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Targeter targeter,
+      Supplier<Targeter> targeter,
       Translation3d target) {
 
     this(shooterSubsystem, robotPositionSupplier, chassisSpeedsSupplier, targeter, target, false);
@@ -46,7 +46,7 @@ public class ShooterTrackTarget extends Command {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Targeter targeter,
+      Supplier<Targeter> targeter,
       Translation3d target,
       boolean shouldFlipTarget) {
     this(
@@ -62,7 +62,7 @@ public class ShooterTrackTarget extends Command {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Targeter targeter,
+      Supplier<Targeter> targeter,
       Supplier<Translation3d> targetSupplier,
       boolean shouldFlipTarget) {
     this.shooterSubsystem = shooterSubsystem;
@@ -119,27 +119,29 @@ public class ShooterTrackTarget extends Command {
     // }
 
     Optional<TargetingResult3d> maybeTargetingResult =
-        targeter.getShooterTargeting(
-            new TargetingData(
-                shooterToTarget,
-                flippedTarget.getMeasureZ(),
-                new Translation2d(
-                    chassisSpeeds.vxMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0),
-                    chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)) // I
-                // cannot
-                // claim
-                // to
-                // understand
-                // why
-                // i
-                // need
-                // to
-                // do
-                // this,
-                // but
-                // i
-                // do.
-                ));
+        targeter
+            .get()
+            .getShooterTargeting(
+                new TargetingData(
+                    shooterToTarget,
+                    flippedTarget.getMeasureZ(),
+                    new Translation2d(
+                        chassisSpeeds.vxMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0),
+                        chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)) // I
+                    // cannot
+                    // claim
+                    // to
+                    // understand
+                    // why
+                    // i
+                    // need
+                    // to
+                    // do
+                    // this,
+                    // but
+                    // i
+                    // do.
+                    ));
     if (maybeTargetingResult.isPresent()) {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());

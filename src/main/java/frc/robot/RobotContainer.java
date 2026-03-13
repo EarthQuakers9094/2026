@@ -461,8 +461,6 @@ public class RobotContainer {
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
 
-    // TODO REMOVE IT IS ONLY A TEMP TRIGGER
-    controller.y().onTrue(NamedCommands.getCommand("Release Expandable Hopper"));
 
     controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
     controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));

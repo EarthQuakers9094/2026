@@ -8,6 +8,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -31,18 +32,27 @@ public class Vision extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       PoseObservation poseObservation = inputs[i].poseObservation;
       if (poseObservation != null) {
+        // System.out.println("34" + poseObservation);
+
         double stdDevFactor =
             Math.pow(poseObservation.averageTagDistance(), 2)
                 / poseObservation.averageTagDistance();
 
-        double linearStdDev = Constants.Camera.linearStdDev * stdDevFactor;
-        double angularStdDev = Constants.Camera.angularStdDev * stdDevFactor;
+        double linearStdDev =
+            Constants.Camera.linearStdDev
+                * stdDevFactor
+                * (poseObservation.tagCount == 1 ? 1000.0 : 1.0);
+        double angularStdDev =
+            Constants.Camera.angularStdDev
+                * stdDevFactor
+                * (poseObservation.tagCount == 1 ? 1000.0 : 1.0);
 
         visionConsumer.accept(
             poseObservation.pose.toPose2d(),
             poseObservation.timestamp,
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
+      Logger.processInputs("Vision/" + io[i].getName(), inputs[i]);
     }
   }
 

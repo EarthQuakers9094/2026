@@ -18,9 +18,9 @@ public class FieldUtil {
 
     Translation2d translation = normalizedPose.getTranslation();
 
-    if (translation.getX() < Constants.Field.trenchOrigin.in(Meters)
+    if (translation.getX() < Constants.Field.trenchOrigin.in(Meters) - 1.0
         || translation.getX()
-            > Constants.Field.trenchOrigin.plus(Constants.Field.trenchWidth).in(Meters)) {
+            > Constants.Field.trenchOrigin.plus(Constants.Field.trenchWidth).in(Meters) + 1.0) {
       Logger.recordOutput("IsNearTrench", false);
       return false;
     }
@@ -71,5 +71,17 @@ public class FieldUtil {
       rotation = rotation.plus(Rotation2d.kCCW_90deg);
     }
     return new Pose2d(translation, normalizeRotation2d(pose.getRotation(), alliance));
+  }
+
+  public static boolean inAllianceZone(Pose2d pose, Alliance alliance) {
+    double x = pose.getMeasureX().in(Meters);
+    if (alliance.equals(Alliance.Red)) {
+      x = Constants.Field.fieldLength - x;
+    }
+
+    // Logger.recordOutput("Pose", null);
+
+    Logger.recordOutput("IsInAllianceZone", x < Constants.Field.allianceZoneWidth.in(Meters));
+    return x < Constants.Field.allianceZoneWidth.in(Meters);
   }
 }

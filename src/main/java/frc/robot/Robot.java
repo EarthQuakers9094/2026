@@ -11,6 +11,7 @@ import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import org.ironmaple.simulation.SimulatedArena;
@@ -30,6 +31,7 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  // private CANdle candle;
 
   public Robot() {
     // Record metadata
@@ -52,14 +54,19 @@ public class Robot extends LoggedRobot {
         // Running on a real robot, log to a USB stick ("/U/logs")
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
         break;
 
       case SIM:
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
+
         // Running a physics simulator, log to NT
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
       case REPLAY:
+        // this.candle = new CANdle(3, Constants.shooterCANBus);
+
         // Replaying a log, set up replay source
         setUseTiming(false); // Run as fast as possible
         String logPath = LogFileUtil.findReplayLog();
@@ -70,9 +77,13 @@ public class Robot extends LoggedRobot {
 
     // Start AdvantageKit logger
     Logger.start();
+    // Logger.recordOutput("ClapBoard", 1.0);
+    // candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296, 0.8, 1.0)));
+
+    SmartDashboard.putNumber("RPM", 0.0);
 
     // Instantiate our RobotContainer. This will perform all our button bindings,
-    // and put our autonomous chooser on the dashboard.
+    // and put our autonomous chooser on the dashboard.=
     robotContainer = new RobotContainer();
   }
 

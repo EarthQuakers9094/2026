@@ -3,35 +3,51 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.501431636614476,
-        "y": 6.444266836178133
+        "x": 5.937303243711499,
+        "y": 7.37780981294918
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.648744444444444,
-        "y": 8.361533333333334
+        "x": 2.9219016289076825,
+        "y": 7.37780981294918
       },
       "isLocked": false,
       "linkedName": "LeftCenterPostIntake"
     },
     {
       "anchor": {
-        "x": 1.9945777777777782,
-        "y": 5.428455555555555
+        "x": 2.30527817403709,
+        "y": 6.241041369472183
       },
       "prevControl": {
-        "x": 1.4001666666666668,
-        "y": 7.659933333333333
+        "x": 2.8357631954350926,
+        "y": 7.405520684736091
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LeftShootingPosition"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.1970443349753747,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.6124794745484367,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "shoot_fuel",
+      "waypointRelativePos": 0.5801077902988722,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -90.0
+    "rotation": -53.47114463301477
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": -74.206
+    "velocity": 2.5,
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

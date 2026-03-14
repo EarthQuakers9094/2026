@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.501431636614476,
-        "y": 6.444266836178133
+        "x": 6.794992867332382,
+        "y": 7.17262482168331
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.6268666666666665,
-        "y": 5.896188888888889
+        "x": 8.050042796005705,
+        "y": 7.211440798858773
       },
       "isLocked": false,
       "linkedName": "CenterEntryLeftSide"
     },
     {
       "anchor": {
-        "x": 7.948433333333334,
-        "y": 4.346822222222222
+        "x": 7.480741797432238,
+        "y": 4.921298145506419
       },
       "prevControl": {
-        "x": 8.18135330301868,
-        "y": 5.497725428433526
+        "x": 7.697357446656922,
+        "y": 4.369277620062866
       },
       "nextControl": {
-        "x": 7.617123475649666,
-        "y": 2.7097553018862155
+        "x": 7.0796433666191145,
+        "y": 5.943452211126962
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.501431636614476,
-        "y": 6.444266836178133
+        "x": 5.937303243711499,
+        "y": 7.37780981294918
       },
       "prevControl": {
-        "x": 6.720681636614476,
-        "y": 5.89370572506702
+        "x": 6.925081894892197,
+        "y": 7.383437379684292
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,13 +46,34 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.7541195476575099,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 0.4,
+      "rotationDegrees": 90.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.382849426063475,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "eject_loose_fuel",
+      "waypointRelativePos": 1.609723160026983,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -62,14 +83,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -74.20608584998583
+    "velocity": 2.5,
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 3.0,
+    "rotation": 90.0
   },
   "useDefaultConstraints": true
 }

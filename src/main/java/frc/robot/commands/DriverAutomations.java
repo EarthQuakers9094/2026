@@ -12,9 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.util.FieldUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
-import org.littletonrobotics.junction.Logger;
 
 public class DriverAutomations {
 
@@ -22,7 +22,7 @@ public class DriverAutomations {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPoseSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Targeter targeter) {
+      Supplier<Targeter> targeter) {
 
     return new ShooterTrackTarget(
         shooterSubsystem,
@@ -35,7 +35,7 @@ public class DriverAutomations {
 
   private static Translation3d selectTarget(Pose2d pose, Optional<Alliance> maybeAlliance) {
     Alliance alliance = maybeAlliance.orElse(Alliance.Blue);
-    if (inAllianceZone(pose, alliance)) {
+    if (FieldUtil.inAllianceZone(pose, alliance)) {
       return Constants.Field.hubTarget;
     }
 
@@ -47,19 +47,23 @@ public class DriverAutomations {
     if (y < Constants.Field.fieldWidth / 2) {
       targetY = Constants.Field.fieldWidth - targetY;
     }
-    return new Translation3d(Inches.of(120.0), Meters.of(targetY), Meters.zero());
+    Alliance otherAlliance = null;
+    switch (alliance) {
+      case Red:
+        otherAlliance = Alliance.Blue;
+        break;
+      default:
+        otherAlliance = Alliance.Red;
+        break;
+    }
+    if (!FieldUtil.inAllianceZone(pose, otherAlliance)) {
+      // return Constants.Field.hubTarget;
+      return new Translation3d(Inches.of(50.0), Meters.of(targetY), Meters.zero());
+    }
+
+    return new Translation3d(Inches.of(50.0), Meters.of(targetY), Meters.zero());
   }
 
   // @AutoLogOutput
-  public static boolean inAllianceZone(Pose2d pose, Alliance alliance) {
-    double x = pose.getMeasureX().in(Meters);
-    if (alliance.equals(Alliance.Red)) {
-      x = Constants.Field.fieldLength - x;
-    }
 
-    // Logger.recordOutput("Pose", null);
-
-    Logger.recordOutput("IsInAllianceZone", x < Constants.Field.allianceZoneWidth.in(Meters));
-    return x < Constants.Field.allianceZoneWidth.in(Meters);
-  }
 }

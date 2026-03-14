@@ -1,14 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 
-public class IntakeFuel extends Command {
+public class DeployIntake extends Command {
 
   private final IntakeSubsystem intake;
 
-  public IntakeFuel(IntakeSubsystem intake) {
+  public DeployIntake(IntakeSubsystem intake) {
     this.intake = intake;
 
     addRequirements(intake);
@@ -16,13 +15,17 @@ public class IntakeFuel extends Command {
 
   @Override
   public void initialize() {
-    intake.pivotIntake(Constants.IntakeConstants.deployedAngle);
-    intake.runIntake(Constants.IntakeConstants.intakeSpeed);
+    intake.deployIntake();
+    ;
   }
 
   @Override
   public void end(boolean _interrupted) {
-    intake.pivotIntake(Constants.IntakeConstants.retractedAngle);
-    intake.stopIntake();
+    intake.retractIntake();
+  }
+
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }

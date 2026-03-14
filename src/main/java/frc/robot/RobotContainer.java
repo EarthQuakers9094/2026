@@ -442,7 +442,7 @@ public class RobotContainer {
                   shooter.setHoodAngle(shooter.getHoodAngle() - 0.1);
                 },
                 shooter));
-    controller.povLeft().onTrue(new ZeroHood(shooter));
+    // controller.povLeft().onTrue(new ZeroHood(shooter));
     controller
         .povRight()
         .onTrue(

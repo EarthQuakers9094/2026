@@ -132,16 +132,17 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
+                // might be the correct one saving it charlie didnt know 
+                // new VisionIOPhotonVision(
+                //     "Front",
+                //     new Transform3d(
+                //         Inches.of(12.465),
+                //         Inches.of(4.915),
+                //         Inches.of(12.03),
+                //         new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIOPhotonVision(
-                    "Front",
-                    new Transform3d(
-                        Inches.of(12.465),
-                        Inches.of(4.915),
-                        Inches.of(12.03),
-                        new Rotation3d(0, -Math.PI / 6., 0.0))),
                 new VisionIOPhotonVision(
                     "Front",
                     new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0))),

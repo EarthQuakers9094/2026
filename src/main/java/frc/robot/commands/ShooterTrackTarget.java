@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -156,9 +157,13 @@ public class ShooterTrackTarget extends Command {
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
           chassisSpeeds,
-          new Rotation2d(shooterSubsystem.getYaw()),
+          new Rotation2d(
+              shooterSubsystem
+                  .getYaw()
+                  .plus(anticipatedShooterPosition.getRotation().getMeasure())),
           distanceToTarget,
-          distanceToTarget);
+          ShooterSubsystem.shooterSpeedToVelocity(
+              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
       // 0)));

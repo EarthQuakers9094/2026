@@ -85,6 +85,7 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.=
     robotContainer = new RobotContainer();
+    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 
   /** This function is called periodically during all modes. */
@@ -176,6 +177,5 @@ public class Robot extends LoggedRobot {
     // Publish to telemetry using AdvantageKit
     Logger.recordOutput("FieldSimulation/FuelPositions", fuelPoses);
     SimulatedArena.getInstance().simulationPeriodic();
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 }

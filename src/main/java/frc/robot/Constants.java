@@ -68,10 +68,7 @@ public final class Constants {
     private static AprilTagFieldLayout getFieldLayout() {
       try {
         return new AprilTagFieldLayout(
-            Path.of(
-                Filesystem.getDeployDirectory().getPath(),
-                "apriltags",
-                "2026-official.json"));
+            Path.of(Filesystem.getDeployDirectory().getPath(), "apriltags", "2026-official.json"));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }

@@ -15,37 +15,18 @@
           "data": {
             "commands": [
               {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "New Path"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "retract_hood"
                 }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Left Trench to Neutral"
+                }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "deploy_intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "start_intake"
           }
         },
         {
@@ -61,9 +42,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Return To Left From Center"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Return To Left From Center"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "retract_hood"
+                }
+              }
+            ]
           }
         },
         {
@@ -81,69 +75,27 @@
                 "data": {
                   "waitTime": 6.0
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "jiggle_intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "jiggle_intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "deploy_intake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Return to center"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "deploy_intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "start_intake"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Return to center"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "retract_hood"
+                }
+              }
+            ]
           }
         },
         {
@@ -153,65 +105,9 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Return To Left From Center"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "shoot_fuel"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 6.0
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "jiggle_intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "jiggle_intake"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 3.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "stop_intake"
           }
         }
       ]

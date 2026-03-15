@@ -11,22 +11,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "retract_hood"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Left Trench to Neutral"
-                }
-              }
-            ]
+            "pathName": "Left Trench to Neutral"
           }
         },
         {
@@ -42,22 +29,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Return To Left From Center"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "retract_hood"
-                }
-              }
-            ]
+            "pathName": "Return To Left From Center"
           }
         },
         {
@@ -80,22 +54,9 @@
           }
         },
         {
-          "type": "race",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Return to center"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "retract_hood"
-                }
-              }
-            ]
+            "pathName": "Return to center"
           }
         },
         {

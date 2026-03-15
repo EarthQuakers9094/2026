@@ -262,11 +262,10 @@ public class RobotContainer {
         Commands.run(
             () -> {
               shooter.retractHood();
-              //   System.out.println("retract hood");
             },
-            shooter));
+            shooter)); 
 
-    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));

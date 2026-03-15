@@ -161,7 +161,7 @@ public class ShooterTrackTarget extends Command {
               shooterSubsystem
                   .getYaw()
                   .plus(anticipatedShooterPosition.getRotation().getMeasure())),
-          distanceToTarget,
+          ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
           ShooterSubsystem.shooterSpeedToVelocity(
               shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
 

@@ -7,10 +7,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.hal.AllianceStationID;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -85,7 +83,6 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.=
     robotContainer = new RobotContainer();
-    DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
   }
 
   /** This function is called periodically during all modes. */

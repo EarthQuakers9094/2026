@@ -263,7 +263,7 @@ public class RobotContainer {
             () -> {
               shooter.retractHood();
             },
-            shooter)); 
+            shooter));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));

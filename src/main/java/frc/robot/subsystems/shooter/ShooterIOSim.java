@@ -1,6 +1,7 @@
 package frc.robot.subsystems.shooter;
 
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
@@ -130,7 +131,7 @@ public class ShooterIOSim implements ShooterIO {
               MetersPerSecond.of(
                   ShooterSubsystem.shooterSpeedToVelocity(
                       flywheelSim.getAngularVelocityRadPerSec())),
-              pitch.getMeasure());
+              Radians.of(ShooterSubsystem.hoodAngleToLaunchAngle(inputs.hoodPosition)));
       SimulatedArena.getInstance().addGamePieceProjectile(fuel);
     }
 
@@ -143,7 +144,7 @@ public class ShooterIOSim implements ShooterIO {
             Constants.ShooterConstants.positionOnRobot.getZ()),
         chassisSpeedsSupplier.get(),
         yaw.plus(robotPositionSupplier.get().getRotation()),
-        pitch.getRadians(),
+        ShooterSubsystem.hoodAngleToLaunchAngle(inputs.hoodPosition),
         ShooterSubsystem.shooterSpeedToVelocity(flywheelSim.getAngularVelocityRadPerSec()));
   }
 

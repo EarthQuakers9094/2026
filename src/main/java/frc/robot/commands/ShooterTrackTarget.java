@@ -153,6 +153,17 @@ public class ShooterTrackTarget extends Command {
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
       shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
 
+      // if (RobotBase.isSimulation() && Constants.simMode == Mode.REPLAY) {
+      //   drawTrajectory(
+      //       new Translation3d(anticipatedShooterPosition.getTranslation())
+      //           .plus(new Translation3d(0, 0,
+      // Constants.ShooterConstants.positionOnRobot.getZ())),
+      //       chassisSpeeds,
+      //       new Rotation2d(targetingResult.yawRadians()),
+      //       targetingResult.pitchRadians(),
+      //       ShooterSubsystem.shooterSpeedToVelocity(
+      //           shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+      // } else {
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
@@ -164,6 +175,7 @@ public class ShooterTrackTarget extends Command {
           ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
           ShooterSubsystem.shooterSpeedToVelocity(
               shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+      // }
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
       // 0)));

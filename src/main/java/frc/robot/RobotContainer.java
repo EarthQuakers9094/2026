@@ -63,6 +63,7 @@ import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
@@ -235,7 +236,12 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose);
         intake = new IntakeSubsystem(new IntakeIO() {});
         // vision = null;
-        vision = new Vision(drive::addVisionMeasurement);
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {});
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         servo = new HopperServoSubsystem(new HopperServoIO() {});

@@ -34,7 +34,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 

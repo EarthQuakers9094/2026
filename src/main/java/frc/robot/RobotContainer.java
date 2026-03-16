@@ -32,7 +32,6 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.ZeroHood;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -52,6 +51,7 @@ import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOReal;
 import frc.robot.subsystems.kicker.KickerIOSim;
 import frc.robot.subsystems.kicker.KickerSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -85,6 +85,7 @@ public class RobotContainer {
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
   private final HopperServoSubsystem servo;
+  private final LEDSubsystem leds = new LEDSubsystem();
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -132,14 +133,14 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
-                // might be the correct one saving it charlie didnt know 
-                // new VisionIOPhotonVision(
-                //     "Front",
-                //     new Transform3d(
-                //         Inches.of(12.465),
-                //         Inches.of(4.915),
-                //         Inches.of(12.03),
-                //         new Rotation3d(0, -Math.PI / 6., 0.0))),
+        // might be the correct one saving it charlie didnt know
+        // new VisionIOPhotonVision(
+        //     "Front",
+        //     new Transform3d(
+        //         Inches.of(12.465),
+        //         Inches.of(4.915),
+        //         Inches.of(12.03),
+        //         new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -461,7 +462,6 @@ public class RobotContainer {
                 }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
-
 
     controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
     controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));

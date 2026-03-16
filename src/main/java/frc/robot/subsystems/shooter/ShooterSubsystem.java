@@ -15,6 +15,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
 import frc.robot.util.MovingAverage;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -171,12 +173,14 @@ public class ShooterSubsystem extends SubsystemBase {
         setSpeedSetpoint(targetSpeed);
         if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
+          LEDSubsystem.sendEvent(LEDEvent.StartedShooting);
         }
         break;
       case Shooting:
         if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
           this.shooterState = ShooterState.Revving;
         }
+        
         break;
       case Reversing:
         setSpeedSetpoint(targetSpeed.unaryMinus());

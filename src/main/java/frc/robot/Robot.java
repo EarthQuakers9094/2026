@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
+
 import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -85,6 +88,8 @@ public class Robot extends LoggedRobot {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our autonomous chooser on the dashboard.=
     robotContainer = new RobotContainer();
+
+    LEDSubsystem.sendEvent(LEDEvent.ClapBoard);
   }
 
   /** This function is called periodically during all modes. */
@@ -117,6 +122,8 @@ public class Robot extends LoggedRobot {
   @Override
   public void autonomousInit() {
     autonomousCommand = robotContainer.getAutonomousCommand();
+
+    LEDSubsystem.sendEvent(LEDEvent.StartedAuto);
 
     // schedule the autonomous command (example)
     if (autonomousCommand != null) {

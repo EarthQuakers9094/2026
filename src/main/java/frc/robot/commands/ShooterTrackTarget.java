@@ -11,7 +11,6 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -123,6 +122,9 @@ public class ShooterTrackTarget extends Command {
     // shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
     // }
 
+    ChassisSpeeds fieldRelativeSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, robotPosition.getRotation());
+
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter
             .get()
@@ -131,27 +133,27 @@ public class ShooterTrackTarget extends Command {
                     shooterToTarget,
                     flippedTarget.getMeasureZ(),
                     new Translation2d(
-                        chassisSpeeds.vxMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0),
-                        chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)) // I
-                    // cannot
-                    // claim
-                    // to
-                    // understand
-                    // why
-                    // i
-                    // need
-                    // to
-                    // do
-                    // this,
-                    // but
-                    // i
-                    // do.
-                    ));
+                        fieldRelativeSpeeds.vxMetersPerSecond,
+                        fieldRelativeSpeeds.vyMetersPerSecond // I
+                        // cannot
+                        // claim
+                        // to
+                        // understand
+                        // why
+                        // i
+                        // need
+                        // to
+                        // do
+                        // this,
+                        // but
+                        // i
+                        // do.
+                        )));
     if (maybeTargetingResult.isPresent()) {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
-      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM() * 1.008));
 
       // if (RobotBase.isSimulation() && Constants.simMode == Mode.REPLAY) {
       //   drawTrajectory(
@@ -167,7 +169,7 @@ public class ShooterTrackTarget extends Command {
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
-          chassisSpeeds,
+          fieldRelativeSpeeds,
           new Rotation2d(
               shooterSubsystem
                   .getYaw()

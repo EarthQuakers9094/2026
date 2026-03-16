@@ -180,7 +180,7 @@ public class ShooterSubsystem extends SubsystemBase {
         if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
           this.shooterState = ShooterState.Revving;
         }
-        
+
         break;
       case Reversing:
         setSpeedSetpoint(targetSpeed.unaryMinus());
@@ -241,7 +241,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.recordOutput("Setting hood angle", Timer.getFPGATimestamp());
 
     // if (hoodAngle != 0) {
-    //   System.out.println(DriverStation.getMatchTime());
+    // System.out.println(DriverStation.getMatchTime());
     // }
 
     io.setHoodAngle(hoodAngle);

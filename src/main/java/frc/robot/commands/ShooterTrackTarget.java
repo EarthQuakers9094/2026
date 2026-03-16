@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.GameState;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
@@ -151,6 +152,9 @@ public class ShooterTrackTarget extends Command {
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
       shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+
+      boolean shouldShoot =
+          GameState.getInstance().shouldShoot(targetingResult.timeOfFlightSeconds());
 
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())

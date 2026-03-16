@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
-
 import org.ironmaple.simulation.SimulatedArena;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
@@ -81,7 +80,8 @@ public class Robot extends LoggedRobot {
     // Start AdvantageKit logger
     Logger.start();
     // Logger.recordOutput("ClapBoard", 1.0);
-    // candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296, 0.8, 1.0)));
+    // candle.setControl(new SolidColor(0, 100).withColor(RGBWColor.fromHSV(296,
+    // 0.8, 1.0)));
 
     SmartDashboard.putNumber("RPM", 0.0);
 
@@ -105,6 +105,8 @@ public class Robot extends LoggedRobot {
     // This must be called from the robot's periodic block in order for anything in
     // the Command-based framework to work.
     CommandScheduler.getInstance().run();
+
+    GameState.getInstance().update();
 
     // Return to non-RT thread priority (do not modify the first argument)
     // Threads.setCurrentThreadPriority(false, 10);

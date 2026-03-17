@@ -58,7 +58,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Intake From Left Center"
+            "pathName": "Intake From Left Center Far"
           }
         },
         {
@@ -97,6 +97,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Old or Deprecated Autos",
   "choreoAuto": false
 }

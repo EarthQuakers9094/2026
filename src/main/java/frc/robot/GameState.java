@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
 import java.util.Optional;
-import org.littletonrobotics.junction.AutoLogOutput;
+import org.littletonrobotics.junction.Logger;
 
 public class GameState {
   public enum Phase {
@@ -31,29 +31,33 @@ public class GameState {
     return instance;
   }
 
-  @AutoLogOutput private Phase currentPhase = Phase.NotInGame;
+  private Phase currentPhase = Phase.NotInGame;
   private Optional<Boolean> isFirstActiveAlliance = Optional.empty();
   private Optional<Boolean> isHubActive = Optional.empty();
 
   private double remainingPhaseTime = 0;
-  private double lastTime = Timer.getFPGATimestamp();
+  private double lastTime = Timer.getTimestamp();
 
   public GameState() {
     if (DriverStation.getMatchType() != MatchType.None) {
       transitionToPhase(Phase.Auto);
-      lastTime = Timer.getFPGATimestamp();
+      lastTime = Timer.getTimestamp();
     }
   }
 
   public void update() {
 
-    double newTime = Timer.getFPGATimestamp();
+    double newTime = Timer.getTimestamp();
     double dt = newTime - lastTime;
     lastTime = newTime;
 
     if (DriverStation.isEnabled() || currentPhase == Phase.WaitingForFMS) {
       remainingPhaseTime -= dt;
     }
+
+    Logger.recordOutput("GameState/CurrentPhase", currentPhase);
+    Logger.recordOutput("GameState/RemainingPhaseTime", remainingPhaseTime);
+    Logger.recordOutput("GameState/HubActive", isHubActive.orElse(false));
 
     if (currentPhase == Phase.WaitingForFMS) {
       String gameData = DriverStation.getGameSpecificMessage();
@@ -64,9 +68,11 @@ public class GameState {
           case 'B':
             isFirstActiveAlliance = Optional.of(!isBlueAlliance); // Blue alliance
             // won auto
+            Logger.recordOutput("GameState/AutoWinningAlliance", Alliance.Blue);
             transitionToPhase(Phase.Transition);
             break;
           case 'R':
+            Logger.recordOutput("GameState/AutoWinningAlliance", Alliance.Red);
             isFirstActiveAlliance = Optional.of(isBlueAlliance); // Red alliance won
             // auto
             transitionToPhase(Phase.Transition);
@@ -75,6 +81,7 @@ public class GameState {
             if (remainingPhaseTime <= 0.0) {
               DriverStation.reportError("No FMS Data", false);
               LEDSubsystem.sendEvent(LEDEvent.NoFMSData);
+              Logger.recordOutput("GameState/AutoWinningAlliance", "No FMS Data");
             }
             break;
         }
@@ -169,7 +176,6 @@ public class GameState {
     return this.currentPhase;
   }
 
-  @AutoLogOutput
   public boolean shouldShoot(double TOF) {
     if (!isHubActive.isPresent()) {
       return false;
@@ -177,6 +183,8 @@ public class GameState {
 
     boolean hubActive = isHubActive.get();
     double arrivalTime = remainingPhaseTime - TOF;
+    Logger.recordOutput("GameState/ArrivalTime", arrivalTime);
+    Logger.recordOutput("GameState/TOF", TOF);
     if (!hubActive) {
       return arrivalTime <= 1.0; // ~1-2 second is 6328's measured fuel processing time
     }

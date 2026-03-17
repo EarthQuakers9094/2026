@@ -206,7 +206,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   public boolean isYawNearIdeal() {
-    return inputs.yaw.minus(idealYaw.getMeasure()).abs(Radians)
+    Logger.recordOutput("idealYaw.getRadians()", idealYaw.getRadians());
+    Logger.recordOutput("inputs.yaw.in(Radians)", inputs.yaw.in(Radians));
+    return Math.abs(idealYaw.getRadians() - inputs.yaw.in(Radians))
         <= Constants.ShooterConstants.yawThreshold.in(Radians);
   }
 

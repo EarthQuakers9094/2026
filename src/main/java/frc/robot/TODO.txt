@@ -1,0 +1,1 @@
+1: Make the Shooter PIDS more agressive on higher RPMS, but when RPMS are lower, use a less agressive kslot.

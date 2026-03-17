@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
-import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 public class LEDSubsystem extends SubsystemBase {
@@ -28,7 +27,7 @@ public class LEDSubsystem extends SubsystemBase {
 
   private static Queue<LEDEvent> events = new LinkedList<>();
 
-  @AutoLogOutput private Optional<LEDEvent> maybeCurrentEvent = Optional.empty();
+  private Optional<LEDEvent> maybeCurrentEvent = Optional.empty();
   private double remainingEventTime = 0.0;
 
   private final CANdle candle;

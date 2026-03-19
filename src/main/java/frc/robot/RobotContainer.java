@@ -32,7 +32,6 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.ZeroHood;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -64,6 +63,7 @@ import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
 import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.FieldUtil;
@@ -132,14 +132,14 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
-                // might be the correct one saving it charlie didnt know 
-                // new VisionIOPhotonVision(
-                //     "Front",
-                //     new Transform3d(
-                //         Inches.of(12.465),
-                //         Inches.of(4.915),
-                //         Inches.of(12.03),
-                //         new Rotation3d(0, -Math.PI / 6., 0.0))),
+        // might be the correct one saving it charlie didnt know
+        // new VisionIOPhotonVision(
+        //     "Front",
+        //     new Transform3d(
+        //         Inches.of(12.465),
+        //         Inches.of(4.915),
+        //         Inches.of(12.03),
+        //         new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -236,7 +236,12 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose);
         intake = new IntakeSubsystem(new IntakeIO() {});
         // vision = null;
-        vision = new Vision(drive::addVisionMeasurement);
+        vision =
+            new Vision(
+                drive::addVisionMeasurement,
+                new VisionIO() {},
+                new VisionIO() {},
+                new VisionIO() {});
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         servo = new HopperServoSubsystem(new HopperServoIO() {});
@@ -263,11 +268,10 @@ public class RobotContainer {
         Commands.run(
             () -> {
               shooter.retractHood();
-              //   System.out.println("retract hood");
             },
             shooter));
 
-    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake, true));
+    NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
@@ -461,7 +465,6 @@ public class RobotContainer {
                 }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
-
 
     controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
     controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));

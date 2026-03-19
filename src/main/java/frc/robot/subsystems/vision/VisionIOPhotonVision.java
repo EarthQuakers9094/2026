@@ -47,7 +47,12 @@ public class VisionIOPhotonVision implements VisionIO {
         // double totalTagDistance = 0.0;
         for (PhotonTrackedTarget target : result.targets) {
           totalTagDistance += target.bestCameraToTarget.getTranslation().getNorm();
-          targets.add(Constants.Field.aprilTagLayout.getTagPose(target.fiducialId).get());
+          Optional<Pose3d> tagPose = Constants.Field.aprilTagLayout.getTagPose(target.fiducialId);
+          if (!tagPose.isEmpty()) {
+            targets.add(tagPose.get());
+          } else {
+            System.err.println("tagPose (VisionIOPhotonVision line 50) is empty");
+          }
         }
 
         tagCount = multiTagResult.fiducialIDsUsed.size();

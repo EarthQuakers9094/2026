@@ -5,41 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "race",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Left Trench to Neutral"
-                      }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "retract_hood"
-                }
-              }
-            ]
+            "name": "extend_hopper"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "deploy_intake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "start_intake"
+            "pathName": "Left Trench to Neutral"
           }
         },
         {
@@ -73,7 +47,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 8.0
+                  "waitTime": 6.0
                 }
               },
               {
@@ -83,7 +57,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 3.0
+                        "waitTime": 2.0
                       }
                     },
                     {
@@ -95,7 +69,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 3.0
+                        "waitTime": 2.0
                       }
                     },
                     {
@@ -107,7 +81,7 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 3.0
+                        "waitTime": 5.0
                       }
                     }
                   ]
@@ -115,11 +89,29 @@
               }
             ]
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake From Left Center Near"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_intake"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Old or Deprecated Autos",
+  "folder": "Real Autos",
   "choreoAuto": false
 }

@@ -8,6 +8,7 @@ import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkBoolean;
 
 public class EeshwarkTargeter implements Targeter {
 
@@ -26,6 +27,7 @@ public class EeshwarkTargeter implements Targeter {
   // InterpolatingDoubleTreeMap();
 
   private InterpolatingDoubleTreeMap velocityToDistance = new InterpolatingDoubleTreeMap();
+  private LoggedNetworkBoolean correctWithRPM = new LoggedNetworkBoolean("CorrectWithRPM", true);
 
   public EeshwarkTargeter() {
     shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
@@ -148,8 +150,12 @@ public class EeshwarkTargeter implements Targeter {
 
     return Optional.of(
         new TargetingResult3d(
-            calculateAdjustedHoodAngle(requiredHorizontalVelocity),
-            baseRPM,
+            (correctWithRPM.getAsBoolean()
+                ? params.hoodPosition
+                : calculateAdjustedHoodAngle(requiredHorizontalVelocity)),
+            (correctWithRPM.getAsBoolean()
+                ? calculateAdjustedRpm(requiredHorizontalVelocity)
+                : params.RPM),
             // calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));

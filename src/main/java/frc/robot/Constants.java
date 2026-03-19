@@ -10,6 +10,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -109,7 +112,7 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.20;
+    public static final double robotPositionAnticipationSeconds = 0.35;
     public static final double flywheelKP = 0.5;
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.01;
@@ -143,6 +146,8 @@ public final class Constants {
 
     public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(24.0, 24.0);
     public static final Angle yawThreshold = Degrees.of(10.0);
+    public static final AngularAcceleration turretAcceleration = RadiansPerSecondPerSecond.of(24.0);
+    public static final AngularVelocity turretCruiseVelocity = RadiansPerSecond.of(24.0);
   }
 
   public static class IntakeConstants {

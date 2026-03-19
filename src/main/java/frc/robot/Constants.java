@@ -68,10 +68,7 @@ public final class Constants {
     private static AprilTagFieldLayout getFieldLayout() {
       try {
         return new AprilTagFieldLayout(
-            Path.of(
-                Filesystem.getDeployDirectory().getPath(),
-                "apriltags",
-                "2026-official.json"));
+            Path.of(Filesystem.getDeployDirectory().getPath(), "apriltags", "2026-official.json"));
       } catch (Exception e) {
         throw new RuntimeException(e);
       }
@@ -113,9 +110,9 @@ public final class Constants {
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
     public static final double robotPositionAnticipationSeconds = 0.20;
-    public static final double flywheelKP = 0.00;
+    public static final double flywheelKP = 0.5;
     public static final double flywheelKI = 0.0;
-    public static final double flywheelKD = 0.00;
+    public static final double flywheelKD = 0.01;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
     public static final int turretMotorId = 54;
@@ -191,9 +188,9 @@ public final class Constants {
     // angular velocity.
     public static final double flywheelGearing = 2.0d;
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;
-    public static final AngularVelocity velocitySetpoint = RPM.of(3500d);
+    public static final AngularVelocity velocitySetpoint = RPM.of(5500d); // 3 in wheels
 
-    public static final double kP = 0; // 0.2d;
+    public static final double kP = 0.2; // 0.2d;
     public static final double kI = 0.0d;
     public static final double kD = 0.0d;
     public static final double kS = 0; // 0.1d;
@@ -210,11 +207,12 @@ public final class Constants {
     public static final double spindexerMOI = 0.0012; // TBD
     public static final double spindexerGearing = 5d;
     public static final double spindexerConversionFactor = 1 / spindexerGearing;
-    public static final double kP = 0.0;
+    public static final double kP = 0.002;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(3000);
+    public static final double kD = 0.1;
+    public static final double kV = 0.009;
+    public static final AngularVelocity spindexerSetSpeed =
+        KickerConstants.velocitySetpoint.div(3); // 6 in diameter
   }
 
   public static class ServoConstants {

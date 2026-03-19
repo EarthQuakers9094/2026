@@ -6,10 +6,10 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class TargetingResult {
   public record TargetingResult2d(
-      double targetRPM, double pitchRadians, double timeOfFlightSeconds) {}
+      double targetRPM, double hoodPosition, double timeOfFlightSeconds) {}
 
   public record TargetingResult3d(
-      double pitchRadians, double targetRPM, double yawRadians, double timeOfFlightSeconds) {
+      double hoodPosition, double targetRPM, double yawRadians, double timeOfFlightSeconds) {
 
     public void drawTrajectory(
         Translation3d startPosition,

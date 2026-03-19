@@ -32,7 +32,6 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
-import frc.robot.commands.ZeroHood;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -132,14 +131,14 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
         shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
-                // might be the correct one saving it charlie didnt know 
-                // new VisionIOPhotonVision(
-                //     "Front",
-                //     new Transform3d(
-                //         Inches.of(12.465),
-                //         Inches.of(4.915),
-                //         Inches.of(12.03),
-                //         new Rotation3d(0, -Math.PI / 6., 0.0))),
+        // might be the correct one saving it charlie didnt know
+        // new VisionIOPhotonVision(
+        //     "Front",
+        //     new Transform3d(
+        //         Inches.of(12.465),
+        //         Inches.of(4.915),
+        //         Inches.of(12.03),
+        //         new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -336,16 +335,17 @@ public class RobotContainer {
         DriveCommands.joystickDrive(
             drive,
             () -> {
-              double y = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getY();
+              double y = (shooter.isActivelyShooting() ? 0.5 : 1.0) * leftStick.getY();
               double smoothedY = yInputAverage.calculate(y);
               return -1 * (shooter.isActivelyShooting() ? smoothedY : y);
             },
             () -> {
-              double x = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getX();
+              double x = (shooter.isActivelyShooting() ? 0.5 : 1.0) * leftStick.getX();
               double smoothedX = xInputAverage.calculate(x);
               return -1 * (shooter.isActivelyShooting() ? smoothedX : x);
             },
             () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
+    // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
                 shooter, drive::getPose, drive::getChassisSpeeds, () -> targeter)
@@ -461,7 +461,6 @@ public class RobotContainer {
                 }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
-
 
     controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
     controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));

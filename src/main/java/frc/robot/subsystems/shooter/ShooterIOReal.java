@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.Radians;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -70,6 +71,9 @@ public class ShooterIOReal implements ShooterIO {
                 .withKI(Constants.ShooterConstants.flywheelKI)
                 .withKD(Constants.ShooterConstants.flywheelKD)
                 .withKV(Constants.ShooterConstants.flywheelKV));
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.5));
 
     hoodPivot
         .getConfigurator()
@@ -179,6 +183,11 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setVelocitySetpoint(AngularVelocity speed) {
     this.lastFlywheelVelocitySetpoint = speed.in(RPM);
-    flywheelLeadMotor.setControl(new VelocityVoltage(speed));
+    if (lastFlywheelVelocitySetpoint == 0) {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(1));
+
+    } else {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(0));
+    }
   }
 }

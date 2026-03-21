@@ -155,7 +155,7 @@ public final class Constants {
     public static final double intakePivotGearing = 26.84933149230769;
     public static final double intakePivotConversionFactor = 1 / intakePivotGearing;
 
-    public static final double intakeSpinGearing = 4.5;
+    public static final double intakeSpinGearing = 5.0;
     public static final double intakeSpinConversionFactor = 1 / intakeSpinGearing;
 
     public static final Distance armLength = Inches.of(11.25);
@@ -171,7 +171,7 @@ public final class Constants {
     public static final double spinkD = 0.0; // made up value
     public static final double spinkV = 0.4; // made up value
 
-    public static final AngularVelocity intakeSpeed = RPM.of(2000.0);
+    public static final AngularVelocity intakeSpeed = RPM.of(-2000.0);
     public static final Angle deployedAngle = Degrees.of(0);
     public static final Angle retractedAngle = Degrees.of(130);
     public static final Angle startAngle = Degrees.of(131.76767);

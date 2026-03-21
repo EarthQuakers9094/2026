@@ -10,6 +10,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -109,10 +112,10 @@ public final class Constants {
         new Transform3d(
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
-    public static final double robotPositionAnticipationSeconds = 0.20;
-    public static final double flywheelKP = 0.00;
+    public static final double robotPositionAnticipationSeconds = 0.05;
+    public static final double flywheelKP = 0.5;
     public static final double flywheelKI = 0.0;
-    public static final double flywheelKD = 0.00;
+    public static final double flywheelKD = 0.01;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
     public static final int turretMotorId = 54;
@@ -142,7 +145,9 @@ public final class Constants {
         new TrapezoidProfile.Constraints(52.0, 52.0);
 
     public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(24.0, 24.0);
-    public static final Angle yawThreshold = Degrees.of(10.0);
+    public static final Angle yawThreshold = Degrees.of(5.0);
+    public static final AngularAcceleration turretAcceleration = RadiansPerSecondPerSecond.of(24.0);
+    public static final AngularVelocity turretCruiseVelocity = RadiansPerSecond.of(24.0);
   }
 
   public static class IntakeConstants {
@@ -188,9 +193,9 @@ public final class Constants {
     // angular velocity.
     public static final double flywheelGearing = 2.0d;
     public static final double encoderConversionFactor = 1.0 / flywheelGearing;
-    public static final AngularVelocity velocitySetpoint = RPM.of(3500d);
+    public static final AngularVelocity velocitySetpoint = RPM.of(5500d); // 3 in wheels
 
-    public static final double kP = 0; // 0.2d;
+    public static final double kP = 0.2; // 0.2d;
     public static final double kI = 0.0d;
     public static final double kD = 0.0d;
     public static final double kS = 0; // 0.1d;
@@ -207,11 +212,12 @@ public final class Constants {
     public static final double spindexerMOI = 0.0012; // TBD
     public static final double spindexerGearing = 5d;
     public static final double spindexerConversionFactor = 1 / spindexerGearing;
-    public static final double kP = 0.0;
+    public static final double kP = 0.002;
     public static final double kI = 0.0;
-    public static final double kD = 0.0;
-    public static final double kV = 0.00174;
-    public static final AngularVelocity spindexerSetSpeed = RPM.of(3000);
+    public static final double kD = 0.1;
+    public static final double kV = 0.009;
+    public static final AngularVelocity spindexerSetSpeed =
+        KickerConstants.velocitySetpoint.div(3); // 6 in diameter
   }
 
   public static class ServoConstants {

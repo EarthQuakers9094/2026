@@ -122,7 +122,7 @@ public class ShooterTrackTarget extends Command {
     // shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
     // }
 
-    ChassisSpeeds fieldRelativeSpeeds =
+    ChassisSpeeds fieldRelativeChassisSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, robotPosition.getRotation());
 
     Optional<TargetingResult3d> maybeTargetingResult =
@@ -133,22 +133,24 @@ public class ShooterTrackTarget extends Command {
                     shooterToTarget,
                     flippedTarget.getMeasureZ(),
                     new Translation2d(
-                        fieldRelativeSpeeds.vxMetersPerSecond,
-                        fieldRelativeSpeeds.vyMetersPerSecond // I
-                        // cannot
-                        // claim
-                        // to
-                        // understand
-                        // why
-                        // i
-                        // need
-                        // to
-                        // do
-                        // this,
-                        // but
-                        // i
-                        // do.
-                        )));
+                        fieldRelativeChassisSpeeds.vxMetersPerSecond
+                            * (RobotBase.isReal() ? 1.0 : -1.0),
+                        fieldRelativeChassisSpeeds.vyMetersPerSecond
+                            * (RobotBase.isReal() ? 1.0 : -1.0)) // I
+                    // cannot
+                    // claim
+                    // to
+                    // understand
+                    // why
+                    // i
+                    // need
+                    // to
+                    // do
+                    // this,
+                    // but
+                    // i
+                    // do.
+                    ));
     if (maybeTargetingResult.isPresent()) {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
@@ -169,15 +171,10 @@ public class ShooterTrackTarget extends Command {
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
-          fieldRelativeSpeeds,
-          new Rotation2d(
-              shooterSubsystem
-                  .getYaw()
-                  .plus(anticipatedShooterPosition.getRotation().getMeasure())),
-          ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
-          ShooterSubsystem.shooterSpeedToVelocity(
-              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
-      // }
+          fieldRelativeChassisSpeeds,
+          new Rotation2d(shooterSubsystem.getYaw()),
+          distanceToTarget,
+          distanceToTarget);
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
       // 0)));
@@ -190,7 +187,7 @@ public class ShooterTrackTarget extends Command {
               .plus(new Translation2d(5.0, new Rotation2d(targetingResult.yawRadians()))));
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
-      shooterSubsystem.setPitch(new Rotation2d(targetingResult.pitchRadians()));
+      shooterSubsystem.setHoodAngle(targetingResult.hoodPosition());
 
       if (shooterSubsystem.isYawNearIdeal()) {
         shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OnTarget);

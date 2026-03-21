@@ -4,10 +4,13 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -70,6 +73,9 @@ public class ShooterIOReal implements ShooterIO {
                 .withKI(Constants.ShooterConstants.flywheelKI)
                 .withKD(Constants.ShooterConstants.flywheelKD)
                 .withKV(Constants.ShooterConstants.flywheelKV));
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.5));
 
     hoodPivot
         .getConfigurator()
@@ -111,6 +117,13 @@ public class ShooterIOReal implements ShooterIO {
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
 
+    turretPivot
+        .getConfigurator()
+        .apply(
+            new MotionMagicConfigs()
+                .withMotionMagicAcceleration(Constants.ShooterConstants.turretAcceleration)
+                .withMotionMagicCruiseVelocity(Constants.ShooterConstants.turretCruiseVelocity));
+
     turretPivot.setPosition(Constants.ShooterConstants.turretZeroYaw.getMeasure());
 
     // TODO: Fill out on actual robot. See:
@@ -137,14 +150,14 @@ public class ShooterIOReal implements ShooterIO {
 
     hoodPivot.setControl(new PositionVoltage(hoodState.position).withSlot(0));
 
-    turretState = turretTrapezoidProfile.calculate(0.02, turretState, turretSetpoint);
-    Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
+    // turretState = turretTrapezoidProfile.calculate(0.02, turretState, turretSetpoint);
+    // Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
 
     inputs.hoodCurrent = hoodPivot.getSupplyCurrent().getValueAsDouble();
 
     // Logger.recordOutput("Shooter/HoodCurrent", hoodPivot.getCurr);
 
-    turretPivot.setControl(new PositionVoltage(Radians.of(turretState.position)).withSlot(0));
+    // turretPivot.setControl(new PositionVoltage(Radians.of(turretState.position)).withSlot(0));
   }
 
   public void setHoodAngle(double pitch) {
@@ -174,11 +187,17 @@ public class ShooterIOReal implements ShooterIO {
       yawRadians = Math.max(Math.min(yawRadians, maxRadians), minRadians);
     }
     Logger.recordOutput("Shooter/YawSetpointRadians", yawRadians);
-    turretSetpoint = new TrapezoidProfile.State(yawRadians, 0);
+    turretPivot.setControl(new MotionMagicVoltage(Radians.of(yawRadians)));
+    // turretSetpoint = new TrapezoidProfile.State(yawRadians, 0);
   }
 
   public void setVelocitySetpoint(AngularVelocity speed) {
     this.lastFlywheelVelocitySetpoint = speed.in(RPM);
-    flywheelLeadMotor.setControl(new VelocityVoltage(speed));
+    if (lastFlywheelVelocitySetpoint == 0) {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(1));
+
+    } else {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(0));
+    }
   }
 }

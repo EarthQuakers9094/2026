@@ -211,6 +211,10 @@ public class ShooterSubsystem extends SubsystemBase {
     return isAboveMinLaunchSpeed() && isSpeedStable();
   }
 
+  public boolean isRunning() {
+    return this.shooterState == ShooterState.Revving || this.shooterState == ShooterState.Shooting;
+  }
+
   @AutoLogOutput
   public boolean isSpeedStable() {
     return true;

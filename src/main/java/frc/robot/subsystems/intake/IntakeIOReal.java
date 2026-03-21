@@ -79,6 +79,7 @@ public class IntakeIOReal implements IntakeIO {
   }
 
   public void runIntake(AngularVelocity rotations) {
+    // DriverStation.reportError("Disabled Intake Motor because the belt snapped", true);
     spinMotor.getClosedLoopController().setSetpoint(rotations.in(RPM), ControlType.kVelocity);
   }
 

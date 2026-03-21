@@ -125,14 +125,13 @@ public class EeshwarkTargeter implements Targeter {
     // - Constants.ShooterConstants.positionOnRobot.getZ(),
     // projectileVelocity);
     ShotParams params = shotMap.get(distance);
-    double baseRPM = params.RPM;
     // double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM * (Math.PI /
     // 30.));
     double staticHorizontalVelocity = distance / params.TOF;
 
     Translation2d staticShotVelocity = directionToTarget.times(staticHorizontalVelocity);
 
-    Translation2d shotVector = staticShotVelocity.plus(targetingData.robotVelocity());
+    Translation2d shotVector = staticShotVelocity.minus(targetingData.robotVelocity());
 
     if (shotVector.getSquaredNorm() == 0
         || Double.isNaN(shotVector.getX())
@@ -150,12 +149,8 @@ public class EeshwarkTargeter implements Targeter {
 
     return Optional.of(
         new TargetingResult3d(
-            (correctWithRPM.getAsBoolean()
-                ? params.hoodPosition
-                : calculateAdjustedHoodAngle(requiredHorizontalVelocity)),
-            (correctWithRPM.getAsBoolean()
-                ? calculateAdjustedRpm(requiredHorizontalVelocity)
-                : params.RPM),
+            calculateAdjustedHoodAngle(requiredHorizontalVelocity),
+            calculateAdjustedRpm(requiredHorizontalVelocity),
             // calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));

@@ -122,6 +122,9 @@ public class ShooterTrackTarget extends Command {
     // shooterSpeed = idealShooterSpeed.in(RadiansPerSecond);
     // }
 
+    ChassisSpeeds fieldRelativeChassisSpeeds =
+        ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, robotPosition.getRotation());
+
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter
             .get()
@@ -130,8 +133,10 @@ public class ShooterTrackTarget extends Command {
                     shooterToTarget,
                     flippedTarget.getMeasureZ(),
                     new Translation2d(
-                        chassisSpeeds.vxMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0),
-                        chassisSpeeds.vyMetersPerSecond * (RobotBase.isReal() ? 1.0 : -1.0)) // I
+                        fieldRelativeChassisSpeeds.vxMetersPerSecond
+                            * (RobotBase.isReal() ? 1.0 : -1.0),
+                        fieldRelativeChassisSpeeds.vyMetersPerSecond
+                            * (RobotBase.isReal() ? 1.0 : -1.0)) // I
                     // cannot
                     // claim
                     // to
@@ -155,7 +160,7 @@ public class ShooterTrackTarget extends Command {
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
-          chassisSpeeds,
+          fieldRelativeChassisSpeeds,
           new Rotation2d(shooterSubsystem.getYaw()),
           distanceToTarget,
           distanceToTarget);

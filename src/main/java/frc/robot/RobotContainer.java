@@ -476,6 +476,13 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> shooter.stopShooter()));
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+
+    /*new Trigger(() -> GameState.getInstance().isHubActive())
+    .onTrue(
+        new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
+            .andThen(new WaitCommand(1.0))
+            .andThen(
+                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0.0))));*/
   }
 
   /**

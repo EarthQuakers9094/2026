@@ -15,6 +15,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -475,6 +476,14 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> shooter.stopShooter()));
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+
+    
+    /*new Trigger(() -> GameState.getInstance().isHubActive())
+        .onTrue(
+            new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
+                .andThen(new WaitCommand(1.0))
+                .andThen(
+                    new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0.0))));*/
   }
 
   /**

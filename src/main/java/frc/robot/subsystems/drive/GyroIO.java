@@ -7,7 +7,10 @@
 
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.measure.LinearAcceleration;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface GyroIO {
@@ -18,6 +21,8 @@ public interface GyroIO {
     public double yawVelocityRadPerSec = 0.0;
     public double[] odometryYawTimestamps = new double[] {};
     public Rotation2d[] odometryYawPositions = new Rotation2d[] {};
+    public LinearAcceleration forwardsAcceleration = MetersPerSecondPerSecond.of(0d);
+    public LinearAcceleration rightAcceleration = MetersPerSecondPerSecond.of(0d);
   }
 
   public default void updateInputs(GyroIOInputs inputs) {}

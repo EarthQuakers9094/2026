@@ -11,6 +11,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -170,7 +171,9 @@ public class ShooterTrackTarget extends Command {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
-      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM() * 1.008));
+      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+      Logger.recordOutput("IdealAngularVelocityRPM", targetingResult.targetRPM());
+      Logger.recordOutput("IdealHoodPosition", targetingResult.hoodPosition());
 
       // if (RobotBase.isSimulation() && Constants.simMode == Mode.REPLAY) {
       // drawTrajectory(

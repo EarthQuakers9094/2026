@@ -10,7 +10,6 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -75,7 +74,7 @@ public class ShooterIOReal implements ShooterIO {
                 .withKV(Constants.ShooterConstants.flywheelKV));
     flywheelLeadMotor
         .getConfigurator()
-        .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.5));
+        .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.0));
 
     hoodPivot
         .getConfigurator()
@@ -192,7 +191,9 @@ public class ShooterIOReal implements ShooterIO {
       yawRadians = Math.max(Math.min(yawRadians, maxRadians), minRadians);
     }
     Logger.recordOutput("Shooter/YawSetpointRadians", yawRadians);
-    turretPivot.setControl(new MotionMagicVoltage(Radians.of(yawRadians)));
+    turretPivot.setControl(
+        new PositionVoltage(
+            Radians.of(yawRadians))); // new MotionMagicVoltage(Radians.of(yawRadians)));
     // turretSetpoint = new TrapezoidProfile.State(yawRadians, 0);
   }
 

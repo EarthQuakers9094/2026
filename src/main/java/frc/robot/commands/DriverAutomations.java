@@ -36,6 +36,7 @@ public class DriverAutomations {
   private static Translation3d selectTarget(Pose2d pose, Optional<Alliance> maybeAlliance) {
     Alliance alliance = maybeAlliance.orElse(Alliance.Blue);
     if (FieldUtil.inAllianceZone(pose, alliance)) {
+      // In alliance zonbe so use hub
       return Constants.Field.hubTarget;
     }
 
@@ -43,7 +44,7 @@ public class DriverAutomations {
     if (alliance.equals(Alliance.Red)) {
       y = Constants.Field.fieldWidth - y;
     }
-    double targetY = Inches.of(200).in(Meters);
+    double targetY = Inches.of(270).in(Meters);
     if (y < Constants.Field.fieldWidth / 2) {
       targetY = Constants.Field.fieldWidth - targetY;
     }

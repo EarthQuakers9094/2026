@@ -21,6 +21,9 @@ public class ConstantTargeter extends EeshwarkTargeter {
         new TargetingData(
             AllianceFlipUtil.apply(Constants.Field.hubTarget.toTranslation2d()),
             targetingData.targetHeight(),
-            new Translation2d()));
+            new Translation2d(),
+            new Translation2d(),
+            targetingData.robotOmegaAngularVelocity(),
+            targetingData.robotRotation()));
   }
 }

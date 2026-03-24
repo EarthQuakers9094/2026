@@ -51,6 +51,7 @@ import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOReal;
 import frc.robot.subsystems.kicker.KickerIOSim;
 import frc.robot.subsystems.kicker.KickerSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
@@ -58,6 +59,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
@@ -85,6 +87,7 @@ public class RobotContainer {
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
   private final HopperServoSubsystem servo;
+  private final LEDSubsystem leds = new LEDSubsystem();
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -134,12 +137,12 @@ public class RobotContainer {
         intake = new IntakeSubsystem(new IntakeIOReal());
         // might be the correct one saving it charlie didnt know
         // new VisionIOPhotonVision(
-        //     "Front",
-        //     new Transform3d(
-        //         Inches.of(12.465),
-        //         Inches.of(4.915),
-        //         Inches.of(12.03),
-        //         new Rotation3d(0, -Math.PI / 6., 0.0))),
+        // "Front",
+        // new Transform3d(
+        // Inches.of(12.465),
+        // Inches.of(4.915),
+        // Inches.of(12.03),
+        // new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -199,26 +202,26 @@ public class RobotContainer {
                     drive::getPose));
 
         // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOPhotonVisionSim(
-        //             "Front",
-        //             new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Left",
-        //             new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
+        // new Vision(
+        // drive::addVisionMeasurement,
+        // new VisionIOPhotonVisionSim(
+        // "Front",
+        // new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Left",
+        // new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
         // 2.)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Right",
-        //             new Transform3d(
-        //                 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Back",
-        //             new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
-        //             drive::getPose));
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Right",
+        // new Transform3d(
+        // 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Back",
+        // new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+        // drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         servo = new HopperServoSubsystem(new HopperServoIOSim());
@@ -310,7 +313,7 @@ public class RobotContainer {
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
-    //         .whileTrue(new RevvShooter(shooter, kicker));
+    // .whileTrue(new RevvShooter(shooter, kicker));
 
     // Configure the button bindings
     if (!Constants.debugMode) {
@@ -353,7 +356,13 @@ public class RobotContainer {
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-                shooter, drive::getPose, drive::getChassisSpeeds, () -> targeter)
+                shooter,
+                drive::getPose,
+                drive::getChassisSpeeds,
+                () -> targeter,
+                () ->
+                    new RobotRelativeAcceleration(
+                        drive.getGyroForwardAcceleration(), drive.getGyroRightAcceleration()))
             .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
     // new ShooterTrackTarget(
     // shooter,
@@ -365,27 +374,29 @@ public class RobotContainer {
 
     // Lock to 0° when A button is held
     // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> Rotation2d.kZero));
+    // .a()
+    // .whileTrue(
+    // DriveCommands.joystickDriveAtAngle(
+    // drive,
+    // () -> -controller.getLeftY(),
+    // () -> -controller.getLeftX(),
+    // () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    /*controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));*/
+    /*
+     * controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+     *
+     * // Reset gyro to 0° when B button is pressed
+     * controller
+     * .b()
+     * .onTrue(
+     * Commands.runOnce(
+     * () ->
+     * drive.setPose(
+     * new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+     * drive)
+     * .ignoringDisable(true));
+     */
 
     // controller.button(9).toggleOnTrue(new RunIntakeSpinnerCommand(intake));
 
@@ -405,11 +416,13 @@ public class RobotContainer {
 
     /** Enables the Intake spinners FORWARD */
     leftStick.trigger().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
-    // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
+    // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
+    // true));
 
     /** Enables the Intake spinners BACKWARDS */
     rightStick.button(2).whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
-    // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
+    // false));
 
     /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
@@ -477,12 +490,15 @@ public class RobotContainer {
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
 
-    /*new Trigger(() -> GameState.getInstance().isHubActive())
-    .onTrue(
-        new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
-            .andThen(new WaitCommand(1.0))
-            .andThen(
-                new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0.0))));*/
+    /*
+     * new Trigger(() -> GameState.getInstance().isHubActive())
+     * .onTrue(
+     * new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
+     * .andThen(new WaitCommand(1.0))
+     * .andThen(
+     * new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble,
+     * 0.0))));
+     */
   }
 
   /**

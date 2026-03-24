@@ -15,6 +15,8 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.led.LEDSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
 import frc.robot.util.MovingAverage;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -171,12 +173,14 @@ public class ShooterSubsystem extends SubsystemBase {
         setSpeedSetpoint(targetSpeed);
         if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
+          LEDSubsystem.sendEvent(LEDEvent.StartedShooting);
         }
         break;
       case Shooting:
         if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
           this.shooterState = ShooterState.Revving;
         }
+
         break;
       case Reversing:
         setSpeedSetpoint(targetSpeed.unaryMinus());
@@ -202,7 +206,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   public boolean isYawNearIdeal() {
-    return inputs.yaw.minus(idealYaw.getMeasure()).abs(Radians)
+    Logger.recordOutput("idealYaw.getRadians()", idealYaw.getRadians());
+    Logger.recordOutput("inputs.yaw.in(Radians)", inputs.yaw.in(Radians));
+    return Math.abs(idealYaw.getRadians() - inputs.yaw.in(Radians))
         <= Constants.ShooterConstants.yawThreshold.in(Radians);
   }
 
@@ -241,7 +247,7 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.recordOutput("Setting hood angle", Timer.getFPGATimestamp());
 
     // if (hoodAngle != 0) {
-    //   System.out.println(DriverStation.getMatchTime());
+    // System.out.println(DriverStation.getMatchTime());
     // }
 
     io.setHoodAngle(hoodAngle);

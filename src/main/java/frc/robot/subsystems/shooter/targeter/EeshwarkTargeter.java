@@ -1,10 +1,13 @@
 package frc.robot.subsystems.shooter.targeter;
 
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -27,11 +30,16 @@ public class EeshwarkTargeter implements Targeter {
   // InterpolatingDoubleTreeMap();
 
   private InterpolatingDoubleTreeMap velocityToDistance = new InterpolatingDoubleTreeMap();
-  private LoggedNetworkBoolean correctWithRPM = new LoggedNetworkBoolean("CorrectWithRPM", true);
+  // private LoggedNetworkBoolean accelerationCompensation = new
+  // LoggedNetworkBoolean("AccelerationCompensation",
+  // false);
+  private LoggedNetworkBoolean twistCompensation =
+      new LoggedNetworkBoolean("TwistCompensation", false);
 
   public EeshwarkTargeter() {
     shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
-    // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD DATA POINT
+    // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD
+    // DATA POINT
     shotMap.put(4.237791791973659, new ShotParams(3300, 2.2, 1.56 - 0.32));
     shotMap.put(3.8188085361104056, new ShotParams(3200, 2.1, 1.94 - 0.84));
     shotMap.put(3.4200357766207268, new ShotParams(3050, 2.025, 3.08 - 1.91));
@@ -61,7 +69,8 @@ public class EeshwarkTargeter implements Targeter {
       // double launchAngle = ShooterSubsystem.getIdealPitch(distance);
 
       // double velocity =
-      //     ShooterSubsystem.shooterSpeedToVelocity(distanceToRPM.get(distance) * (Math.PI / 30.));
+      // ShooterSubsystem.shooterSpeedToVelocity(distanceToRPM.get(distance) *
+      // (Math.PI / 30.));
       // double xVelocity = Math.cos(launchAngle) * velocity;
 
       // minTOFDistance;
@@ -73,17 +82,18 @@ public class EeshwarkTargeter implements Targeter {
 
   // @AutoLogOutput
   // public static AngularVelocity getIdealShooterSpeed(double distanceToTarget) {
-  //   Logger.recordOutput("DistanceToTargetMeters", distanceToTarget);
-  //   double rpm = 175.67282 * distanceToTarget + 2615.69268; // SmartDashboard.getNumber("RPM",
+  // Logger.recordOutput("DistanceToTargetMeters", distanceToTarget);
+  // double rpm = 175.67282 * distanceToTarget + 2615.69268; //
+  // SmartDashboard.getNumber("RPM",
   // 0.0);
-  //   return RPM.of(rpm);
-  //   // if (distanceToTarget > 2.0) {
-  //   // Logger.recordOutput("Shooter/DistanceToTarget", "far");
-  //   // return RPM.of(3500);
-  //   // } else {
-  //   // Logger.recordOutput("Shooter/DistanceToTarget", "near");
-  //   // return RPM.of(3000);
-  //   // }
+  // return RPM.of(rpm);
+  // // if (distanceToTarget > 2.0) {
+  // // Logger.recordOutput("Shooter/DistanceToTarget", "far");
+  // // return RPM.of(3500);
+  // // } else {
+  // // Logger.recordOutput("Shooter/DistanceToTarget", "near");
+  // // return RPM.of(3000);
+  // // }
   // }
   private static double getIdealPitch(double distanceToTarget) {
     return -0.180371 * distanceToTarget + 1.6617; // -0.128837 * distanceToTarget + 1.58586;
@@ -108,25 +118,34 @@ public class EeshwarkTargeter implements Targeter {
   @Override
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData) {
 
-    // double projectileVelocity = targetingData.projectileVelocity().in(MetersPerSecond);
-    // double projectileVelocity =
-    // targetingData.projectileVelocity().in(MetersPerSecond);
+    Translation2d robotVelocity = targetingData.robotVelocity();
+    if (twistCompensation.get()) {
+      Translation2d robotToShooter =
+          Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d();
+      double twistRadius = robotToShooter.getNorm();
+      double tangentialVelocity =
+          targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond) * twistRadius;
+
+      // If something is going majorly screwy with our targeting when this switch is
+      // on, it is almost certainly this godless affront to math in the following ~6
+      // lines
+
+      double velocityAngleRelativeToFieldAxis =
+          targetingData.robotRotation().getRadians() + robotToShooter.getAngle().getRadians();
+      Translation2d rotationalVelocity =
+          new Translation2d(
+              Math.cos(velocityAngleRelativeToFieldAxis) * tangentialVelocity,
+              Math.sin(velocityAngleRelativeToFieldAxis) * tangentialVelocity);
+
+      robotVelocity = robotVelocity.plus(rotationalVelocity);
+    }
+
     double distance = targetingData.target().getNorm();
     Logger.recordOutput("DistancePassedToTargeter", distance);
-    // Logger.recordOutput("TOF", distanceToTOF.get(distance));
-
-    // double idealPitch = getIdealPitch(distance);
 
     Translation2d directionToTarget = targetingData.target().div(distance);
-    // TargetingResult2d staticVelocity =
-    // this.getShooterTargetingWithoutVelocity(
-    // distance,
-    // targetingData.targetHeight().in(Meters)
-    // - Constants.ShooterConstants.positionOnRobot.getZ(),
-    // projectileVelocity);
     ShotParams params = shotMap.get(distance);
-    // double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM * (Math.PI /
-    // 30.));
+
     double staticHorizontalVelocity = distance / params.TOF;
 
     Translation2d staticShotVelocity = directionToTarget.times(staticHorizontalVelocity);
@@ -142,16 +161,11 @@ public class EeshwarkTargeter implements Targeter {
     Rotation2d shotYaw = shotVector.getAngle();
     double fieldRelativeYaw = shotYaw.getRadians();
     double requiredHorizontalVelocity = shotVector.getNorm();
-    // double requiredVelocity = requiredHorizontalVelocity /
-    // targetingData.launchAngle().getCos();
-
-    // double requiredPitch = Math.acos((requiredHorizontalVelocity / projectileVelocity));
 
     return Optional.of(
         new TargetingResult3d(
             calculateAdjustedHoodAngle(requiredHorizontalVelocity),
             calculateAdjustedRpm(requiredHorizontalVelocity),
-            // calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));
   }

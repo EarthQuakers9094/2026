@@ -95,9 +95,9 @@ public class ShooterIOReal implements ShooterIO {
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
     // hoodPivot
-    //     .getConfigurator()
-    //     .apply(
-    //         new
+    // .getConfigurator()
+    // .apply(
+    // new
     // CurrentLimitsConfigs().withSupplyCurrentLimit(50).withSupplyCurrentLowerLimit(40));
     hoodPivot.setPosition(0);
 
@@ -112,7 +112,10 @@ public class ShooterIOReal implements ShooterIO {
             new Slot0Configs()
                 .withKP(Constants.ShooterConstants.turretKP)
                 .withKI(Constants.ShooterConstants.turretKI)
-                .withKD(Constants.ShooterConstants.turretKD));
+                .withKD(Constants.ShooterConstants.turretKD)
+                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+                .withKS(Constants.ShooterConstants.turretKS)
+                .withKV(Constants.ShooterConstants.turretKV));
     turretPivot
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
@@ -150,14 +153,16 @@ public class ShooterIOReal implements ShooterIO {
 
     hoodPivot.setControl(new PositionVoltage(hoodState.position).withSlot(0));
 
-    // turretState = turretTrapezoidProfile.calculate(0.02, turretState, turretSetpoint);
+    // turretState = turretTrapezoidProfile.calculate(0.02, turretState,
+    // turretSetpoint);
     // Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
 
     inputs.hoodCurrent = hoodPivot.getSupplyCurrent().getValueAsDouble();
 
     // Logger.recordOutput("Shooter/HoodCurrent", hoodPivot.getCurr);
 
-    // turretPivot.setControl(new PositionVoltage(Radians.of(turretState.position)).withSlot(0));
+    // turretPivot.setControl(new
+    // PositionVoltage(Radians.of(turretState.position)).withSlot(0));
   }
 
   public void setHoodAngle(double pitch) {

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.util.FieldUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -22,13 +23,15 @@ public class DriverAutomations {
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPoseSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
-      Supplier<Targeter> targeter) {
+      Supplier<Targeter> targeter,
+      Supplier<RobotRelativeAcceleration> acceleration) {
 
     return new ShooterTrackTarget(
         shooterSubsystem,
         robotPoseSupplier,
         chassisSpeedsSupplier,
         targeter,
+        acceleration,
         () -> selectTarget(robotPoseSupplier.get(), DriverStation.getAlliance()),
         true);
   }

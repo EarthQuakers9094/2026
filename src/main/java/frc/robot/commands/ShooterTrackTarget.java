@@ -1,9 +1,7 @@
 package frc.robot.commands;
 
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecondPerSecond;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -13,13 +11,14 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.units.measure.LinearAcceleration;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.GameState;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import frc.robot.util.AllianceFlipUtil;
@@ -35,16 +34,15 @@ public class ShooterTrackTarget extends Command {
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Supplier<Translation3d> targetSupplier;
   private final boolean shouldFlipTarget;
-  private final Supplier<LinearAcceleration> forwardsAccelerationSupplier;
-  private final Supplier<LinearAcceleration> rightAccelerationSupplier;
+
+  private final Supplier<RobotRelativeAcceleration> accelerationSupplier;
 
   public ShooterTrackTarget(
       ShooterSubsystem shooterSubsystem,
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
       Supplier<Targeter> targeter,
-      Supplier<LinearAcceleration> forwardsAccelerationSupplier,
-      Supplier<LinearAcceleration> rightAccelerationSupplier,
+      Supplier<RobotRelativeAcceleration> accelerationSupplier,
       Translation3d target) {
 
     this(
@@ -52,10 +50,9 @@ public class ShooterTrackTarget extends Command {
         robotPositionSupplier,
         chassisSpeedsSupplier,
         targeter,
+        accelerationSupplier,
         target,
-        false,
-        forwardsAccelerationSupplier,
-        rightAccelerationSupplier);
+        false);
   }
 
   public ShooterTrackTarget(
@@ -63,19 +60,17 @@ public class ShooterTrackTarget extends Command {
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
       Supplier<Targeter> targeter,
+      Supplier<RobotRelativeAcceleration> accelerationSupplier,
       Translation3d target,
-      boolean shouldFlipTarget,
-      Supplier<LinearAcceleration> forwardsAccelerationSupplier,
-      Supplier<LinearAcceleration> rightAccelerationSupplier) {
+      boolean shouldFlipTarget) {
     this(
         shooterSubsystem,
         robotPositionSupplier,
         chassisSpeedsSupplier,
         targeter,
+        accelerationSupplier,
         () -> target,
-        shouldFlipTarget,
-        forwardsAccelerationSupplier,
-        rightAccelerationSupplier);
+        shouldFlipTarget);
   }
 
   public ShooterTrackTarget(
@@ -83,18 +78,16 @@ public class ShooterTrackTarget extends Command {
       Supplier<Pose2d> robotPositionSupplier,
       Supplier<ChassisSpeeds> chassisSpeedsSupplier,
       Supplier<Targeter> targeter,
+      Supplier<RobotRelativeAcceleration> accelerationSupplier,
       Supplier<Translation3d> targetSupplier,
-      boolean shouldFlipTarget,
-      Supplier<LinearAcceleration> forwardsAccelerationSupplier,
-      Supplier<LinearAcceleration> rightAccelerationSupplier) {
+      boolean shouldFlipTarget) {
     this.shooterSubsystem = shooterSubsystem;
     this.targeter = targeter;
     this.robotPositionSupplier = robotPositionSupplier;
     this.chassisSpeedsSupplier = chassisSpeedsSupplier;
     this.targetSupplier = targetSupplier;
     this.shouldFlipTarget = shouldFlipTarget;
-    this.forwardsAccelerationSupplier = forwardsAccelerationSupplier;
-    this.rightAccelerationSupplier = rightAccelerationSupplier;
+    this.accelerationSupplier = accelerationSupplier;
 
     SmartDashboard.putNumber("HoodAngle", 0.0);
 
@@ -110,10 +103,14 @@ public class ShooterTrackTarget extends Command {
   public void execute() {
     Pose2d robotPosition = robotPositionSupplier.get();
     ChassisSpeeds chassisSpeeds = chassisSpeedsSupplier.get();
+    RobotRelativeAcceleration robotRelativeAcceleration = accelerationSupplier.get();
     // Logger.recordOutput("RobotChassisSpeeds", null);
     Pose2d anticipatedRobotPosition =
         robotPosition.exp(
-            chassisSpeeds.toTwist2d(Constants.ShooterConstants.robotPositionAnticipationSeconds));
+            robotRelativeAcceleration.toTwist2d(
+                chassisSpeeds, Constants.ShooterConstants.robotPositionAnticipationSeconds)
+            // chassisSpeeds.toTwist2d(Constants.ShooterConstants.robotPositionAnticipationSeconds)
+            );
     Logger.recordOutput("Shooter/AnticipatedRobotPosition", anticipatedRobotPosition);
 
     Pose2d anticipatedShooterPosition =
@@ -148,12 +145,8 @@ public class ShooterTrackTarget extends Command {
     ChassisSpeeds fieldRelativeChassisSpeeds =
         ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, robotPosition.getRotation());
 
-    ChassisSpeeds fieldRelativeChassisAcceleration =
-        ChassisSpeeds.fromRobotRelativeSpeeds(
-            forwardsAccelerationSupplier.get().in(MetersPerSecondPerSecond),
-            rightAccelerationSupplier.get().in(MetersPerSecondPerSecond),
-            0d,
-            robotPosition.getRotation());
+    Translation2d fieldRelativeChassisAcceleration =
+        robotRelativeAcceleration.toFieldRelative(robotPosition.getRotation());
 
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter
@@ -168,11 +161,11 @@ public class ShooterTrackTarget extends Command {
                         fieldRelativeChassisSpeeds.vyMetersPerSecond
                         // * (RobotBase.isReal() ? 1.0 : -1.0)
                         ),
-                    new Translation2d(
-                        fieldRelativeChassisAcceleration.vxMetersPerSecond,
-                        fieldRelativeChassisAcceleration.vyMetersPerSecond),
+                    fieldRelativeChassisAcceleration,
                     RadiansPerSecond.of(fieldRelativeChassisSpeeds.omegaRadiansPerSecond),
-                    RadiansPerSecondPerSecond.of(0)));
+                    robotPosition.getRotation()));
+
+    Logger.recordOutput("Shooter/CanHitTarget", maybeTargetingResult.isPresent());
     if (maybeTargetingResult.isPresent()) {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
@@ -180,23 +173,42 @@ public class ShooterTrackTarget extends Command {
       shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM() * 1.008));
 
       // if (RobotBase.isSimulation() && Constants.simMode == Mode.REPLAY) {
-      //   drawTrajectory(
-      //       new Translation3d(anticipatedShooterPosition.getTranslation())
-      //           .plus(new Translation3d(0, 0,
+      // drawTrajectory(
+      // new Translation3d(anticipatedShooterPosition.getTranslation())
+      // .plus(new Translation3d(0, 0,
       // Constants.ShooterConstants.positionOnRobot.getZ())),
-      //       chassisSpeeds,
-      //       new Rotation2d(targetingResult.yawRadians()),
-      //       targetingResult.pitchRadians(),
-      //       ShooterSubsystem.shooterSpeedToVelocity(
-      //           shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+      // chassisSpeeds,
+      // new Rotation2d(targetingResult.yawRadians()),
+      // targetingResult.pitchRadians(),
+      // ShooterSubsystem.shooterSpeedToVelocity(
+      // shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+      boolean shouldShoot =
+          GameState.getInstance().shouldShoot(targetingResult.timeOfFlightSeconds());
+      Logger.recordOutput("Shooter/ShouldShoot", shouldShoot);
+
+      // if (RobotBase.isSimulation() && Constants.simMode == Mode.REPLAY) {
+      // drawTrajectory(
+      // new Translation3d(anticipatedShooterPosition.getTranslation())
+      // .plus(new Translation3d(0, 0,
+      // Constants.ShooterConstants.positionOnRobot.getZ())),
+      // chassisSpeeds,
+      // new Rotation2d(targetingResult.yawRadians()),
+      // targetingResult.pitchRadians(),
+      // ShooterSubsystem.shooterSpeedToVelocity(
+      // shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
       // } else {
       drawTrajectory(
           new Translation3d(anticipatedShooterPosition.getTranslation())
               .plus(new Translation3d(0, 0, Constants.ShooterConstants.positionOnRobot.getZ())),
           fieldRelativeChassisSpeeds,
-          new Rotation2d(shooterSubsystem.getYaw()),
-          distanceToTarget,
-          distanceToTarget);
+          new Rotation2d(
+              shooterSubsystem
+                  .getYaw()
+                  .plus(anticipatedShooterPosition.getRotation().getMeasure())),
+          ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
+          ShooterSubsystem.shooterSpeedToVelocity(
+              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+      // }
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
       // 0)));

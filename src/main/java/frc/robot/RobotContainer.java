@@ -34,6 +34,7 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ShootFuelNoIntake;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -372,13 +373,6 @@ public class RobotContainer {
                     new RobotRelativeAcceleration(
                         drive.getGyroForwardAcceleration(), drive.getGyroRightAcceleration()))
             .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
-    // new ShooterTrackTarget(
-    // shooter,
-    // drive::getPose,
-    // drive::getChassisSpeeds,
-    // targeter,
-    // Constants.Field.hubTarget,
-    // true));
 
     // Lock to 0° when A button is held
     // controller
@@ -428,24 +422,24 @@ public class RobotContainer {
     // true));
 
     /** Enables the Intake spinners BACKWARDS */
-    rightStick.button(2).whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    controller.back().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
     // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
     // false));
 
     /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
-    controller.rightTrigger().whileTrue(new ShootFuel(shooter, kicker, intake));
+    controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
 
     // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
 
-    leftStick
-        .button(4)
+    rightStick
+        .button(2)
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -rightStick.getY(),
-                () -> -rightStick.getX(),
-                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
+                () -> -leftStick.getY(),
+                () -> -leftStick.getX(),
+                () -> new Rotation2d(Math.PI + Math.atan2(leftStick.getX(), leftStick.getY()))));
 
     /** Zero Intake To Ground Position */
     leftStick

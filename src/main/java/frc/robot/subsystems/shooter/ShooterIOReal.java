@@ -166,7 +166,7 @@ public class ShooterIOReal implements ShooterIO {
 
   public void setHoodAngle(double pitch) {
     // double requiredHoodAngle = launchAngleToHoodAngle.get(pitch.getRadians());
-    double clampedPitch = Math.max(Math.min(2.407227, pitch), 0.2);
+    double clampedPitch = Math.max(Math.min(2.30, pitch), 0.2);
 
     Logger.recordOutput("Shooter/LastHoodSetpoint", clampedPitch);
 

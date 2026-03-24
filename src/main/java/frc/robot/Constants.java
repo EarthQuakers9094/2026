@@ -140,7 +140,7 @@ public final class Constants {
     public static final double turretKI = 0;
     public static final double turretKS = 0.0;
     public static final double turretKV = 0.0;
-    public static final double turretKD = 15.0;
+    public static final double turretKD = 10.0;
     // public static final Constraints turretConstraints =
     // new TrapezoidProfile.Constraints(99999.0, 99999.0);
     public static final Constraints turretConstraints =

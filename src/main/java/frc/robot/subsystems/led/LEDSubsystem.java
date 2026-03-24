@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.Queue;
@@ -35,10 +36,11 @@ public class LEDSubsystem extends SubsystemBase {
   private boolean firstIteration = true;
   private double lastTime = Timer.getFPGATimestamp();
 
-  private static final int length = 150;
+  private static final int length = 50;
+  private static final StrobeAnimation strobe = new StrobeAnimation(0, length).withFrameRate(50);
 
   public LEDSubsystem() {
-    this.candle = new CANdle(3);
+    this.candle = new CANdle(3, Constants.shooterCANBus);
 
     // Logger.recordOutput("ClapBoard", 1.0);
     // candle.setControl(new SolidColor(0, 150).withColor(RGBWColor.fromHSV(null,
@@ -80,12 +82,16 @@ public class LEDSubsystem extends SubsystemBase {
   private void returnToDefault() {
     Logger.recordOutput("ClapBoard", 0.0);
 
-    candle.setControl(new LarsonAnimation(0, length).withColor(getAllianceColor(getAlliance())));
+    candle.setControl(
+        new LarsonAnimation(0, length)
+            .withFrameRate(100)
+            .withSize(50)
+            .withColor(getAllianceColor(getAlliance())));
     this.maybeCurrentEvent = Optional.empty();
   }
 
   private void transitionToEvent(LEDEvent event) {
-    remainingEventTime = 1.5;
+    remainingEventTime = 0.5;
     this.maybeCurrentEvent = Optional.of(event);
 
     switch (event) {
@@ -94,18 +100,16 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(new SolidColor(0, length).withColor(new RGBWColor(209, 71, 191)));
         break;
       case HubActive:
-        candle.setControl(
-            new StrobeAnimation(0, length).withColor(getAllianceColor(getAlliance())));
+        candle.setControl(strobe.withColor(getAllianceColor(getAlliance())));
         break;
       case HubInactive:
-        candle.setControl(
-            new StrobeAnimation(0, length).withColor(getAllianceColor(getOtherAlliance())));
+        candle.setControl(strobe.withColor(getAllianceColor(getOtherAlliance())));
         break;
       case StartedAuto:
-        candle.setControl(new StrobeAnimation(0, length).withColor(new RGBWColor(34, 156, 63)));
+        candle.setControl(strobe.withColor(new RGBWColor(34, 156, 63)));
         break;
       case StartedShooting:
-        candle.setControl(new StrobeAnimation(0, length).withColor(new RGBWColor(227, 227, 61)));
+        candle.setControl(strobe.withColor(new RGBWColor(227, 227, 61)));
         break;
       default:
         break;

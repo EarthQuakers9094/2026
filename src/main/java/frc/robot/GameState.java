@@ -33,7 +33,7 @@ public class GameState {
 
   private Phase currentPhase = Phase.NotInGame;
   private Optional<Boolean> isFirstActiveAlliance = Optional.empty();
-  private Optional<Boolean> isHubActive = Optional.empty();
+  public Optional<Boolean> isHubActive = Optional.empty();
 
   private double remainingPhaseTime = 0;
   private double lastTime = Timer.getTimestamp();

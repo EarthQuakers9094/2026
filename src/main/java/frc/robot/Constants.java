@@ -146,7 +146,8 @@ public final class Constants {
     public static final Constraints turretConstraints =
         new TrapezoidProfile.Constraints(52.0, 52.0);
 
-    public static final Constraints hoodConstraints = new TrapezoidProfile.Constraints(72.0, 72.0);
+    public static final Constraints hoodConstraints =
+        new TrapezoidProfile.Constraints(144.0, 144.0);
     public static final Angle yawThreshold = Degrees.of(5.0);
     public static final AngularAcceleration turretAcceleration = RadiansPerSecondPerSecond.of(36.0);
     public static final AngularVelocity turretCruiseVelocity = RadiansPerSecond.of(48.0);

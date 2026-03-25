@@ -35,8 +35,10 @@ public class SpindexerIOReal implements SpindexerIO {
                         Constants.SpindexerConstants.kI,
                         Constants.SpindexerConstants.kD,
                         ClosedLoopSlot.kSlot0)
-                    .pid(Constants.SpindexerConstants.kP * 0.5, 0, 0, ClosedLoopSlot.kSlot1)
-                    .apply(new FeedForwardConfig().kV(Constants.SpindexerConstants.kV)))
+                    .pid(Constants.SpindexerConstants.kP * 0.1, 0, 0, ClosedLoopSlot.kSlot1)
+                    .apply(
+                        new FeedForwardConfig()
+                            .kV(Constants.SpindexerConstants.kV, ClosedLoopSlot.kSlot0)))
             .apply(
                 new EncoderConfig()
                     .velocityConversionFactor(
@@ -52,13 +54,14 @@ public class SpindexerIOReal implements SpindexerIO {
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {
-    if (spindexerSetSpeed.isNear(RPM.of(0), 0.1)) {
+    if (spindexerSetSpeed.in(RPM) < 100.0) {
       spindexerMotor
           .getClosedLoopController()
           .setSetpoint(spindexerSetSpeed.in(RPM), ControlType.kVelocity, ClosedLoopSlot.kSlot1);
+    } else {
+      spindexerMotor
+          .getClosedLoopController()
+          .setSetpoint(spindexerSetSpeed.in(RPM), ControlType.kVelocity, ClosedLoopSlot.kSlot0);
     }
-    spindexerMotor
-        .getClosedLoopController()
-        .setSetpoint(spindexerSetSpeed.in(RPM), ControlType.kVelocity, ClosedLoopSlot.kSlot0);
   }
 }

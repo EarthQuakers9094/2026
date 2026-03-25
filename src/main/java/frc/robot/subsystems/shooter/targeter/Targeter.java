@@ -2,6 +2,7 @@ package frc.robot.subsystems.shooter.targeter;
 
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -44,5 +45,14 @@ public interface Targeter {
     }
   }
 
+  public record ShotParams(double RPM, double hoodPosition, double TOF) {}
+
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData);
+
+  public static ShotParams shotInterpolator(ShotParams start, ShotParams end, double t) {
+    return new ShotParams(
+        MathUtil.interpolate(start.RPM(), end.RPM(), t),
+        MathUtil.interpolate(start.hoodPosition(), end.hoodPosition(), t),
+        MathUtil.interpolate(start.TOF(), end.TOF(), t));
+  }
 }

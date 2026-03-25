@@ -152,16 +152,12 @@ public class ShooterIOReal implements ShooterIO {
 
     hoodPivot.setControl(new PositionVoltage(hoodState.position).withSlot(0));
 
-    // turretState = turretTrapezoidProfile.calculate(0.02, turretState,
-    // turretSetpoint);
     // Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
 
     inputs.hoodCurrent = hoodPivot.getSupplyCurrent().getValueAsDouble();
 
     // Logger.recordOutput("Shooter/HoodCurrent", hoodPivot.getCurr);
 
-    // turretPivot.setControl(new
-    // PositionVoltage(Radians.of(turretState.position)).withSlot(0));
   }
 
   public void setHoodAngle(double pitch) {
@@ -191,10 +187,8 @@ public class ShooterIOReal implements ShooterIO {
       yawRadians = Math.max(Math.min(yawRadians, maxRadians), minRadians);
     }
     Logger.recordOutput("Shooter/YawSetpointRadians", yawRadians);
-    turretPivot.setControl(
-        new PositionVoltage(
-            Radians.of(yawRadians))); // new MotionMagicVoltage(Radians.of(yawRadians)));
-    // turretSetpoint = new TrapezoidProfile.State(yawRadians, 0);
+    turretPivot.setControl(new PositionVoltage(Radians.of(yawRadians))); // new
+    // MotionMagicVoltage(Radians.of(yawRadians)));
   }
 
   public void setVelocitySetpoint(AngularVelocity speed) {

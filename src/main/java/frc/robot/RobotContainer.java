@@ -61,6 +61,7 @@ import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
+import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.spindexer.SpindexerIO;
@@ -86,7 +87,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
   private final Vision vision;
-  private Targeter targeter = new EeshwarkTargeter();
+  private Targeter targeter = new MechanicalAdvantageTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
   private final HopperServoSubsystem servo;

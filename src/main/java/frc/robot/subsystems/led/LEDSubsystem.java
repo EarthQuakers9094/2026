@@ -37,7 +37,7 @@ public class LEDSubsystem extends SubsystemBase {
   private double lastTime = Timer.getFPGATimestamp();
 
   private static final int length = 50;
-  private static final StrobeAnimation strobe = new StrobeAnimation(0, length).withFrameRate(50);
+  private static final StrobeAnimation strobe = new StrobeAnimation(0, length).withFrameRate(25);
 
   public LEDSubsystem() {
     this.candle = new CANdle(3, Constants.shooterCANBus);

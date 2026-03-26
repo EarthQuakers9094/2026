@@ -36,6 +36,8 @@ import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelNoIntake;
+import frc.robot.commands.StartShootingFuel;
+import frc.robot.commands.StopShootingFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -280,6 +282,10 @@ public class RobotContainer {
             shooter));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand("start_shooting_fuel", new StartShootingFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand("stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
+
+
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));

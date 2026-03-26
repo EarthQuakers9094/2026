@@ -9,6 +9,30 @@
           "data": {
             "pathName": "Left Trench to Neutral"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeForBump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For Bump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeForBump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For Bump"
+          }
         }
       ]
     }

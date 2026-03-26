@@ -1,0 +1,87 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Trench to Neutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Intake From Left Center Far"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot From Under Trench"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 8.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot_fuel"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Return to Left From Under Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake From Left Center Near"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Shoot From Under Trench"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 8.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot_fuel"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

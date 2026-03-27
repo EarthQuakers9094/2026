@@ -37,7 +37,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -140,7 +140,7 @@ public final class Constants {
     public static final double turretKI = 0;
     public static final double turretKS = 0.22;
     public static final double turretKV = 0.0;
-    public static final double turretKD = 1.0;
+    public static final double turretKD = 0.0;
     // public static final Constraints turretConstraints =
     // new TrapezoidProfile.Constraints(99999.0, 99999.0);
     public static final Constraints turretConstraints =
@@ -148,9 +148,9 @@ public final class Constants {
 
     public static final Constraints hoodConstraints =
         new TrapezoidProfile.Constraints(144.0, 144.0);
-    public static final Angle yawThreshold = Degrees.of(5.0);
-    public static final AngularAcceleration turretAcceleration = RadiansPerSecondPerSecond.of(36.0);
-    public static final AngularVelocity turretCruiseVelocity = RadiansPerSecond.of(48.0);
+    public static final Angle yawThreshold = Degrees.of(10.0);
+    public static final AngularAcceleration turretAcceleration = RadiansPerSecondPerSecond.of(72.0);
+    public static final AngularVelocity turretCruiseVelocity = RadiansPerSecond.of(128.0);
   }
 
   public static class IntakeConstants {

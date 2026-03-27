@@ -282,9 +282,10 @@ public class RobotContainer {
             shooter));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
-    NamedCommands.registerCommand("start_shooting_fuel", new StartShootingFuel(shooter, kicker, intake));
-    NamedCommands.registerCommand("stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
-
+    NamedCommands.registerCommand(
+        "start_shooting_fuel", new StartShootingFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand(
+        "stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
 
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
@@ -320,7 +321,7 @@ public class RobotContainer {
         .onFalse(new InstantCommand(spindexer::stop).ignoringDisable(true));
 
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
-        .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
+        .whileTrue(Commands.run(shooter::retractHood, shooter).ignoringDisable(true));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
@@ -369,7 +370,7 @@ public class RobotContainer {
               double smoothedX = xInputAverage.calculate(x);
               return -1 * (shouldSlow() ? smoothedX : x);
             },
-            () -> -(shouldSlow() ? 0.5 * rightStick.getX() : rightStick.getX())));
+            () -> -(shouldSlow() ? 0.3 * rightStick.getX() : rightStick.getX())));
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(

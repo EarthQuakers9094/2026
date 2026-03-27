@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
+import com.ctre.phoenix6.configs.ClosedLoopGeneralConfigs;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
@@ -14,6 +15,7 @@ import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GainSchedBehaviorValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
@@ -115,10 +117,14 @@ public class ShooterIOReal implements ShooterIO {
                 .withKD(Constants.ShooterConstants.turretKD)
                 .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
                 .withKS(Constants.ShooterConstants.turretKS)
-                .withKV(Constants.ShooterConstants.turretKV));
+                .withKV(Constants.ShooterConstants.turretKV)
+                .withGainSchedBehavior(GainSchedBehaviorValue.ZeroOutput));
     turretPivot
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+    turretPivot
+        .getConfigurator()
+        .apply(new ClosedLoopGeneralConfigs().withGainSchedErrorThreshold(0.01));
 
     turretPivot
         .getConfigurator()

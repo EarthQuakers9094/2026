@@ -37,7 +37,7 @@ public class LEDSubsystem extends SubsystemBase {
   private double lastTime = Timer.getFPGATimestamp();
 
   private static final int length = 50;
-  private static final StrobeAnimation strobe = new StrobeAnimation(0, length).withFrameRate(25);
+  private static final StrobeAnimation strobe = new StrobeAnimation(0, length).withFrameRate(10);
 
   public LEDSubsystem() {
     this.candle = new CANdle(3, Constants.shooterCANBus);
@@ -97,7 +97,7 @@ public class LEDSubsystem extends SubsystemBase {
     switch (event) {
       case ClapBoard:
         Logger.recordOutput("ClapBoard", 1.0);
-        candle.setControl(new SolidColor(0, length).withColor(new RGBWColor(209, 71, 191)));
+        candle.setControl(new SolidColor(0, length).withColor(new RGBWColor(209, 71, 191, 0)));
         break;
       case HubActive:
         candle.setControl(strobe.withColor(getAllianceColor(getAlliance())));
@@ -106,10 +106,10 @@ public class LEDSubsystem extends SubsystemBase {
         candle.setControl(strobe.withColor(getAllianceColor(getOtherAlliance())));
         break;
       case StartedAuto:
-        candle.setControl(strobe.withColor(new RGBWColor(34, 156, 63)));
+        candle.setControl(strobe.withColor(new RGBWColor(34, 156, 63, 0)));
         break;
       case StartedShooting:
-        candle.setControl(strobe.withColor(new RGBWColor(227, 227, 61)));
+        candle.setControl(strobe.withColor(new RGBWColor(227, 227, 61, 0)));
         break;
       default:
         break;

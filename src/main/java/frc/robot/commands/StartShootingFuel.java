@@ -11,9 +11,7 @@ public class StartShootingFuel extends Command {
   private final IntakeSubsystem intake;
 
   public StartShootingFuel(
-      ShooterSubsystem shooter,
-      KickerSubsystem kicker,
-      IntakeSubsystem intake) {
+      ShooterSubsystem shooter, KickerSubsystem kicker, IntakeSubsystem intake) {
     this.shooter = shooter;
     this.kicker = kicker;
     this.intake = intake;
@@ -28,6 +26,7 @@ public class StartShootingFuel extends Command {
     this.intake.startIntake();
     this.shooter.setReadyToShoot(true);
   }
+
   @Override
   public boolean isFinished() {
     return true;

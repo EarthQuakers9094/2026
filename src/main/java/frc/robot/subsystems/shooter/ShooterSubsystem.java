@@ -208,6 +208,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean isYawNearIdeal() {
     Logger.recordOutput("idealYaw.getRadians()", idealYaw.getRadians());
     Logger.recordOutput("inputs.yaw.in(Radians)", inputs.yaw.in(Radians));
+    Logger.recordOutput("TurretError", Math.abs(idealYaw.getRadians() - inputs.yaw.in(Radians)));
     return Math.abs(idealYaw.getRadians() - inputs.yaw.in(Radians))
         <= Constants.ShooterConstants.yawThreshold.in(Radians);
   }

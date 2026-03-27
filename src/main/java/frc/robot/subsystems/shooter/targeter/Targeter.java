@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter.targeter;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
@@ -20,7 +21,7 @@ public interface Targeter {
       Translation2d robotVelocity,
       Translation2d robotAcceleration,
       AngularVelocity robotOmegaAngularVelocity,
-      Rotation2d robotRotation) {}
+      Pose2d robotPosition) {}
 
   public record RobotRelativeAcceleration(LinearAcceleration aX, LinearAcceleration aY) {
 

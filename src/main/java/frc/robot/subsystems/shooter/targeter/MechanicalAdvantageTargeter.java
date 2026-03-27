@@ -2,7 +2,10 @@ package frc.robot.subsystems.shooter.targeter;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
@@ -31,7 +34,7 @@ public class MechanicalAdvantageTargeter implements Targeter {
         Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d();
     double twistRadius = robotToShooter.getNorm();
     double tangentialVelocity =
-        -twistCompensationFactor.get()
+        twistCompensationFactor.get()
             * targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
             * twistRadius;
 
@@ -40,11 +43,22 @@ public class MechanicalAdvantageTargeter implements Targeter {
     // lines
 
     double velocityAngleRelativeToFieldAxis =
-        targetingData.robotRotation().getRadians() - robotToShooter.getAngle().getRadians();
+        // targetingData.robotPosition().getRotation().getRadians()
+        robotToShooter.getAngle().getRadians() - Math.PI / 4;
     Translation2d rotationalVelocity =
         new Translation2d(
-            Math.cos(velocityAngleRelativeToFieldAxis) * tangentialVelocity,
-            Math.sin(velocityAngleRelativeToFieldAxis) * tangentialVelocity);
+            Math.sin(velocityAngleRelativeToFieldAxis) * tangentialVelocity,
+            Math.cos(velocityAngleRelativeToFieldAxis) * tangentialVelocity);
+
+    Logger.recordOutput(
+        "TangentialVelocity",
+        new Pose3d[] {
+          new Pose3d(targetingData.robotPosition())
+              .plus(Constants.ShooterConstants.positionOnRobot),
+          new Pose3d(targetingData.robotPosition())
+              .plus(Constants.ShooterConstants.positionOnRobot)
+              .plus(new Transform3d(new Transform2d(rotationalVelocity, new Rotation2d())))
+        });
 
     robotVelocity = robotVelocity.plus(rotationalVelocity);
     // }
@@ -65,10 +79,10 @@ public class MechanicalAdvantageTargeter implements Targeter {
                               .times(Constants.ShooterConstants.robotPositionAnticipationSeconds))
                       .times(params.TOF()));
       // lookaheadTarget.rotateBy(
-      //     new Rotation2d(
-      //         targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
-      //             * params.TOF()
-      //             * twistCompensationFactor.get()));
+      // new Rotation2d(
+      // targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
+      // * params.TOF()
+      // * twistCompensationFactor.get()));
     }
 
     Translation2d shotDirection = lookaheadTarget.div(lookaheadTarget.getNorm());

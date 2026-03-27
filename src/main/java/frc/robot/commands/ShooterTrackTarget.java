@@ -163,7 +163,7 @@ public class ShooterTrackTarget extends Command {
                         ),
                     fieldRelativeChassisAcceleration,
                     RadiansPerSecond.of(fieldRelativeChassisSpeeds.omegaRadiansPerSecond),
-                    robotPosition.getRotation()));
+                    robotPosition));
 
     Logger.recordOutput("Shooter/CanHitTarget", maybeTargetingResult.isPresent());
     if (maybeTargetingResult.isPresent()) {

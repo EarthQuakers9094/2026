@@ -126,7 +126,8 @@ public class EeshwarkTargeter implements Targeter {
       // lines
 
       double velocityAngleRelativeToFieldAxis =
-          targetingData.robotRotation().getRadians() + robotToShooter.getAngle().getRadians();
+          targetingData.robotPosition().getRotation().getRadians()
+              + robotToShooter.getAngle().getRadians();
       Translation2d rotationalVelocity =
           new Translation2d(
               Math.cos(velocityAngleRelativeToFieldAxis) * tangentialVelocity,

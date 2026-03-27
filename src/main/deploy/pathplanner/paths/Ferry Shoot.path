@@ -1,0 +1,144 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.348641154389116,
+        "y": 7.4575102268352165
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.366119738193019,
+        "y": 7.459479875192505
+      },
+      "isLocked": false,
+      "linkedName": "UnderTrenchSpot"
+    },
+    {
+      "anchor": {
+        "x": 3.022434708675564,
+        "y": 5.303101819173512
+      },
+      "prevControl": {
+        "x": 3.0428599813909747,
+        "y": 7.050417358720242
+      },
+      "nextControl": {
+        "x": 3.0100188895662217,
+        "y": 4.240968942505135
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.9331136502181723,
+        "y": 7.4575102268352165
+      },
+      "prevControl": {
+        "x": 2.4637487166324425,
+        "y": 7.452885070424795
+      },
+      "nextControl": {
+        "x": 1.4024785838039016,
+        "y": 7.462135383245638
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7331757331237165,
+        "y": 7.600169043570329
+      },
+      "prevControl": {
+        "x": 0.9823922128265368,
+        "y": 7.619946461109883
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.24004035596026496,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 0.9610151076158957,
+      "rotationDegrees": 53.175617316657124
+    },
+    {
+      "waypointRelativePos": 1.4274834437086066,
+      "rotationDegrees": -66.49260562291924
+    },
+    {
+      "waypointRelativePos": 1.914378104304633,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6852001664201183,
+      "maxWaypointRelativePos": 3.0,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 1.0,
+        "maxAngularVelocity": 100.0,
+        "maxAngularAcceleration": 100.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.22345367973372782,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 0.6605318509615404,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Ferry Auto",
+  "idealStartingState": {
+    "velocity": 3.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

@@ -4,9 +4,11 @@
   "holonomicMode": true,
   "pathFolders": [
     "Left Bump",
+    "Ferry Auto",
     "New Left Auto"
   ],
   "autoFolders": [
+    "Experimental Autos",
     "Old or Deprecated Autos",
     "Real Autos"
   ],

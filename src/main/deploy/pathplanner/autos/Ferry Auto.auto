@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ferry Intake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Ferry Shoot"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Experimental Autos",
+  "choreoAuto": false
+}

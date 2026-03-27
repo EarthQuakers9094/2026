@@ -28,22 +28,37 @@ public class EeshwarkTargeter implements Targeter {
   private LoggedNetworkBoolean correctWithRPM = new LoggedNetworkBoolean("CorrectWithRPM", true);
 
   static {
-    shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
-    // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD
-    // DATA POINT
-    shotMap.put(4.237791791973659, new ShotParams(3300, 2.2, 1.56 - 0.32));
-    shotMap.put(3.8188085361104056, new ShotParams(3200, 2.1, 1.94 - 0.84));
-    shotMap.put(3.4200357766207268, new ShotParams(3050, 2.025, 3.08 - 1.91));
-    shotMap.put(2.7163413872695594, new ShotParams(2850, 1.4, 1.42 - 0.38));
-    shotMap.put(2.4258430558322117, new ShotParams(2800, 1.3, 1.44 - 0.32));
-    shotMap.put(2.119235489902627, new ShotParams(2650, 1.05, 1.74 - 0.75));
-    shotMap.put(1.904048127971999, new ShotParams(2600, 0.925, 1.68 - 0.73));
-    shotMap.put(1.5355979615043405, new ShotParams(2600, 0.6, 1.42 - 0.36));
-    shotMap.put(1.0561370725815047, new ShotParams(2500, 0.35, 3.33 - 2.29));
-    shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));
+    // shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
+    // // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD
+    // // DATA POINT
+    // shotMap.put(4.237791791973659, new ShotParams(3300, 2.2, 1.56 - 0.32));
+    // shotMap.put(3.8188085361104056, new ShotParams(3200, 2.1, 1.94 - 0.84));
+    // shotMap.put(3.4200357766207268, new ShotParams(3050, 2.025, 3.08 - 1.91));
+    // shotMap.put(2.7163413872695594, new ShotParams(2850, 1.4, 1.42 - 0.38));
+    // shotMap.put(2.4258430558322117, new ShotParams(2800, 1.3, 1.44 - 0.32));
+    // shotMap.put(2.119235489902627, new ShotParams(2650, 1.05, 1.74 - 0.75));
+    // shotMap.put(1.904048127971999, new ShotParams(2600, 0.925, 1.68 - 0.73));
+    // shotMap.put(1.5355979615043405, new ShotParams(2600, 0.6, 1.42 - 0.36));
+    // shotMap.put(1.0561370725815047, new ShotParams(2500, 0.35, 3.33 - 2.29));
+    // shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));
+    shotMap.put(5.098070710856465, new ShotParams(3660, 2.283, 4.96 - 3.390));
+    shotMap.put(4.851891891966654, new ShotParams(3525, 2.283, 2.08 - 0.63));
+    shotMap.put(4.558179560558487, new ShotParams(3430, 2.283, 3.63 - 2.23));
+    shotMap.put(4.19749660974825, new ShotParams(3315, 2.283, 3.36 - 2.01));
+    shotMap.put(3.9224328932130836, new ShotParams(3200, 2.283, 3.52 - 2.31));
+    shotMap.put(3.7174510331104833, new ShotParams(3075, 2.283, 3.52 - 2.37));
+    shotMap.put(3.519915355997788, new ShotParams(2975, 2.283, 3.35 - 2.15));
+    shotMap.put(3.359358388831645, new ShotParams(2900, 2.283, 3.08 - 2.06));
+    shotMap.put(3.099707376609207, new ShotParams(2830, 2.283, 3.14 - 2.12));
+    shotMap.put(2.9017528375345853, new ShotParams(2700, 2.283, 2.98 - 2.06));
+    shotMap.put(2.6623983102504067, new ShotParams(2625, 2.103, 3.38 - 2.50));
+    shotMap.put(2.366682370302446, new ShotParams(2560, 1.950, 3.23 - 2.40));
+    shotMap.put(2.21104383698358, new ShotParams(2550, 1.701, 3.18 - 2.26));
+    shotMap.put(1.8796353887149986, new ShotParams(2550, 1.293, 3.31 - 2.34));
+    shotMap.put(1.3949509529801134, new ShotParams(2550, 0.708, 3.26 - 2.19));
 
-    double minDistance = 1.0561370725815047;
-    double maxDistance = 4.964619639141648;
+    double minDistance = 1.3949509529801134;
+    double maxDistance = 5.098070710856465;
 
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);

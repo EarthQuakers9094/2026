@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0039657631954344,
-        "y": 5.425905848787448
+        "x": 2.628744650499286,
+        "y": 6.046961483594864
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.6937144667607797,
-        "y": 7.065198480813656
+        "x": 2.421717935068141,
+        "y": 7.211439346296698
       },
       "isLocked": false,
       "linkedName": "BumpShootingSpot"
@@ -20,8 +20,8 @@
         "y": 7.4575102268352165
       },
       "prevControl": {
-        "x": 2.369026318438112,
-        "y": 7.703344748952529
+        "x": 2.353820483004852,
+        "y": 7.4575102268352165
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,12 +38,12 @@
     {
       "name": "Constraints Zone",
       "minWaypointRelativePos": 0,
-      "maxWaypointRelativePos": 0.8214739737426039,
+      "maxWaypointRelativePos": 0.9020931802835881,
       "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 120.0,
-        "maxAngularAcceleration": 120.0,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 75.0,
+        "maxAngularAcceleration": 75.0,
         "nominalVoltage": 12.0,
         "unlimited": false
       }
@@ -52,19 +52,38 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "start_shooting_fuel",
-      "waypointRelativePos": 0,
+      "name": "jiggle_intake",
+      "waypointRelativePos": 0.3727211343686635,
       "endWaypointRelativePos": null,
       "command": {
-        "type": "named",
+        "type": "sequential",
         "data": {
-          "name": "start_shooting_fuel"
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "jiggle_intake"
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0.5
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "jiggle_intake"
+              }
+            }
+          ]
         }
       }
     },
     {
       "name": "stop_shooting_fuel",
-      "waypointRelativePos": 0.6509115462525239,
+      "waypointRelativePos": 0.8129642133693488,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -89,7 +108,7 @@
   "reversed": false,
   "folder": "Left Bump",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": -43.72696997994338
   },
   "useDefaultConstraints": true

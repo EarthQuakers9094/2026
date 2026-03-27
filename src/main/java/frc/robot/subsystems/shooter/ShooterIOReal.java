@@ -201,7 +201,6 @@ public class ShooterIOReal implements ShooterIO {
     this.lastFlywheelVelocitySetpoint = speed.in(RPM);
     if (lastFlywheelVelocitySetpoint == 0) {
       flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(1));
-
     } else {
       flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(0));
     }

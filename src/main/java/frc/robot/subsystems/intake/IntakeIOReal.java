@@ -50,7 +50,7 @@ public class IntakeIOReal implements IntakeIO {
 
     spinMotor.configure(
         new SparkFlexConfig()
-            .inverted(true)
+            .inverted(false)
             .smartCurrentLimit(60)
             .apply(
                 new ClosedLoopConfig()

@@ -96,6 +96,7 @@ public final class Constants {
   // }
 
   public static class ShooterConstants {
+    public static final double shooterMinPercentage = 0.9d;
     public static final AngularVelocity launchSpeed = RPM.of(3500.0);
     public static final AngularVelocity minLaunchSpeed = RPM.of(3000.0);
     public static final AngularVelocity nearSpeed = RPM.of(2500.0);
@@ -137,7 +138,7 @@ public final class Constants {
     public static final double hoodConversionFactor = 1 / (3 * 250 / 22);
 
     public static final double turretKP = 100.0;
-    public static final double turretKI = 0;
+    public static final double turretKI = 0.4;
     public static final double turretKS = 0.22;
     public static final double turretKV = 0.0;
     public static final double turretKD = 0.0;
@@ -179,7 +180,7 @@ public final class Constants {
     public static final double spinkD = 0.0; // made up value
     public static final double spinkV = 0.4; // made up value
 
-    public static final AngularVelocity intakeSpeed = RPM.of(-2000.0);
+    public static final AngularVelocity intakeSpeed = RPM.of(2000.0);
     public static final Angle deployedAngle = Degrees.of(0);
     public static final Angle retractedAngle = Degrees.of(130);
     public static final Angle startAngle = Degrees.of(131.76767);

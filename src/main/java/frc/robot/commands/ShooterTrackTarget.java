@@ -117,6 +117,7 @@ public class ShooterTrackTarget extends Command {
         anticipatedRobotPosition.transformBy(
             new Transform2d(
                 Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
+                //Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d().rotateBy(robotPosition.getRotation()),
                 Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
 
     Translation3d flippedTarget =

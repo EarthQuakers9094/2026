@@ -122,8 +122,12 @@ public class ShooterTrackTarget extends Command {
     Translation3d flippedTarget =
         shouldFlipTarget ? AllianceFlipUtil.apply(targetSupplier.get()) : targetSupplier.get();
 
+    Translation2d robotToTarget =
+        flippedTarget.toTranslation2d().minus(anticipatedRobotPosition.getTranslation());
+    Logger.recordOutput("RobotDistancetoHub", robotToTarget);
     Translation2d shooterToTarget =
         flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
+
     double distanceToTarget = shooterToTarget.getNorm();
 
     Logger.recordOutput("Target", flippedTarget);
@@ -148,6 +152,8 @@ public class ShooterTrackTarget extends Command {
     Translation2d fieldRelativeChassisAcceleration =
         robotRelativeAcceleration.toFieldRelative(robotPosition.getRotation());
 
+    Logger.recordOutput("Robot Acceleration", fieldRelativeChassisAcceleration);
+
     Optional<TargetingResult3d> maybeTargetingResult =
         targeter
             .get()
@@ -161,7 +167,7 @@ public class ShooterTrackTarget extends Command {
                         fieldRelativeChassisSpeeds.vyMetersPerSecond
                         // * (RobotBase.isReal() ? 1.0 : -1.0)
                         ),
-                    fieldRelativeChassisAcceleration,
+                    new Translation2d(),
                     RadiansPerSecond.of(fieldRelativeChassisSpeeds.omegaRadiansPerSecond),
                     robotPosition));
 

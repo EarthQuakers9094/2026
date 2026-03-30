@@ -65,25 +65,26 @@ public class MechanicalAdvantageTargeter implements Targeter {
 
     Translation2d lookaheadTarget = targetingData.target();
 
-    for (int i = 0; i <= 40; i++) {
-      ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+    // for (int i = 0; i <= 40; i++) {
+    //   ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
 
-      lookaheadTarget =
-          targetingData
-              .target()
-              .minus(
-                  robotVelocity
-                      .plus(
-                          targetingData
-                              .robotAcceleration()
-                              .times(Constants.ShooterConstants.robotPositionAnticipationSeconds))
-                      .times(params.TOF()));
-      // lookaheadTarget.rotateBy(
-      // new Rotation2d(
-      // targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
-      // * params.TOF()
-      // * twistCompensationFactor.get()));
-    }
+    //   lookaheadTarget =
+    //       targetingData
+    //           .target()
+    //           .minus(
+    //               robotVelocity
+    //                   .plus(
+    //                       targetingData
+    //                           .robotAcceleration()
+    //
+    // .times(Constants.ShooterConstants.robotPositionAnticipationSeconds))
+    //                   .times(params.TOF()));
+    //   // lookaheadTarget.rotateBy(
+    //   // new Rotation2d(
+    //   // targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
+    //   // * params.TOF()
+    //   // * twistCompensationFactor.get()));
+    // }
 
     Translation2d shotDirection = lookaheadTarget.div(lookaheadTarget.getNorm());
 

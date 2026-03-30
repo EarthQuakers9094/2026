@@ -124,7 +124,7 @@ public class ShooterIOReal implements ShooterIO {
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
     turretPivot
         .getConfigurator()
-        .apply(new ClosedLoopGeneralConfigs().withGainSchedErrorThreshold(0.01));
+        .apply(new ClosedLoopGeneralConfigs().withGainSchedErrorThreshold(0.001));
 
     turretPivot
         .getConfigurator()

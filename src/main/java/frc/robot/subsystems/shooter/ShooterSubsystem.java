@@ -230,7 +230,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.85);
+    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.95);
   }
 
   public void setPitch(Rotation2d pitch) {

@@ -96,6 +96,7 @@ public final class Constants {
   // }
 
   public static class ShooterConstants {
+    public static final double shooterMinPercentage = 0.9d;
     public static final AngularVelocity launchSpeed = RPM.of(3500.0);
     public static final AngularVelocity minLaunchSpeed = RPM.of(3000.0);
     public static final AngularVelocity nearSpeed = RPM.of(2500.0);

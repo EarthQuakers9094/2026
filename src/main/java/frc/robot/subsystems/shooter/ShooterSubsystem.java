@@ -15,6 +15,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
 import frc.robot.util.MovingAverage;
@@ -230,7 +231,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput
   private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.85);
+    return currentAverageSpeed
+        >= (targetSpeed.in(RadiansPerSecond) * ShooterConstants.shooterMinPercentage);
   }
 
   public void setPitch(Rotation2d pitch) {

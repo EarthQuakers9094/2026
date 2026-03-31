@@ -26,6 +26,7 @@ import frc.robot.util.AllianceFlipUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShooterTrackTarget extends Command {
 
@@ -35,6 +36,7 @@ public class ShooterTrackTarget extends Command {
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Supplier<Translation3d> targetSupplier;
   private final boolean shouldFlipTarget;
+  private final LoggedNetworkNumber yawFudge = new LoggedNetworkNumber("YawFudge");
 
   private final Supplier<RobotRelativeAcceleration> accelerationSupplier;
 
@@ -229,6 +231,7 @@ public class ShooterTrackTarget extends Command {
           robotPosition
               .getTranslation()
               .plus(new Translation2d(5.0, new Rotation2d(targetingResult.yawRadians()))));
+
       shooterSubsystem.setYaw(
           new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
       shooterSubsystem.setHoodAngle(targetingResult.hoodPosition());

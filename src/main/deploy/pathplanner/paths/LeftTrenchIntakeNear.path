@@ -1,0 +1,149 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.4697574893009984,
+        "y": 7.37780981294918
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.469757489300998,
+        "y": 7.37780981294918
+      },
+      "isLocked": false,
+      "linkedName": "ShootUnderTrench"
+    },
+    {
+      "anchor": {
+        "x": 7.014950071326675,
+        "y": 6.952667617689015
+      },
+      "prevControl": {
+        "x": 6.224864916507962,
+        "y": 7.565664720565604
+      },
+      "nextControl": {
+        "x": 7.7653922967189715,
+        "y": 6.370427960057061
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.471526390870184,
+        "y": 4.170855920114123
+      },
+      "prevControl": {
+        "x": 6.971526390870184,
+        "y": 4.170855920114123
+      },
+      "nextControl": {
+        "x": 5.971526390870184,
+        "y": 4.170855920114123
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.937303243711499,
+        "y": 7.37780981294918
+      },
+      "prevControl": {
+        "x": 6.846747503566333,
+        "y": 6.939728958630528
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LeftCenterPostIntake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6844349680170645,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.1961620469083187,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.219616204690795,
+      "rotationDegrees": 64.51421403052642
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.0776502363267952,
+      "maxWaypointRelativePos": 2.1634031060094294,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "begin_intaking",
+      "waypointRelativePos": 0.5347738014854848,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "start_intake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "deploy_intake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "stop_intake",
+      "waypointRelativePos": 2.6576637407156953,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 3.0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "New Left Auto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

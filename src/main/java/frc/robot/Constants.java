@@ -123,7 +123,7 @@ public final class Constants {
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
-    public static final Rotation2d turretZeroYaw = Rotation2d.fromDegrees(90);
+    public static final Rotation2d turretZeroYaw = Rotation2d.fromDegrees(87.890625);
 
     public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(175);
     public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);

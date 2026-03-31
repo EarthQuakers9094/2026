@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4201257700205339,
-        "y": 7.090311497369097
+        "x": 3.4697574893009984,
+        "y": 7.37780981294918
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2867358749358315,
-        "y": 7.583215998780801
+        "x": 4.469757489300998,
+        "y": 7.37780981294918
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "ShootUnderTrench"
     },
     {
       "anchor": {
@@ -20,15 +20,20 @@
         "y": 7.17262482168331
       },
       "prevControl": {
-        "x": 5.80978179347458,
-        "y": 8.848901090612983
+        "x": 5.863409415121255,
+        "y": 7.483152639087019
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "CenterEntryLeftSide"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.8144989339019103,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -41,14 +46,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 3.0,
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "New Left Auto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

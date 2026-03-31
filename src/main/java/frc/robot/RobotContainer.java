@@ -33,6 +33,7 @@ import frc.robot.commands.DriverAutomations;
 import frc.robot.commands.EjectLooseFuel;
 import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
+import frc.robot.commands.RevvShooter;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
 import frc.robot.commands.ShootFuelNoIntake;
@@ -266,7 +267,7 @@ public class RobotContainer {
         "jiggle_intake",
         Commands.sequence(
             new InstantCommand(() -> intake.retractIntake()),
-            new WaitCommand(0.5),
+            new WaitCommand(0.25),
             new InstantCommand(() -> intake.deployIntake())));
 
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
@@ -284,6 +285,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
     NamedCommands.registerCommand(
         "start_shooting_fuel", new StartShootingFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand("start_revving", new RevvShooter(shooter, kicker, intake));
     NamedCommands.registerCommand(
         "stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
 

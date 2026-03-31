@@ -48,6 +48,10 @@
     {
       "waypointRelativePos": 0.4,
       "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.147121535181235,
+      "rotationDegrees": 64.96275335486365
     }
   ],
   "constraintZones": [
@@ -77,7 +81,7 @@
   },
   "goalEndState": {
     "velocity": 2.5,
-    "rotation": 0.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": "New Left Auto",

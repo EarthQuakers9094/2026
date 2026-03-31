@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import java.util.Optional;
 import org.littletonrobotics.junction.Logger;
@@ -46,6 +47,20 @@ public class MechanicalAdvantageTargeter implements Targeter {
     //           Math.sin(velocityAngleRelativeToFieldAxis) * tangentialVelocity);
 
     //   robotVelocity = robotVelocity.plus(rotationalVelocity);
+    robotVelocity =
+        new Translation2d(
+            robotVelocity.getX()
+                + targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
+                    * ((Constants.ShooterConstants.positionOnRobot.getY()
+                            * targetingData.robotRotation().getCos())
+                        - (Constants.ShooterConstants.positionOnRobot.getX()
+                            * targetingData.robotRotation().getSin())),
+            robotVelocity.getY()
+                + targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
+                    * ((Constants.ShooterConstants.positionOnRobot.getX()
+                            * targetingData.robotRotation().getCos())
+                        - (Constants.ShooterConstants.positionOnRobot.getY()
+                            * targetingData.robotRotation().getSin())));
     // }
 
     Translation2d lookaheadTarget = targetingData.target();
@@ -54,11 +69,11 @@ public class MechanicalAdvantageTargeter implements Targeter {
       ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
 
       lookaheadTarget = targetingData.target().minus(robotVelocity.times(params.TOF()));
-      lookaheadTarget.rotateBy(
-          new Rotation2d(
-              targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
-                  * params.TOF()
-                  * twistCompensationFactor.get()));
+      //   lookaheadTarget.rotateBy(
+      //       new Rotation2d(
+      //           targetingData.robotOmegaAngularVelocity().in(RadiansPerSecond)
+      //               * params.TOF()
+      //               * twistCompensationFactor.get()));
     }
 
     Translation2d shotDirection = lookaheadTarget.div(lookaheadTarget.getNorm());

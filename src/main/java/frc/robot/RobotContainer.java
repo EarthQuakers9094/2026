@@ -350,20 +350,14 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> {
-              double y = (shouldSlow() ? 0.5 : 1.0) * leftStick.getY();
-              double smoothedY = yInputAverage.calculate(y);
-              return -1 * (shouldSlow() ? smoothedY : y);
-            },
-            () -> {
-              double x = (shouldSlow() ? 0.5 : 1.0) * leftStick.getX();
-              double smoothedX = xInputAverage.calculate(x);
-              return -1 * (shouldSlow() ? smoothedX : x);
-            },
-            () -> -(shouldSlow() ? 0.5 * rightStick.getX() : rightStick.getX())));
+            () -> -leftStick.getY(),
+            () -> -leftStick.getX(),
+            () -> -rightStick.getX(),
+            () -> shouldSlow()));
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(

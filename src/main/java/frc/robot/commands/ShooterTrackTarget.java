@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.GameState;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
@@ -119,12 +120,19 @@ public class ShooterTrackTarget extends Command {
                 Constants.ShooterConstants.positionOnRobot.getTranslation().toTranslation2d(),
                 Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()));
 
+    Logger.recordOutput("ShooterPosition", new Pose3d(anticipatedShooterPosition));
+
     Translation3d flippedTarget =
         shouldFlipTarget ? AllianceFlipUtil.apply(targetSupplier.get()) : targetSupplier.get();
 
     Translation2d shooterToTarget =
         flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
     double distanceToTarget = shooterToTarget.getNorm();
+
+    if (distanceToTarget <= 1.5) {
+      shooterSubsystem.setTurretState(TurretState.OffTarget);
+      return;
+    }
 
     Logger.recordOutput("Target", flippedTarget);
 

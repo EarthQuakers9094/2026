@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left Trench to Neutral"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "New Intake From Left Center Far"
+            "pathName": "LeftTrenchIntakeFar"
           }
         },
         {
@@ -27,15 +21,15 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "shoot_fuel"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
                 }
               }
             ]
@@ -44,13 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Return to Left From Under Trench"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Intake From Left Center Near"
+            "pathName": "LeftTrenchIntakeNear"
           }
         },
         {
@@ -64,15 +52,15 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
-                "data": {
-                  "waitTime": 5.0
-                }
-              },
-              {
                 "type": "named",
                 "data": {
                   "name": "shoot_fuel"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 5.0
                 }
               }
             ]

@@ -37,7 +37,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -123,7 +123,7 @@ public final class Constants {
     public static final double hoodKP = 4.0; // 40.0;
     public static final double hoodKD = 0;
     public static final double hoodKI = 0;
-    public static final Rotation2d turretZeroYaw = Rotation2d.fromDegrees(87.890625);
+    public static final Rotation2d turretZeroYaw = Rotation2d.fromDegrees(90);
 
     public static final Rotation2d maxTurretYaw = Rotation2d.fromDegrees(175);
     public static final Rotation2d minTurretYaw = Rotation2d.fromDegrees(-90);
@@ -177,7 +177,7 @@ public final class Constants {
     public static final double spinkP = 0.0; // made up value
     public static final double spinkI = 0.0; // made up value
     public static final double spinkD = 0.0; // made up value
-    public static final double spinkV = 0.4; // made up value
+    public static final double spinkV = 3.2; // made up value
 
     public static final AngularVelocity intakeSpeed = RPM.of(-2000.0);
     public static final Angle deployedAngle = Degrees.of(0);

@@ -11,13 +11,16 @@ import static edu.wpi.first.units.Units.Inches;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -62,6 +65,7 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
 import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
@@ -75,6 +79,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -297,6 +302,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
+    // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -336,17 +343,38 @@ public class RobotContainer {
   }
 
   private void configureTestingBindings() {
+    drive.setDefaultCommand(
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -leftStick.getY(),
+            () -> -leftStick.getX(),
+            () ->
+                AllianceFlipUtil.apply(Constants.Field.hub)
+                    .toTranslation2d()
+                    .minus(drive.getPose().getTranslation())
+                    .getAngle()));
+    shooter.setTurretState(TurretState.OnTarget);
+    shooter.setHoodAngle(2.283);
+    SmartDashboard.putNumber("Yaw", 0);
+    shooter.setDefaultCommand(
+        Commands.run(
+            () -> {
+              shooter.setYaw(new Rotation2d(SmartDashboard.getNumber("Yaw", 0)));
+            },
+            shooter));
+    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    // drive
     leftStick
-        .povUp()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(90))));
-    leftStick
-        .povDown()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(0))));
-    leftStick
-        .povRight()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees((80 + 55) / 2))));
-
-    rightStick.trigger().toggleOnTrue(new DeployIntake(intake));
+        .button(6)
+        .onTrue(
+            AutoBuilder.pathfindToPoseFlipped(
+                new Pose2d(
+                    drive.getPose().getTranslation(),
+                    Constants.Field.hub
+                        .toTranslation2d()
+                        .minus(drive.getPose().getTranslation())
+                        .getAngle()),
+                new PathConstraints(0.5, 0.5, 80, 80)));
   }
 
   private boolean shouldSlow() {

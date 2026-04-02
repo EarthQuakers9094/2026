@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftTrenchIntakeFar"
+            "pathName": "Left Trench to Neutral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Intake From Left Center Far"
           }
         },
         {
@@ -21,15 +27,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shoot_fuel"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot_fuel"
                 }
               }
             ]
@@ -38,7 +44,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftTrenchIntakeNear"
+            "pathName": "Return to Left From Under Trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Intake From Left Center Near"
           }
         },
         {
@@ -52,15 +64,15 @@
           "data": {
             "commands": [
               {
-                "type": "named",
-                "data": {
-                  "name": "shoot_fuel"
-                }
-              },
-              {
                 "type": "wait",
                 "data": {
                   "waitTime": 5.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "shoot_fuel"
                 }
               }
             ]
@@ -70,6 +82,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Real Autos",
+  "folder": "Old or Deprecated Autos",
   "choreoAuto": false
 }

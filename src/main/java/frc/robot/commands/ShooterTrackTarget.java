@@ -233,7 +233,8 @@ public class ShooterTrackTarget extends Command {
               .plus(new Translation2d(5.0, new Rotation2d(targetingResult.yawRadians()))));
 
       shooterSubsystem.setYaw(
-          new Rotation2d(targetingResult.yawRadians()).minus(robotPosition.getRotation()));
+          new Rotation2d(targetingResult.yawRadians())
+              .minus(anticipatedRobotPosition.getRotation()));
       shooterSubsystem.setHoodAngle(targetingResult.hoodPosition());
 
       if (shooterSubsystem.isYawNearIdeal()) {

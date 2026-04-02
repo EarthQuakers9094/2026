@@ -112,6 +112,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Real Autos",
+  "folder": "Old or Deprecated Autos",
   "choreoAuto": false
 }

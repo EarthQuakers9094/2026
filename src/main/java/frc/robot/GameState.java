@@ -2,7 +2,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem.LEDEvent;
@@ -39,10 +38,10 @@ public class GameState {
   private double lastTime = Timer.getTimestamp();
 
   public GameState() {
-    if (DriverStation.getMatchType() != MatchType.None) {
-      transitionToPhase(Phase.Auto);
-      lastTime = Timer.getTimestamp();
-    }
+    // if (DriverStation.getMatchType() != MatchType.None) {
+    transitionToPhase(Phase.Auto);
+    lastTime = Timer.getTimestamp();
+    // }
   }
 
   public void update() {

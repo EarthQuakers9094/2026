@@ -252,6 +252,17 @@
       }
     },
     {
+      "name": "deploy_intake",
+      "waypointRelativePos": 0.8048615800134997,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deploy_intake"
+        }
+      }
+    },
+    {
       "name": "stop_shooting_fuel",
       "waypointRelativePos": 0.9561107359891925,
       "endWaypointRelativePos": null,

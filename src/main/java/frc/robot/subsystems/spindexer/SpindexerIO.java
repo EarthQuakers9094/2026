@@ -1,8 +1,10 @@
 package frc.robot.subsystems.spindexer;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface SpindexerIO {
@@ -10,6 +12,7 @@ public interface SpindexerIO {
   public static class SpindexerIOInputs {
     public AngularVelocity spindexerCurrentSpeed = RPM.of(0);
     public AngularVelocity spinexerVelocitySetpoint = RPM.of(0);
+    public Current spindexerCurrent = Amps.of(0);
   }
 
   public default void updateInputs(SpindexerIOInputs inputs) {}

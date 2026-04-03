@@ -271,7 +271,7 @@ public class RobotContainer {
         "jiggle_intake",
         Commands.sequence(
             new InstantCommand(() -> intake.retractIntake()),
-            new WaitCommand(0.5),
+            new WaitCommand(0.1),
             new InstantCommand(() -> intake.deployIntake())));
 
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));

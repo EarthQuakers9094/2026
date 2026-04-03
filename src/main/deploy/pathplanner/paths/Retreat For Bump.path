@@ -64,7 +64,7 @@
     },
     {
       "name": "stop_shooting_fuel",
-      "waypointRelativePos": 0.6509115462525239,
+      "waypointRelativePos": 0.8696826468602283,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

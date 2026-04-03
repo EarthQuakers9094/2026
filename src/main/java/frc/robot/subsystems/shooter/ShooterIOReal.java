@@ -4,8 +4,10 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -70,6 +72,9 @@ public class ShooterIOReal implements ShooterIO {
                 .withKI(Constants.ShooterConstants.flywheelKI)
                 .withKD(Constants.ShooterConstants.flywheelKD)
                 .withKV(Constants.ShooterConstants.flywheelKV));
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.0));
 
     hoodPivot
         .getConfigurator()
@@ -89,9 +94,9 @@ public class ShooterIOReal implements ShooterIO {
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
     // hoodPivot
-    //     .getConfigurator()
-    //     .apply(
-    //         new
+    // .getConfigurator()
+    // .apply(
+    // new
     // CurrentLimitsConfigs().withSupplyCurrentLimit(50).withSupplyCurrentLowerLimit(40));
     hoodPivot.setPosition(0);
 
@@ -106,10 +111,20 @@ public class ShooterIOReal implements ShooterIO {
             new Slot0Configs()
                 .withKP(Constants.ShooterConstants.turretKP)
                 .withKI(Constants.ShooterConstants.turretKI)
-                .withKD(Constants.ShooterConstants.turretKD));
+                .withKD(Constants.ShooterConstants.turretKD)
+                .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign)
+                .withKS(Constants.ShooterConstants.turretKS)
+                .withKV(Constants.ShooterConstants.turretKV));
     turretPivot
         .getConfigurator()
         .apply(new MotorOutputConfigs().withInverted(InvertedValue.Clockwise_Positive));
+
+    turretPivot
+        .getConfigurator()
+        .apply(
+            new MotionMagicConfigs()
+                .withMotionMagicAcceleration(Constants.ShooterConstants.turretAcceleration)
+                .withMotionMagicCruiseVelocity(Constants.ShooterConstants.turretCruiseVelocity));
 
     turretPivot.setPosition(Constants.ShooterConstants.turretZeroYaw.getMeasure());
 
@@ -137,19 +152,17 @@ public class ShooterIOReal implements ShooterIO {
 
     hoodPivot.setControl(new PositionVoltage(hoodState.position).withSlot(0));
 
-    turretState = turretTrapezoidProfile.calculate(0.02, turretState, turretSetpoint);
-    Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
+    // Logger.recordOutput("Shooter/LastSmoothTurret", turretState.position);
 
     inputs.hoodCurrent = hoodPivot.getSupplyCurrent().getValueAsDouble();
 
     // Logger.recordOutput("Shooter/HoodCurrent", hoodPivot.getCurr);
 
-    turretPivot.setControl(new PositionVoltage(Radians.of(turretState.position)).withSlot(0));
   }
 
   public void setHoodAngle(double pitch) {
     // double requiredHoodAngle = launchAngleToHoodAngle.get(pitch.getRadians());
-    double clampedPitch = Math.max(Math.min(2.407227, pitch), 0.2);
+    double clampedPitch = Math.max(Math.min(2.30, pitch), 0.2);
 
     Logger.recordOutput("Shooter/LastHoodSetpoint", clampedPitch);
 
@@ -174,11 +187,17 @@ public class ShooterIOReal implements ShooterIO {
       yawRadians = Math.max(Math.min(yawRadians, maxRadians), minRadians);
     }
     Logger.recordOutput("Shooter/YawSetpointRadians", yawRadians);
-    turretSetpoint = new TrapezoidProfile.State(yawRadians, 0);
+    turretPivot.setControl(new PositionVoltage(Radians.of(yawRadians))); // new
+    // MotionMagicVoltage(Radians.of(yawRadians)));
   }
 
   public void setVelocitySetpoint(AngularVelocity speed) {
     this.lastFlywheelVelocitySetpoint = speed.in(RPM);
-    flywheelLeadMotor.setControl(new VelocityVoltage(speed));
+    if (lastFlywheelVelocitySetpoint == 0) {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(1));
+
+    } else {
+      flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(0));
+    }
   }
 }

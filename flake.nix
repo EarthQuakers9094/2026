@@ -38,6 +38,7 @@
             wpilib.sysid
             elastic-dashboard
             # jdk17
+            ffmpeg
             stdenv.cc.cc.lib
             advantagescope
             wpilib.allwpilibSources

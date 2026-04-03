@@ -57,5 +57,8 @@ public class GyroIOPigeon2 implements GyroIO {
             .toArray(Rotation2d[]::new);
     yawTimestampQueue.clear();
     yawPositionQueue.clear();
+
+    inputs.rightAcceleration = pigeon.getAccelerationX().getValue();
+    inputs.forwardsAcceleration = pigeon.getAccelerationY().getValue();
   }
 }

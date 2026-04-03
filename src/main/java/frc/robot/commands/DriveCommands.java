@@ -9,6 +9,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,6 +28,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
@@ -43,13 +45,23 @@ public class DriveCommands {
 
   private DriveCommands() {}
 
-  private static Translation2d getLinearVelocityFromJoysticks(double x, double y) {
+  private static Translation2d getLinearVelocityFromJoysticks(double x, double y, boolean slowed) {
     // Apply deadband
     double linearMagnitude = MathUtil.applyDeadband(Math.hypot(x, y), DEADBAND);
-    Rotation2d linearDirection = new Rotation2d(Math.atan2(y, x));
+    double direction = Math.atan2(y, x);
+    double filteredDirection = directionAverage.calculate(direction);
+    Rotation2d linearDirection = new Rotation2d(direction);
+    if (slowed) {
+      linearDirection = new Rotation2d(filteredDirection);
+    }
 
     // Square magnitude for more precise control
     linearMagnitude = linearMagnitude * linearMagnitude;
+    double filtered = linearAverage.calculate(0.25 * linearMagnitude);
+
+    if (slowed) {
+      linearMagnitude = filtered;
+    }
 
     // Return new linear velocity
     return new Pose2d(Translation2d.kZero, linearDirection)
@@ -57,6 +69,15 @@ public class DriveCommands {
         .getTranslation();
   }
 
+  private static LinearFilter linearAverage = LinearFilter.movingAverage(15);
+  private static LinearFilter directionAverage = LinearFilter.movingAverage(15);
+
+  //  double y = (shouldSlow() ? 0.3 : 1.0) * leftStick.getY();
+  //           double smoothedY = yInputAverage.calculate(y);
+  //           return -1 * (shouldSlow() ? smoothedY : y);
+  //  double x = (shouldSlow() ? 0.3 : 1.0) * leftStick.getX();
+  //           double smoothedX = xInputAverage.calculate(x);
+  //           return -1 * (shouldSlow() ? smoothedX : x);
   /**
    * Field relative drive command using two joysticks (controlling linear and angular velocities).
    */
@@ -64,18 +85,20 @@ public class DriveCommands {
       Drive drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
-      DoubleSupplier omegaSupplier) {
+      DoubleSupplier omegaSupplier,
+      BooleanSupplier slowed) {
     return Commands.run(
         () -> {
           // Get linear velocity
           Translation2d linearVelocity =
-              getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              getLinearVelocityFromJoysticks(
+                  xSupplier.getAsDouble(), ySupplier.getAsDouble(), slowed.getAsBoolean());
 
           // Apply rotation deadband
           double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
 
           // Square rotation value for more precise control
-          omega = Math.copySign(omega * omega, omega);
+          omega = Math.copySign(omega * omega, omega) * (slowed.getAsBoolean() ? 0.1 : 1.0);
 
           // Convert to field relative speeds & send command
           ChassisSpeeds speeds =
@@ -121,7 +144,8 @@ public class DriveCommands {
             () -> {
               // Get linear velocity
               Translation2d linearVelocity =
-                  getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                  getLinearVelocityFromJoysticks(
+                      xSupplier.getAsDouble(), ySupplier.getAsDouble(), false);
 
               // Calculate angular speed
               double omega =

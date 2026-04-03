@@ -11,10 +11,16 @@ import static edu.wpi.first.units.Units.Inches;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.filter.LinearFilter;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -32,6 +38,9 @@ import frc.robot.commands.ManualTurret;
 import frc.robot.commands.ReverseKickerSpindexer;
 import frc.robot.commands.RunIntakeSpinnerCommand;
 import frc.robot.commands.ShootFuel;
+import frc.robot.commands.ShootFuelNoIntake;
+import frc.robot.commands.StartShootingFuel;
+import frc.robot.commands.StopShootingFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.GyroIO;
@@ -51,13 +60,17 @@ import frc.robot.subsystems.kicker.KickerIO;
 import frc.robot.subsystems.kicker.KickerIOReal;
 import frc.robot.subsystems.kicker.KickerIOSim;
 import frc.robot.subsystems.kicker.KickerSubsystem;
+import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
 import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
 import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
+import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
+import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.spindexer.SpindexerIO;
 import frc.robot.subsystems.spindexer.SpindexerIOReal;
 import frc.robot.subsystems.spindexer.SpindexerIOSim;
@@ -66,6 +79,7 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -81,18 +95,19 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final IntakeSubsystem intake;
   private final Vision vision;
-  private Targeter targeter = new EeshwarkTargeter();
+  private Targeter targeter = new MechanicalAdvantageTargeter();
   private final KickerSubsystem kicker;
   private final SpindexerSubsystem spindexer;
   private final HopperServoSubsystem servo;
+  private final LEDSubsystem leds = new LEDSubsystem();
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
   private final CommandJoystick leftStick = new CommandJoystick(1);
   private final CommandJoystick rightStick = new CommandJoystick(2);
 
-  private LinearFilter xInputAverage = LinearFilter.movingAverage(15);
-  private LinearFilter yInputAverage = LinearFilter.movingAverage(15);
+  private LinearFilter xInputAverage = LinearFilter.movingAverage(5);
+  private LinearFilter yInputAverage = LinearFilter.movingAverage(5);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -134,12 +149,12 @@ public class RobotContainer {
         intake = new IntakeSubsystem(new IntakeIOReal());
         // might be the correct one saving it charlie didnt know
         // new VisionIOPhotonVision(
-        //     "Front",
-        //     new Transform3d(
-        //         Inches.of(12.465),
-        //         Inches.of(4.915),
-        //         Inches.of(12.03),
-        //         new Rotation3d(0, -Math.PI / 6., 0.0))),
+        // "Front",
+        // new Transform3d(
+        // Inches.of(12.465),
+        // Inches.of(4.915),
+        // Inches.of(12.03),
+        // new Rotation3d(0, -Math.PI / 6., 0.0))),
         vision =
             new Vision(
                 drive::addVisionMeasurement,
@@ -199,26 +214,26 @@ public class RobotContainer {
                     drive::getPose));
 
         // vision =
-        //     new Vision(
-        //         drive::addVisionMeasurement,
-        //         new VisionIOPhotonVisionSim(
-        //             "Front",
-        //             new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Left",
-        //             new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
+        // new Vision(
+        // drive::addVisionMeasurement,
+        // new VisionIOPhotonVisionSim(
+        // "Front",
+        // new Transform3d(0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., 0.0)),
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Left",
+        // new Transform3d(0.0, 0.2, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI /
         // 2.)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Right",
-        //             new Transform3d(
-        //                 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
-        //             drive::getPose),
-        //         new VisionIOPhotonVisionSim(
-        //             "Back",
-        //             new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
-        //             drive::getPose));
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Right",
+        // new Transform3d(
+        // 0.0, -0.2, 0.5, new Rotation3d(0, -Math.PI / 7., -Math.PI / 2.)),
+        // drive::getPose),
+        // new VisionIOPhotonVisionSim(
+        // "Back",
+        // new Transform3d(-0.2, 0.0, 0.5, new Rotation3d(0, -Math.PI / 7., Math.PI)),
+        // drive::getPose));
         kicker = new KickerSubsystem(new KickerIOSim());
         spindexer = new SpindexerSubsystem(new SpindexerIOSim());
         servo = new HopperServoSubsystem(new HopperServoIOSim());
@@ -272,6 +287,11 @@ public class RobotContainer {
             shooter));
 
     NamedCommands.registerCommand("shoot_fuel", new ShootFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand(
+        "start_shooting_fuel", new StartShootingFuel(shooter, kicker, intake));
+    NamedCommands.registerCommand(
+        "stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
+
     NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
@@ -281,6 +301,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
     NamedCommands.registerCommand(
         "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
+
+    // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -310,7 +332,7 @@ public class RobotContainer {
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
-    //         .whileTrue(new RevvShooter(shooter, kicker));
+    // .whileTrue(new RevvShooter(shooter, kicker));
 
     // Configure the button bindings
     if (!Constants.debugMode) {
@@ -321,70 +343,93 @@ public class RobotContainer {
   }
 
   private void configureTestingBindings() {
+    drive.setDefaultCommand(
+        DriveCommands.joystickDriveAtAngle(
+            drive,
+            () -> -leftStick.getY(),
+            () -> -leftStick.getX(),
+            () ->
+                AllianceFlipUtil.apply(Constants.Field.hub)
+                    .toTranslation2d()
+                    .minus(drive.getPose().getTranslation())
+                    .getAngle()));
+    shooter.setTurretState(TurretState.OnTarget);
+    shooter.setHoodAngle(2.283);
+    SmartDashboard.putNumber("Yaw", 0);
+    shooter.setDefaultCommand(
+        Commands.run(
+            () -> {
+              shooter.setYaw(new Rotation2d(SmartDashboard.getNumber("Yaw", 0)));
+            },
+            shooter));
+    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    // drive
     leftStick
-        .povUp()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(90))));
-    leftStick
-        .povDown()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees(0))));
-    leftStick
-        .povRight()
-        .onTrue(new InstantCommand(() -> shooter.setPitch(Rotation2d.fromDegrees((80 + 55) / 2))));
+        .button(6)
+        .onTrue(
+            AutoBuilder.pathfindToPoseFlipped(
+                new Pose2d(
+                    drive.getPose().getTranslation(),
+                    Constants.Field.hub
+                        .toTranslation2d()
+                        .minus(drive.getPose().getTranslation())
+                        .getAngle()),
+                new PathConstraints(0.5, 0.5, 80, 80)));
+  }
 
-    rightStick.trigger().toggleOnTrue(new DeployIntake(intake));
+  private boolean shouldSlow() {
+    return shooter.isRunning()
+        && FieldUtil.inAllianceZone(
+            drive.getPose(), DriverStation.getAlliance().orElse(Alliance.Blue));
   }
 
   private void configureButtonBindings() {
     // Default command, normal field-relative drive
+
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> {
-              double y = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getY();
-              double smoothedY = yInputAverage.calculate(y);
-              return -1 * (shooter.isActivelyShooting() ? smoothedY : y);
-            },
-            () -> {
-              double x = (shooter.isActivelyShooting() ? 0.7 : 1.0) * leftStick.getX();
-              double smoothedX = xInputAverage.calculate(x);
-              return -1 * (shooter.isActivelyShooting() ? smoothedX : x);
-            },
-            () -> -(shooter.isActivelyShooting() ? 0.5 * rightStick.getX() : rightStick.getX())));
+            () -> -leftStick.getY(),
+            () -> -leftStick.getX(),
+            () -> -rightStick.getX(),
+            () -> shouldSlow()));
+    // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
-                shooter, drive::getPose, drive::getChassisSpeeds, () -> targeter)
+                shooter,
+                drive::getPose,
+                drive::getChassisSpeeds,
+                () -> targeter,
+                () ->
+                    new RobotRelativeAcceleration(
+                        drive.getGyroForwardAcceleration(), drive.getGyroRightAcceleration()))
             .onlyIf(() -> !FieldUtil.isNearTrench(drive.getPose())));
-    // new ShooterTrackTarget(
-    // shooter,
-    // drive::getPose,
-    // drive::getChassisSpeeds,
-    // targeter,
-    // Constants.Field.hubTarget,
-    // true));
 
     // Lock to 0° when A button is held
     // controller
-    //     .a()
-    //     .whileTrue(
-    //         DriveCommands.joystickDriveAtAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> Rotation2d.kZero));
+    // .a()
+    // .whileTrue(
+    // DriveCommands.joystickDriveAtAngle(
+    // drive,
+    // () -> -controller.getLeftY(),
+    // () -> -controller.getLeftX(),
+    // () -> Rotation2d.kZero));
 
     // Switch to X pattern when X button is pressed
-    /*controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-    // Reset gyro to 0° when B button is pressed
-    controller
-        .b()
-        .onTrue(
-            Commands.runOnce(
-                    () ->
-                        drive.setPose(
-                            new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
-                    drive)
-                .ignoringDisable(true));*/
+    /*
+     * controller.x().onTrue(Commands.runOnce(drive::stopWithX, drive));
+     *
+     * // Reset gyro to 0° when B button is pressed
+     * controller
+     * .b()
+     * .onTrue(
+     * Commands.runOnce(
+     * () ->
+     * drive.setPose(
+     * new Pose2d(drive.getPose().getTranslation(), Rotation2d.kZero)),
+     * drive)
+     * .ignoringDisable(true));
+     */
 
     // controller.button(9).toggleOnTrue(new RunIntakeSpinnerCommand(intake));
 
@@ -404,24 +449,28 @@ public class RobotContainer {
 
     /** Enables the Intake spinners FORWARD */
     leftStick.trigger().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
-    // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
+    // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
+    // true));
 
     /** Enables the Intake spinners BACKWARDS */
-    rightStick.button(2).whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
-    // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    controller.back().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
+    // false));
 
     /** Shoots FUEL using Auto Aim */
     leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
+
     // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
 
-    leftStick
-        .button(4)
+    rightStick
+        .button(2)
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -rightStick.getY(),
-                () -> -rightStick.getX(),
-                () -> new Rotation2d(Math.atan2(rightStick.getX(), rightStick.getY()))));
+                () -> -leftStick.getY(),
+                () -> -leftStick.getX(),
+                () -> new Rotation2d(Math.PI + Math.atan2(leftStick.getX(), leftStick.getY()))));
 
     /** Zero Intake To Ground Position */
     leftStick
@@ -475,6 +524,13 @@ public class RobotContainer {
         .onFalse(new InstantCommand(() -> shooter.stopShooter()));
 
     controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+
+    new Trigger(() -> GameState.getInstance().isHubActive.orElse(false))
+        .onTrue(
+            new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
+                .andThen(new WaitCommand(1.0))
+                .andThen(
+                    new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0.0))));
   }
 
   /**

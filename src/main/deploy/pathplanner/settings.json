@@ -2,8 +2,13 @@
   "robotWidth": 0.876,
   "robotLength": 0.826,
   "holonomicMode": true,
-  "pathFolders": [],
+  "pathFolders": [
+    "Left Bump",
+    "Ferry Auto",
+    "New Left Auto"
+  ],
   "autoFolders": [
+    "Experimental Autos",
     "Old or Deprecated Autos",
     "Real Autos"
   ],

@@ -470,7 +470,12 @@ public class RobotContainer {
                 drive,
                 () -> -leftStick.getY(),
                 () -> -leftStick.getX(),
-                () -> new Rotation2d(Math.PI + Math.atan2(leftStick.getX(), leftStick.getY()))));
+                () ->
+                    new Rotation2d(
+                        (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                                ? Math.PI
+                                : 0.0)
+                            + Math.atan2(leftStick.getX(), leftStick.getY()))));
 
     /** Zero Intake To Ground Position */
     leftStick

@@ -63,8 +63,197 @@
       }
     },
     {
+      "name": "jiggle_intake",
+      "waypointRelativePos": 0.14854827819041594,
+      "endWaypointRelativePos": 0.4348413234301186,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "wait",
+              "data": {
+                "waitTime": 0
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "sequential",
+              "data": {
+                "commands": [
+                  {
+                    "type": "named",
+                    "data": {
+                      "name": "jiggle_intake"
+                    }
+                  },
+                  {
+                    "type": "wait",
+                    "data": {
+                      "waitTime": 0.5
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
       "name": "stop_shooting_fuel",
-      "waypointRelativePos": 0.8696826468602283,
+      "waypointRelativePos": 0.9561107359891925,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

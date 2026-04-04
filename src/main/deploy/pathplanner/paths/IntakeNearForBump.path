@@ -103,6 +103,17 @@
           "name": "stop_intake"
         }
       }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 1.9500337609722962,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
+        }
+      }
     }
   ],
   "globalConstraints": {

@@ -254,9 +254,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {},
-                new VisionIO() {});
+                VisionIO.withName("Front"),
+                VisionIO.withName("Left"),
+                VisionIO.withName("Right"));
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         servo = new HopperServoSubsystem(new HopperServoIO() {});

@@ -301,7 +301,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public static double shooterSpeedToVelocity(double shooterSpeedRadPerSec) {
-    return 0.0209048 * shooterSpeedRadPerSec + 0.742784;
+    return shooterSpeedRadPerSec
+        * Constants.ShooterConstants.flywheelDiameter
+            .div(2)
+            .in(Meters); // 0.0209048 * shooterSpeedRadPerSec + 0.742784;
   }
 
   public static AngularVelocity velocityToShooterSpeed(double velocityMPS) {

@@ -219,7 +219,8 @@ public class ShooterTrackTarget extends Command {
                   .plus(anticipatedShooterPosition.getRotation().getMeasure())),
           ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
           ShooterSubsystem.shooterSpeedToVelocity(
-              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)),
+          fieldRelativeChassisSpeeds.omegaRadiansPerSecond);
       // }
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
@@ -273,13 +274,23 @@ public class ShooterTrackTarget extends Command {
       ChassisSpeeds chassisSpeeds,
       Rotation2d yaw,
       double pitch,
-      double launchVelocity) {
+      double launchVelocity,
+      double omega) {
 
     Pose3d[] poses = new Pose3d[20];
 
     double vx = chassisSpeeds.vxMetersPerSecond + yaw.getCos() * launchVelocity * Math.cos(pitch);
     double vy = chassisSpeeds.vyMetersPerSecond + yaw.getSin() * launchVelocity * Math.cos(pitch);
     double vz = Math.sin(pitch) * launchVelocity;
+
+    vx +=
+        omega
+            * ((Constants.ShooterConstants.positionOnRobot.getY() * yaw.getCos())
+                - (Constants.ShooterConstants.positionOnRobot.getX() * omega));
+    vy +=
+        omega
+            * ((Constants.ShooterConstants.positionOnRobot.getX() * yaw.getCos())
+                - (Constants.ShooterConstants.positionOnRobot.getY() * yaw.getSin()));
 
     double x = startPosition.getX();
     double y = startPosition.getY();

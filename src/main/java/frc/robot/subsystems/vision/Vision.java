@@ -30,7 +30,11 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     for (int i = 0; i < inputs.length; i++) {
       io[i].updateInputs(inputs[i]);
-      PoseObservation poseObservation = inputs[i].poseObservation;
+      Logger.processInputs("Vision/" + io[i].getName(), inputs[i]);
+    }
+
+    for (int cameraIndex = 0; cameraIndex < io.length; cameraIndex++) {
+      PoseObservation poseObservation = inputs[cameraIndex].poseObservation;
       if (poseObservation != null) {
         // System.out.println("34" + poseObservation);
 
@@ -52,7 +56,6 @@ public class Vision extends SubsystemBase {
             poseObservation.timestamp,
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }
-      Logger.processInputs("Vision/" + io[i].getName(), inputs[i]);
     }
   }
 

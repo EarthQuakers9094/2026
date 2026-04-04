@@ -3,89 +3,65 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.181383737517831,
-        "y": 0.5997860199714706
+        "x": 4.348641154389116,
+        "y": 0.6259999999999994
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.18138373751783,
-        "y": 0.5997860199714706
-      },
-      "isLocked": false,
-      "linkedName": "RightUnderTrench"
-    },
-    {
-      "anchor": {
-        "x": 7.587888888888889,
-        "y": 1.4332333333333327
-      },
-      "prevControl": {
-        "x": 7.4027229714020555,
-        "y": 0.4765427596513433
-      },
-      "nextControl": {
-        "x": 7.646355555555555,
-        "y": 1.7353111111111117
+        "x": 8.607899591459809,
+        "y": 0.332794785511088
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.587888888888889,
-        "y": 2.9825999999999997
+        "x": 7.7265763195435095,
+        "y": 3.1369999999999996
       },
       "prevControl": {
-        "x": 7.744890806783959,
-        "y": 2.0995742748454584
+        "x": 7.9824607817001985,
+        "y": 2.170292628544306
       },
       "nextControl": {
-        "x": 7.382069881805592,
-        "y": 4.1401876296096125
+        "x": 7.493687826880336,
+        "y": 4.016830766929625
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.368017118402282,
-        "y": 0.5997860199714706
+        "x": 3.0039657631954344,
+        "y": 2.6579999999999995
       },
       "prevControl": {
-        "x": 7.053766048502138,
-        "y": 1.6478174037089877
+        "x": 6.756184002772182,
+        "y": 1.7782015177866342
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AboutToTrenchRightSideGoToAlliance"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4285714285714287,
-      "rotationDegrees": 180.0
-    },
-    {
-      "waypointRelativePos": 1.0746268656716444,
+      "waypointRelativePos": 0.4344474337748343,
       "rotationDegrees": -90.0
     },
     {
-      "waypointRelativePos": 1.970149253731317,
-      "rotationDegrees": -90.0
-    },
-    {
-      "waypointRelativePos": 2.70575692963752,
-      "rotationDegrees": 146.33978275186567
+      "waypointRelativePos": 1.9317697228144928,
+      "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6997518610421869,
-      "maxWaypointRelativePos": 2.474441687344897,
+      "minWaypointRelativePos": 0.48075624577987547,
+      "maxWaypointRelativePos": 1.3990546927751377,
       "constraints": {
-        "maxVelocity": 1.5,
-        "maxAcceleration": 1.5,
+        "maxVelocity": 2.75,
+        "maxAcceleration": 2.75,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -97,7 +73,7 @@
   "eventMarkers": [
     {
       "name": "start_intake",
-      "waypointRelativePos": 0.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -108,12 +84,23 @@
     },
     {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.19,
+      "waypointRelativePos": 0.06963063979289943,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "stop_intake",
+      "waypointRelativePos": 1.7339635381498926,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_intake"
         }
       }
     }
@@ -127,11 +114,11 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 180.0
+    "velocity": 0,
+    "rotation": -43.72696997994338
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Right Bump",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

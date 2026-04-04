@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.spindexer;
 
+import static edu.wpi.first.units.Units.Amps;
 import static edu.wpi.first.units.Units.RPM;
 
 import com.revrobotics.PersistMode;
@@ -35,7 +36,8 @@ public class SpindexerIOReal implements SpindexerIO {
                         Constants.SpindexerConstants.kI,
                         Constants.SpindexerConstants.kD,
                         ClosedLoopSlot.kSlot0)
-                    .pid(Constants.SpindexerConstants.kP * 0.1, 0, 0, ClosedLoopSlot.kSlot1)
+                    .pid(Constants.SpindexerConstants.kP * 0.0, 0, 0, ClosedLoopSlot.kSlot1)
+                    .apply(new FeedForwardConfig().kV(0, ClosedLoopSlot.kSlot1))
                     .apply(
                         new FeedForwardConfig()
                             .kV(Constants.SpindexerConstants.kV, ClosedLoopSlot.kSlot0)))
@@ -51,10 +53,12 @@ public class SpindexerIOReal implements SpindexerIO {
     inputs.spindexerCurrentSpeed = RPM.of(spindexerMotor.getEncoder().getVelocity());
     inputs.spinexerVelocitySetpoint =
         RPM.of(spindexerMotor.getClosedLoopController().getSetpoint());
+
+    inputs.spindexerCurrent = Amps.of(spindexerMotor.getOutputCurrent());
   }
 
   public void run(AngularVelocity spindexerSetSpeed) {
-    if (spindexerSetSpeed.in(RPM) < 100.0) {
+    if (Math.abs(spindexerSetSpeed.in(RPM)) < 100.0) {
       spindexerMotor
           .getClosedLoopController()
           .setSetpoint(spindexerSetSpeed.in(RPM), ControlType.kVelocity, ClosedLoopSlot.kSlot1);

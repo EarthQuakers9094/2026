@@ -3,9 +3,10 @@
   "robotLength": 0.826,
   "holonomicMode": true,
   "pathFolders": [
-    "Left Bump",
     "Ferry Auto",
-    "New Left Auto"
+    "Left Bump",
+    "Right Bump HP",
+    "Right Bump"
   ],
   "autoFolders": [
     "Experimental Autos",

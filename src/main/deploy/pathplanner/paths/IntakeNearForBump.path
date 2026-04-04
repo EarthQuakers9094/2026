@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 6.272284153619096,
-        "y": 4.0775233011421985
+        "x": 6.859686162624821,
+        "y": 4.080285306704707
       },
       "prevControl": {
-        "x": 7.3597188290107765,
-        "y": 4.052583198160189
+        "x": 7.9471208380165015,
+        "y": 4.055345203722697
       },
       "nextControl": {
-        "x": 6.022349878355573,
-        "y": 4.0832554951809445
+        "x": 6.609751887361298,
+        "y": 4.086017500743453
       },
       "isLocked": false,
       "linkedName": null
@@ -36,8 +36,8 @@
         "y": 5.425905848787448
       },
       "prevControl": {
-        "x": 7.480741797432238,
-        "y": 6.473937232524964
+        "x": 7.493680456490726,
+        "y": 6.6680171184022825
       },
       "nextControl": null,
       "isLocked": false,
@@ -84,7 +84,7 @@
     },
     {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.06963063979289943,
+      "waypointRelativePos": 0.027008777852801393,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -101,6 +101,17 @@
         "type": "named",
         "data": {
           "name": "stop_intake"
+        }
+      }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 1.9500337609722962,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
         }
       }
     }

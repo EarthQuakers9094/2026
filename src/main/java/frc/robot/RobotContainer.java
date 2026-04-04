@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -254,9 +255,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {},
-                new VisionIO() {});
+                VisionIO.withName("Front"),
+                VisionIO.withName("Left"),
+                VisionIO.withName("Right"));
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         servo = new HopperServoSubsystem(new HopperServoIO() {});
@@ -271,7 +272,7 @@ public class RobotContainer {
         "jiggle_intake",
         Commands.sequence(
             new InstantCommand(() -> intake.retractIntake()),
-            new WaitCommand(0.5),
+            new WaitCommand(0.1),
             new InstantCommand(() -> intake.deployIntake())));
 
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
@@ -301,6 +302,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("debug", Commands.print("Debug message from Pathplanner"));
     NamedCommands.registerCommand(
         "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
+
+    NamedCommands.registerCommand(
+        "temporary reverse spindexer",
+        new ParallelRaceGroup(
+            new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.25)));
 
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 
@@ -470,7 +476,12 @@ public class RobotContainer {
                 drive,
                 () -> -leftStick.getY(),
                 () -> -leftStick.getX(),
-                () -> new Rotation2d(Math.PI + Math.atan2(leftStick.getX(), leftStick.getY()))));
+                () ->
+                    new Rotation2d(
+                        (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                                ? Math.PI
+                                : 0.0)
+                            + Math.atan2(leftStick.getX(), leftStick.getY()))));
 
     /** Zero Intake To Ground Position */
     leftStick

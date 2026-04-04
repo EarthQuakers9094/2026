@@ -8,57 +8,69 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.607900210151437,
-        "y": 7.750706453734601
+        "x": 7.998288159771754,
+        "y": 7.586661911554922
       },
       "isLocked": false,
       "linkedName": "UnderTrenchSpot"
     },
     {
       "anchor": {
-        "x": 8.308815977175463,
-        "y": 4.934236804564907
+        "x": 6.484465049928673,
+        "y": 3.9897146932952925
       },
       "prevControl": {
-        "x": 8.564708537491747,
-        "y": 5.900942032426417
+        "x": 6.820870185449357,
+        "y": 5.4517831669044226
       },
       "nextControl": {
-        "x": 8.075920114122681,
-        "y": 4.054407988587732
+        "x": 5.861997303188285,
+        "y": 1.2843741016928338
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0039657631954344,
-        "y": 5.425905848787448
+        "x": 2.9651497860199716,
+        "y": 1.854835948644793
       },
       "prevControl": {
-        "x": 6.756176890156918,
-        "y": 6.305734664764623
+        "x": 3.392125534950071,
+        "y": 3.5756776034236806
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BumpShootingSpot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4344474337748343,
-      "rotationDegrees": 90.0
+      "waypointRelativePos": 0.32835820895522344,
+      "rotationDegrees": 108.13376106213877
     },
     {
-      "waypointRelativePos": 1.9317697228144928,
+      "waypointRelativePos": 0.6183368869935993,
+      "rotationDegrees": 86.28925341384527
+    },
+    {
+      "waypointRelativePos": 1.2153518123667375,
+      "rotationDegrees": 73.75842433023683
+    },
+    {
+      "waypointRelativePos": 1.4072494669509392,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.7611940298507343,
       "rotationDegrees": 0.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.48075624577987547,
-      "maxWaypointRelativePos": 1.3990546927751377,
+      "minWaypointRelativePos": 0.2808912896691476,
+      "maxWaypointRelativePos": 1.3180283592167494,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 2.75,
@@ -100,18 +112,7 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "start_intake"
-        }
-      }
-    },
-    {
-      "name": "temporary reverse spindexer",
-      "waypointRelativePos": 1.95,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "temporary reverse spindexer"
+          "name": "stop_intake"
         }
       }
     }
@@ -126,12 +127,12 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.72696997994338
+    "rotation": 56.976000000000006
   },
   "reversed": false,
   "folder": "Left Bump",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 3.0,
     "rotation": 180.0
   },
   "useDefaultConstraints": true

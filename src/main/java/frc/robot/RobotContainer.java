@@ -67,8 +67,6 @@ import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
-import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
-import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
@@ -464,7 +462,20 @@ public class RobotContainer {
     // false));
 
     /** Shoots FUEL using Auto Aim */
-    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    leftStick
+        .button(2)
+        .onTrue(
+            new WaitCommand(0.1)
+                .andThen(new InstantCommand(() -> spindexer.reverse()))
+                .andThen(new WaitCommand(0.1)))
+        .whileTrue(new ShootFuel(shooter, kicker, intake));
+    //     Commands.sequence(
+    //         new StartShootingFuel(shooter, kicker, intake),
+    //         new ParallelRaceGroup(
+    //             new WaitCommand(0.25),
+    //             new InstantCommand(() -> spindexer.reverse())
+    //                 .finallyDo(() -> spindexer.start()))))
+    // .onFalse(new StopShootingFuel(shooter, kicker, intake));
     controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
 
     // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
@@ -508,21 +519,21 @@ public class RobotContainer {
                 },
                 shooter));
     // controller.povLeft().onTrue(new ZeroHood(shooter));
-    controller
-        .povRight()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  targeter = new ConstantTargeter();
-                }));
+    // controller
+    //     .povRight()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               targeter = new ConstantTargeter();
+    //             }));
 
-    controller
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  targeter = new EeshwarkTargeter();
-                }));
+    // controller
+    //     .start()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               targeter = new EeshwarkTargeter();
+    //             }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
 

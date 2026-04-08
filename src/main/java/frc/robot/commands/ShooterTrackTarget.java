@@ -26,7 +26,6 @@ import frc.robot.util.AllianceFlipUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShooterTrackTarget extends Command {
 
@@ -36,7 +35,7 @@ public class ShooterTrackTarget extends Command {
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Supplier<Translation3d> targetSupplier;
   private final boolean shouldFlipTarget;
-  private final LoggedNetworkNumber yawFudge = new LoggedNetworkNumber("YawFudge");
+  private final double yawFudge = -0.2;
 
   private final Supplier<RobotRelativeAcceleration> accelerationSupplier;
 
@@ -129,6 +128,14 @@ public class ShooterTrackTarget extends Command {
 
     Translation2d shooterToTarget =
         flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
+    // Translation2d perpendicularToTargetVector =
+    //     new Translation2d(1.0, shooterToTarget.getAngle().plus(Rotation2d.kCCW_Pi_2));
+    System.out.println(yawFudge);
+    // shooterToTarget = shooterToTarget.plus(perpendicularToTargetVector.times(yawFudge));
+
+    // Logger.recordOutput(
+    //     "VirtualTarget",
+    //     flippedTarget.plus(new Translation3d(perpendicularToTargetVector.times(yawFudge))));
     double distanceToTarget = shooterToTarget.getNorm();
 
     if (distanceToTarget <= 1.5) {

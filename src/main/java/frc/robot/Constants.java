@@ -218,7 +218,7 @@ public final class Constants {
     public static final double kP = 0.002;
     public static final double kI = 0.0;
     public static final double kD = 0.1;
-    public static final double kV = 0.018;
+    public static final double kV = 0.036;
     public static final AngularVelocity spindexerSetSpeed =
         KickerConstants.velocitySetpoint.div(-3); // 6 in
     // diameter

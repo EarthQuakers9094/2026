@@ -309,7 +309,14 @@ public class RobotContainer {
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+    autoChooser =
+        new LoggedDashboardChooser<>(
+            "Auto Choices",
+            AutoBuilder.buildAutoChooserWithOptionsModifier(
+                (stream) ->
+                    true ? stream.filter(auto -> auto.getName().startsWith("real")) : stream));
 
     // Set up SysId routines
     autoChooser.addOption(

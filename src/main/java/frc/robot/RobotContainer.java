@@ -334,6 +334,35 @@ public class RobotContainer {
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
         .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
 
+    new Trigger(
+            () ->
+                GameState.getInstance().shouldShoot(targeter.getTOF())
+                    && FieldUtil.inShootingArea(
+                        drive.getPose(), DriverStation.getAlliance().orElse(Alliance.Blue))
+                    && !DriverStation.isAutonomous()
+                    && !leftStick.getHID().getRawButton(2)
+                    && !shooter.isAutoShootOff())
+        .whileTrue(new ShootFuel(shooter, kicker, intake));
+    /* .onFalse(
+    new InstantCommand(() -> leftStick.setRumble(RumbleType.kBothRumble, 1.0))
+        .andThen(new WaitCommand(1.0))
+        .andThen(new InstantCommand(() -> leftStick.setRumble(RumbleType.kBothRumble, 0.0)))
+        .alongWith(
+            new InstantCommand(() -> rightStick.setRumble(RumbleType.kBothRumble, 1.0))
+                .andThen(new WaitCommand(1.0))
+                .andThen(
+                    new InstantCommand(
+                        () -> rightStick.setRumble(RumbleType.kBothRumble, 0.0))))); */
+
+    rightStick.button(4).onTrue(Commands.runOnce(() -> shooter.updateAutoShoot(), shooter));
+
+    new Trigger(() -> (leftStick.getHID().getRawButton(2) && shooter.isAutoShootOff()))
+        .whileTrue(new ShootFuel(shooter, kicker, intake));
+
+    new Trigger(() -> (leftStick.getHID().getRawButton(2) && !shooter.isAutoShootOff()))
+        .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
+        .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
+
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
     // .whileTrue(new RevvShooter(shooter, kicker));
@@ -366,7 +395,7 @@ public class RobotContainer {
               shooter.setYaw(new Rotation2d(SmartDashboard.getNumber("Yaw", 0)));
             },
             shooter));
-    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+
     // drive
     leftStick
         .button(6)
@@ -462,13 +491,17 @@ public class RobotContainer {
     // false));
 
     /** Shoots FUEL using Auto Aim */
-    leftStick
-        .button(2)
-        .onTrue(
-            new WaitCommand(0.1)
-                .andThen(new InstantCommand(() -> spindexer.reverse()))
-                .andThen(new WaitCommand(0.1)))
-        .whileTrue(new ShootFuel(shooter, kicker, intake));
+    // leftStick
+    //     .button(2)
+    //     .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
+    //     .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
+    // leftStick
+    //     .button(2)
+    //     .onTrue(
+    //         new WaitCommand(0.1)
+    //             .andThen(new InstantCommand(() -> spindexer.reverse()))
+    //             .andThen(new WaitCommand(0.1)))
+    //     .whileTrue(new ShootFuel(shooter, kicker, intake));
     //     Commands.sequence(
     //         new StartShootingFuel(shooter, kicker, intake),
     //         new ParallelRaceGroup(

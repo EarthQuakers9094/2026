@@ -84,4 +84,19 @@ public class FieldUtil {
     Logger.recordOutput("IsInAllianceZone", x < Constants.Field.allianceZoneWidth.in(Meters));
     return x < Constants.Field.allianceZoneWidth.in(Meters);
   }
+
+  public static boolean inShootingArea(Pose2d pose, Alliance alliance) {
+    if (FieldUtil.inAllianceZone(pose, alliance)) {
+      Pose2d flippedPose = AllianceFlipUtil.apply(pose);
+      boolean underTower =
+          flippedPose.getX() <= Constants.Field.towerLength.in(Meters)
+              && flippedPose.getY() >= Constants.Field.towerWidth.in(Meters)
+              && flippedPose.getY()
+                  <= Constants.Field.towerWidth.in(Meters)
+                      + Constants.Field.trenchHeight.in(Meters);
+
+      return !underTower;
+    }
+    return false;
+  }
 }

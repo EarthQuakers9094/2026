@@ -55,4 +55,6 @@ public interface Targeter {
         MathUtil.interpolate(start.hoodPosition(), end.hoodPosition(), t),
         MathUtil.interpolate(start.TOF(), end.TOF(), t));
   }
+
+  public double getTOF();
 }

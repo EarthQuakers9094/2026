@@ -27,6 +27,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ShooterSubsystem extends SubsystemBase {
 
+  private boolean autoToggledOff = true;
+
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
@@ -67,6 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput private TurretState turretState = TurretState.NotTargeting;
 
   private boolean shouldShootWhenReady = false;
+  private boolean preventShooting = false;
 
   private final Supplier<Pose2d> robotPositionSupplier;
 
@@ -76,6 +79,15 @@ public class ShooterSubsystem extends SubsystemBase {
     this.robotPositionSupplier = robotPositionSupplier;
 
     this.io = io;
+  }
+
+  public void updateAutoShoot() {
+    if (autoToggledOff == true) autoToggledOff = false;
+    else if (autoToggledOff == false) autoToggledOff = true;
+  }
+
+  public boolean isAutoShootOff() {
+    return autoToggledOff;
   }
 
   private void setSpeedSetpoint(AngularVelocity speed) {
@@ -139,12 +151,18 @@ public class ShooterSubsystem extends SubsystemBase {
     this.shouldShootWhenReady = readyToShoot;
   }
 
+  public void setPreventShooting(boolean preventShooting) {
+    this.preventShooting = preventShooting;
+  }
+
   public boolean isActivelyShooting() {
     return shooterState == ShooterState.Shooting;
   }
 
   @Override
   public void periodic() {
+
+    Logger.recordOutput("turretAutoShootEnabled", !autoToggledOff);
 
     Logger.recordOutput(
         "TurretVisualization",
@@ -171,13 +189,13 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case Revving:
         setSpeedSetpoint(targetSpeed);
-        if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
+        if (isSpunUp() && shouldShootWhenReady && !preventShooting && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
           LEDSubsystem.sendEvent(LEDEvent.StartedShooting);
         }
         break;
       case Shooting:
-        if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
+        if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget() || preventShooting) {
           this.shooterState = ShooterState.Revving;
         }
 

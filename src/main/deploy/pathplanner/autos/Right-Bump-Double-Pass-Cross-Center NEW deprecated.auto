@@ -19,17 +19,17 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Retreat For RBump"
+            "pathName": "Retreat For RBump no rotate"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "IntakeNearForRBump"
+            "pathName": " IntakeNearForRBump no rotate"
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -77,12 +77,6 @@
                       "data": {
                         "waitTime": 1.0
                       }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "jiggle_intake"
-                      }
                     }
                   ]
                 }
@@ -94,6 +88,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Real Autos",
+  "folder": "Old or Deprecated Autos",
   "choreoAuto": false
 }

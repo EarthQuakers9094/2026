@@ -19,6 +19,8 @@ public class MechanicalAdvantageTargeter implements Targeter {
   private LoggedNetworkNumber twistCompensationFactor =
       new LoggedNetworkNumber("TwistCompensationFactor", 1.0);
 
+  private double TOF = 0.0;
+
   @Override
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData) {
     double distance = targetingData.target().getNorm();
@@ -87,8 +89,13 @@ public class MechanicalAdvantageTargeter implements Targeter {
     Rotation2d shotYaw = shotDirection.getAngle();
     double fieldRelativeYaw = shotYaw.getRadians();
     ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+    TOF = params.TOF();
 
     return Optional.of(
         new TargetingResult3d(params.hoodPosition(), params.RPM(), fieldRelativeYaw, params.TOF()));
+  }
+
+  public double getTOF() {
+    return TOF;
   }
 }

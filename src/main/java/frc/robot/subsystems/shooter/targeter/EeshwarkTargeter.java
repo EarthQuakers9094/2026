@@ -26,6 +26,7 @@ public class EeshwarkTargeter implements Targeter {
 
   private static InterpolatingDoubleTreeMap velocityToDistance = new InterpolatingDoubleTreeMap();
   private LoggedNetworkBoolean correctWithRPM = new LoggedNetworkBoolean("CorrectWithRPM", true);
+  private double TOF = 0.0;
 
   static {
     shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
@@ -152,6 +153,7 @@ public class EeshwarkTargeter implements Targeter {
     // - Constants.ShooterConstants.positionOnRobot.getZ(),
     // projectileVelocity);
     ShotParams params = shotMap.get(distance);
+    TOF = params.TOF();
     // double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM *
     // (Math.PI /
     // 30.));
@@ -177,5 +179,9 @@ public class EeshwarkTargeter implements Targeter {
             calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));
+  }
+
+  public double getTOF() {
+    return TOF;
   }
 }

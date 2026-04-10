@@ -27,6 +27,12 @@
           "data": {
             "pathName": " IntakeNearForRBump no rotate"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For RBump end"
+          }
         }
       ]
     }

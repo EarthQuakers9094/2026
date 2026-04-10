@@ -87,6 +87,10 @@ public final class Constants {
     public static final Distance trenchWidth = Inches.of(23.5 * 2);
 
     public static final Distance trenchHeight = Inches.of(49.48);
+
+    public static final Distance towerHeight = Inches.of(123.36);
+    public static final Distance towerWidth = Inches.of(47.0);
+    public static final Distance towerLength = Inches.of(41.8);
   }
 
   // public static class IndexerConstants {

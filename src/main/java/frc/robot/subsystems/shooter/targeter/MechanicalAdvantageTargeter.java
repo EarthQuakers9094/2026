@@ -2,8 +2,10 @@ package frc.robot.subsystems.shooter.targeter;
 
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import frc.robot.Constants;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import java.util.Optional;
@@ -18,6 +20,24 @@ public class MechanicalAdvantageTargeter implements Targeter {
 
   private LoggedNetworkNumber twistCompensationFactor =
       new LoggedNetworkNumber("TwistCompensationFactor", 1.0);
+
+  public static InterpolatingTreeMap<Double, FerryParams> ferryMap =
+      new InterpolatingTreeMap<Double, FerryParams>(
+          MathUtil::inverseInterpolate, Targeter::ferryInterpolator);
+
+  static {
+    ferryMap.put(2.667, new FerryParams(2000, 8.27 - 7.33));
+
+    ferryMap.put(3.835, new FerryParams(2500, 3.76 - 2.79));
+    ferryMap.put(5.334, new FerryParams(3000, 7.38 - 6.17));
+    ferryMap.put(6.325, new FerryParams(3500, 3.78 - 2.24));
+
+    // regression values
+    ferryMap.put(7.0, new FerryParams(3730.6056, 1.562496));
+    ferryMap.put(9.0, new FerryParams(4527.92696, 2.9666133));
+    // ferryMap.put(7.0, new FerryParams(3730.6056,1.562496));
+
+  }
 
   private double TOF = 0.0;
 
@@ -68,7 +88,12 @@ public class MechanicalAdvantageTargeter implements Targeter {
     Translation2d lookaheadTarget = targetingData.target();
 
     for (int i = 0; i <= 40; i++) {
-      ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+      ShotParams params;
+      if (targetingData.shouldFerry()) {
+        params = ferryMap.get(lookaheadTarget.getNorm()).getShotParams();
+      } else {
+        params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+      }
 
       lookaheadTarget = targetingData.target().minus(robotVelocity.times(params.TOF()));
       //   lookaheadTarget.rotateBy(

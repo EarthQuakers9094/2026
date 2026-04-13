@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,6 +25,7 @@ import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.FieldUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
@@ -180,7 +183,9 @@ public class ShooterTrackTarget extends Command {
                         ),
                     fieldRelativeChassisAcceleration,
                     RadiansPerSecond.of(fieldRelativeChassisSpeeds.omegaRadiansPerSecond),
-                    robotPosition.getRotation()));
+                    robotPosition.getRotation(),
+                    !FieldUtil.inAllianceZone(
+                        robotPosition, DriverStation.getAlliance().orElse(Alliance.Blue))));
 
     Logger.recordOutput("Shooter/CanHitTarget", maybeTargetingResult.isPresent());
     if (maybeTargetingResult.isPresent()) {

@@ -3,6 +3,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.RPM;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,11 +17,15 @@ import java.util.function.Supplier;
 public class RecordLUTValues extends Command {
 
   private final DoubleSupplier distanceSupplier;
+  private final DoubleSupplier angleSupplier;
+
   private final ShooterSubsystem shooter;
 
-  public RecordLUTValues(ShooterSubsystem shooter, DoubleSupplier distanceSupplier) {
+  public RecordLUTValues(
+      ShooterSubsystem shooter, DoubleSupplier distanceSupplier, DoubleSupplier angleSupplier) {
     this.distanceSupplier = distanceSupplier;
     this.shooter = shooter;
+    this.angleSupplier = angleSupplier;
 
     addRequirements(shooter);
     SmartDashboard.putNumber("HoodAngle", 0);
@@ -40,14 +45,34 @@ public class RecordLUTValues extends Command {
                       Constants.ShooterConstants.positionOnRobot.getRotation().toRotation2d()))
               .getTranslation()
               .getDistance(AllianceFlipUtil.apply(Constants.Field.hub).toTranslation2d());
+        },
+        () -> {
+          return AllianceFlipUtil.apply(Constants.Field.hub)
+                  .toTranslation2d()
+                  .minus(
+                      poseSupplier
+                          .get()
+                          .transformBy(
+                              new Transform2d(
+                                  Constants.ShooterConstants.positionOnRobot.getMeasureX(),
+                                  Constants.ShooterConstants.positionOnRobot.getMeasureY(),
+                                  Constants.ShooterConstants.positionOnRobot
+                                      .getRotation()
+                                      .toRotation2d()))
+                          .getTranslation())
+                  .getAngle()
+                  .getRadians()
+              - poseSupplier.get().getRotation().getRadians();
         });
   }
 
   @Override
   public void execute() {
+    // Julia's secret message
     SmartDashboard.putNumber("Distance", distanceSupplier.getAsDouble());
     shooter.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0));
     shooter.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0)));
     shooter.setTurretState(TurretState.OnTarget);
+    shooter.setYaw(new Rotation2d(angleSupplier.getAsDouble()));
   }
 }

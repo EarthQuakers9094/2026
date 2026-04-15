@@ -117,9 +117,9 @@ public final class Constants {
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
     public static final double robotPositionAnticipationSeconds = 0.03;
-    public static final double flywheelKP = 0.5;
+    public static final double flywheelKP = 0.50;
     public static final double flywheelKI = 0.0;
-    public static final double flywheelKD = 0.01;
+    public static final double flywheelKD = 0.0175;
     public static final double flywheelKV = 0.12;
     public static final int shooterBeamBrakePort = 0;
     public static final int turretMotorId = 54;

@@ -32,9 +32,15 @@ public class MechanicalAdvantageTargeter implements Targeter {
     ferryMap.put(5.334, new FerryParams(3000, 7.38 - 6.17));
     ferryMap.put(6.325, new FerryParams(3500, 3.78 - 2.24));
 
+    // ferryMap.put(6.325, new FerryParams(3500, 3.78 - 2.24));
+    ferryMap.put(6.5532, new FerryParams(3800, 4.00 - 2.44));
+    ferryMap.put(8.5344, new FerryParams(4400, 4.06 - 2.46));
+
+    ferryMap.put(8.8392, new FerryParams(5700, 9.89 - 8.26));
+
     // regression values
-    ferryMap.put(7.0, new FerryParams(3730.6056, 1.562496));
-    ferryMap.put(9.0, new FerryParams(4527.92696, 2.9666133));
+    // ferryMap.put(7.0, new FerryParams(3730.6056, 1.562496));
+
     // ferryMap.put(7.0, new FerryParams(3730.6056,1.562496));
 
   }

@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.66756062767475,
-        "y": 5.309457917261056
+        "x": 2.706376604850214,
+        "y": 6.0081455064194005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3573093312400957,
-        "y": 6.948750549287265
+        "x": 2.2535250851704567,
+        "y": 7.353766569249767
       },
       "isLocked": false,
-      "linkedName": "BumpShootingSpot"
+      "linkedName": "BumpShootingSpot2"
     },
     {
       "anchor": {
@@ -40,8 +40,8 @@
       "minWaypointRelativePos": 0,
       "maxWaypointRelativePos": 0.8214739737426039,
       "constraints": {
-        "maxVelocity": 0.6,
-        "maxAcceleration": 0.6,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 80.0,
         "maxAngularAcceleration": 80.0,
         "nominalVoltage": 12.0,
@@ -51,17 +51,6 @@
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
-    {
-      "name": "start_shooting_fuel",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "start_shooting_fuel"
-        }
-      }
-    },
     {
       "name": "jiggle_intake",
       "waypointRelativePos": 0.14854827819041594,
@@ -264,7 +253,7 @@
     },
     {
       "name": "stop_shooting_fuel",
-      "waypointRelativePos": 0.9561107359891925,
+      "waypointRelativePos": 1.0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -287,9 +276,9 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Left Bump",
+  "folder": "Peddie Auto",
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": -43.72696997994338
   },
   "useDefaultConstraints": true

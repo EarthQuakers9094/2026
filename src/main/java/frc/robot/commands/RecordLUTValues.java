@@ -47,22 +47,7 @@ public class RecordLUTValues extends Command {
               .getDistance(AllianceFlipUtil.apply(Constants.Field.hub).toTranslation2d());
         },
         () -> {
-          return AllianceFlipUtil.apply(Constants.Field.hub)
-                  .toTranslation2d()
-                  .minus(
-                      poseSupplier
-                          .get()
-                          .transformBy(
-                              new Transform2d(
-                                  Constants.ShooterConstants.positionOnRobot.getMeasureX(),
-                                  Constants.ShooterConstants.positionOnRobot.getMeasureY(),
-                                  Constants.ShooterConstants.positionOnRobot
-                                      .getRotation()
-                                      .toRotation2d()))
-                          .getTranslation())
-                  .getAngle()
-                  .getRadians()
-              - poseSupplier.get().getRotation().getRadians();
+          return 0.0;
         });
   }
 

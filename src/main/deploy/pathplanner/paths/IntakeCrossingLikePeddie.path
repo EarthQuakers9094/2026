@@ -8,46 +8,66 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.61459950911191,
-        "y": 7.597425604786961
+        "x": 8.942810271041369,
+        "y": 7.651355206847361
       },
       "isLocked": false,
       "linkedName": "UnderTrenchSpot"
     },
     {
       "anchor": {
-        "x": 6.859686162624821,
-        "y": 4.080285306704707
+        "x": 7.881840228245363,
+        "y": 4.533138373751783
       },
       "prevControl": {
-        "x": 7.9471208380165015,
-        "y": 4.055345203722697
+        "x": 8.852239657631953,
+        "y": 5.749372325249644
       },
       "nextControl": {
-        "x": 6.609751887361298,
-        "y": 4.086017500743453
+        "x": 7.314209085294007,
+        "y": 3.821707341252752
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.66756062767475,
-        "y": 5.309457917261056
+        "x": 4.634236804564908,
+        "y": 5.632924393723252
       },
       "prevControl": {
-        "x": 7.157275320970042,
-        "y": 6.551569186875891
+        "x": 5.552773396943057,
+        "y": 5.652060572731129
+      },
+      "nextControl": {
+        "x": 4.013181169757488,
+        "y": 5.619985734664765
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.706376604850214,
+        "y": 6.0081455064194005
+      },
+      "prevControl": {
+        "x": 2.878028104824425,
+        "y": 5.498093394868434
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BumpShootingSpot"
+      "linkedName": "BumpShootingSpot2"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.4344474337748343,
-      "rotationDegrees": 90.0
+      "waypointRelativePos": 0.5970149253731308,
+      "rotationDegrees": 72.29773920389907
+    },
+    {
+      "waypointRelativePos": 1.688699360341142,
+      "rotationDegrees": -35.872182234819704
     },
     {
       "waypointRelativePos": 1.9317697228144928,
@@ -57,11 +77,24 @@
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.47535449020931203,
+      "minWaypointRelativePos": 0.48075624577987547,
       "maxWaypointRelativePos": 1.3990546927751377,
       "constraints": {
         "maxVelocity": 2.75,
         "maxAcceleration": 2.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.4807562457798865,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 5.0,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -84,7 +117,7 @@
     },
     {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.027008777852801393,
+      "waypointRelativePos": 0.032410533423360754,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -100,18 +133,29 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "stop_intake"
+          "name": "start_intake"
         }
       }
     },
     {
       "name": "temporary reverse spindexer",
-      "waypointRelativePos": 1.9500337609722962,
+      "waypointRelativePos": 2.3335584064820902,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 2.5928426738690167,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
         }
       }
     }
@@ -125,13 +169,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0.5,
     "rotation": -43.72696997994338
   },
   "reversed": false,
-  "folder": "Left Bump",
+  "folder": "Peddie Auto",
   "idealStartingState": {
-    "velocity": 3.0,
+    "velocity": 0,
     "rotation": 180.0
   },
   "useDefaultConstraints": true

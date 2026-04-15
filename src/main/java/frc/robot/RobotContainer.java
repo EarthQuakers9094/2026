@@ -363,12 +363,12 @@ public class RobotContainer {
 
     rightStick.button(4).onTrue(Commands.runOnce(() -> shooter.updateAutoShoot(), shooter));
 
-    new Trigger(() -> (leftStick.getHID().getRawButton(2) && shooter.isAutoShootOff()))
-        .whileTrue(new ShootFuel(shooter, kicker, intake));
+    // new Trigger(() -> (leftStick.getHID().getRawButton(2) && shooter.isAutoShootOff()))
+    //     .whileTrue(new ShootFuel(shooter, kicker, intake));
 
-    new Trigger(() -> (leftStick.getHID().getRawButton(2) && !shooter.isAutoShootOff()))
-        .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
-        .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
+    // new Trigger(() -> (leftStick.getHID().getRawButton(2) && !shooter.isAutoShootOff()))
+    //     .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
+    //     .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
@@ -504,21 +504,22 @@ public class RobotContainer {
     //     .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
     // leftStick
     //     .button(2)
+    //     // .onTrue(
+    //     //     new WaitCommand(0.1)
+    //     //         .andThen(new InstantCommand(() -> spindexer.reverse()))
+    //     //         .andThen(new WaitCommand(0.1)))
+    //     // .whileTrue(new ShootFuel(shooter, kicker, intake));
     //     .onTrue(
-    //         new WaitCommand(0.1)
-    //             .andThen(new InstantCommand(() -> spindexer.reverse()))
-    //             .andThen(new WaitCommand(0.1)))
-    //     .whileTrue(new ShootFuel(shooter, kicker, intake));
-    //     Commands.sequence(
-    //         new StartShootingFuel(shooter, kicker, intake),
-    //         new ParallelRaceGroup(
-    //             new WaitCommand(0.25),
-    //             new InstantCommand(() -> spindexer.reverse())
-    //                 .finallyDo(() -> spindexer.start()))))
-    // .onFalse(new StopShootingFuel(shooter, kicker, intake));
+    //         Commands.sequence(
+    //             new StartShootingFuel(shooter, kicker, intake),
+    //             new ParallelRaceGroup(
+    //                 new WaitCommand(0.25),
+    //                 new InstantCommand(() -> spindexer.reverse())
+    //                     .finallyDo(() -> spindexer.start()))))
+    //     .onFalse(new StopShootingFuel(shooter, kicker, intake));
     controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
 
-    // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
+    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
 
     rightStick
         .button(2)

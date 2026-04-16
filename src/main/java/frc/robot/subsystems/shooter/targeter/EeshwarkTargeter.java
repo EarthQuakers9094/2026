@@ -47,6 +47,7 @@ public class EeshwarkTargeter implements Targeter {
 
     // double minDistance = 1.0561370725815047;
     // double maxDistance = 4.964619639141648;
+    
     shotMap.put(5.042064448325879, new ShotParams(3385, 2.246, 4.56 - 3.27));
     shotMap.put(4.692851868222061, new ShotParams(3350, 2.1, 5.84 - 4.64));
     shotMap.put(4.263325456381816, new ShotParams(3250, 1.9, 4.39 - 3.22));

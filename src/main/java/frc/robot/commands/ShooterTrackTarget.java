@@ -133,7 +133,7 @@ public class ShooterTrackTarget extends Command {
         flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
     // Translation2d perpendicularToTargetVector =
     //     new Translation2d(1.0, shooterToTarget.getAngle().plus(Rotation2d.kCCW_Pi_2));
-    System.out.println(yawFudge);
+    // System.out.println(yawFudge);
     // shooterToTarget = shooterToTarget.plus(perpendicularToTargetVector.times(yawFudge));
 
     // Logger.recordOutput(

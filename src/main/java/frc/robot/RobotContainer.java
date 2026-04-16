@@ -409,6 +409,7 @@ public class RobotContainer {
             () -> -rightStick.getX(),
             () -> shouldSlow()));
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
+
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
                 shooter,

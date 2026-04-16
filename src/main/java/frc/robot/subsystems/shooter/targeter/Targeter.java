@@ -50,7 +50,7 @@ public interface Targeter {
 
   public record FerryParams(double RPM, double TOF) {
     public ShotParams getShotParams() {
-      return new ShotParams(this.RPM, 9999.0, this.TOF);
+      return new ShotParams(this.RPM, 2.3, this.TOF);
     }
   }
 

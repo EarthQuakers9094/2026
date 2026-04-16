@@ -94,9 +94,11 @@ public class MechanicalAdvantageTargeter implements Targeter {
     Translation2d lookaheadTarget = targetingData.target();
 
     for (int i = 0; i <= 40; i++) {
+      Logger.recordOutput("ShouldFerry", targetingData.shouldFerry());
       ShotParams params;
       if (targetingData.shouldFerry()) {
         params = ferryMap.get(lookaheadTarget.getNorm()).getShotParams();
+
       } else {
         params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
       }
@@ -119,7 +121,13 @@ public class MechanicalAdvantageTargeter implements Targeter {
 
     Rotation2d shotYaw = shotDirection.getAngle();
     double fieldRelativeYaw = shotYaw.getRadians();
-    ShotParams params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+    ShotParams params;
+    if (targetingData.shouldFerry()) {
+      params = ferryMap.get(lookaheadTarget.getNorm()).getShotParams();
+
+    } else {
+      params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+    }
     TOF = params.TOF();
 
     return Optional.of(

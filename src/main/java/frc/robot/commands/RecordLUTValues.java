@@ -13,6 +13,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
 import frc.robot.util.AllianceFlipUtil;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+import org.littletonrobotics.junction.Logger;
 
 public class RecordLUTValues extends Command {
 
@@ -54,7 +55,7 @@ public class RecordLUTValues extends Command {
   @Override
   public void execute() {
     // Julia's secret message
-    SmartDashboard.putNumber("Distance", distanceSupplier.getAsDouble());
+    Logger.recordOutput("Distance", distanceSupplier.getAsDouble());
     shooter.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0));
     shooter.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0)));
     shooter.setTurretState(TurretState.OnTarget);

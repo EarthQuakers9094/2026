@@ -55,8 +55,8 @@ public final class Constants {
   public static class Camera {
 
     // TODO: set on real robot
-    public static final double linearStdDev = 1.0;
-    public static final double angularStdDev = 1.0;
+    public static final double linearStdDev = 0.5;
+    public static final double angularStdDev = 0.5;
   }
 
   public static class Field {

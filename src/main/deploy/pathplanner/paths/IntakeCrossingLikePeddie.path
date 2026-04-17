@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 7.881840228245363,
-        "y": 4.533138373751783
+        "x": 8.050042796005705,
+        "y": 4.481383737517832
       },
       "prevControl": {
-        "x": 8.852239657631953,
-        "y": 5.749372325249644
+        "x": 9.020442225392296,
+        "y": 5.697617689015693
       },
       "nextControl": {
-        "x": 7.314209085294007,
-        "y": 3.821707341252752
+        "x": 7.48241165305435,
+        "y": 3.7699527050188
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,28 @@
         "y": 5.632924393723252
       },
       "prevControl": {
-        "x": 6.445649072753208,
-        "y": 5.671740370898717
+        "x": 6.303323823109842,
+        "y": 5.7364336661911555
       },
       "nextControl": {
-        "x": 4.013188977826639,
-        "y": 5.619616226007432
+        "x": 4.014237497279936,
+        "y": 5.594474824279223
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5021762769660256,
+        "y": 5.614846819698203
+      },
+      "prevControl": {
+        "x": 3.758206887122981,
+        "y": 5.604660821988713
+      },
+      "nextControl": {
+        "x": 3.2461456668090705,
+        "y": 5.625032817407693
       },
       "isLocked": false,
       "linkedName": null
@@ -74,7 +90,7 @@
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 2.4179104477611677,
+      "waypointRelativePos": 2.85,
       "rotationDegrees": 0.0
     }
   ],
@@ -131,6 +147,17 @@
       }
     },
     {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 1.706954760297096,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
       "name": "stop_intake",
       "waypointRelativePos": 1.7339635381498926,
       "endWaypointRelativePos": null,
@@ -143,7 +170,7 @@
     },
     {
       "name": "temporary reverse spindexer",
-      "waypointRelativePos": 2.3335584064820902,
+      "waypointRelativePos": 2.7873058744091526,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -154,7 +181,7 @@
     },
     {
       "name": "start_shooting_fuel",
-      "waypointRelativePos": 2.5928426738690167,
+      "waypointRelativePos": 3.2,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",

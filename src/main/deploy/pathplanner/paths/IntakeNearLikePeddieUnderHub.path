@@ -171,12 +171,34 @@
     },
     {
       "name": "temporary reverse spindexer",
-      "waypointRelativePos": 3.4571235651586276,
+      "waypointRelativePos": 2.9493585415259935,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 3.4247130317353185,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 3.6299797434165955,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
         }
       }
     }

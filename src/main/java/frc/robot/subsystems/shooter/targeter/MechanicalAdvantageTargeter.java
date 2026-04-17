@@ -21,6 +21,10 @@ public class MechanicalAdvantageTargeter implements Targeter {
   private LoggedNetworkNumber twistCompensationFactor =
       new LoggedNetworkNumber("TwistCompensationFactor", 1.0);
 
+  private LoggedNetworkNumber distanceFudge =
+      new LoggedNetworkNumber("DistanceFudgeFactorMeters", 0.0575);
+  private LoggedNetworkNumber farDistanceFudge =
+      new LoggedNetworkNumber("FarDistanceFudgeFactorMeters", 0.06675);
   public static InterpolatingTreeMap<Double, FerryParams> ferryMap =
       new InterpolatingTreeMap<Double, FerryParams>(
           MathUtil::inverseInterpolate, Targeter::ferryInterpolator);
@@ -100,7 +104,12 @@ public class MechanicalAdvantageTargeter implements Targeter {
         params = ferryMap.get(lookaheadTarget.getNorm()).getShotParams();
 
       } else {
-        params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+        params =
+            EeshwarkTargeter.shotMap.get(
+                lookaheadTarget.getNorm()
+                    + (lookaheadTarget.getNorm() < 3.5
+                        ? distanceFudge.get()
+                        : farDistanceFudge.get()));
       }
 
       lookaheadTarget = targetingData.target().minus(robotVelocity.times(params.TOF()));
@@ -126,7 +135,12 @@ public class MechanicalAdvantageTargeter implements Targeter {
       params = ferryMap.get(lookaheadTarget.getNorm()).getShotParams();
 
     } else {
-      params = EeshwarkTargeter.shotMap.get(lookaheadTarget.getNorm());
+      params =
+          EeshwarkTargeter.shotMap.get(
+              lookaheadTarget.getNorm()
+                  + (lookaheadTarget.getNorm() < 3.5
+                      ? distanceFudge.get()
+                      : farDistanceFudge.get()));
     }
     TOF = params.TOF();
 

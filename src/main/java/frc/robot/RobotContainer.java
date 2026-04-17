@@ -303,8 +303,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand(
         "temporary reverse spindexer",
-        new ParallelRaceGroup(
-            new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.25)));
+        new ParallelRaceGroup(new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.5)));
 
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 

@@ -31,6 +31,10 @@ public class EeshwarkTargeter implements Targeter {
   static {
 
     // dcmp data
+    shotMap.put(6.3069, new ShotParams(3750, 2.1, 47.90 - 46.60));
+
+    shotMap.put(5.73245, new ShotParams(3650, 1.95, 52.20 - 51.0));
+
     shotMap.put(5.001142, new ShotParams(3400, 1.702637, 16.35 - 15.09));
     shotMap.put(4.4543455, new ShotParams(3250, 1.4, 53.04 - 51.81));
     shotMap.put(4.139972, new ShotParams(3200, 1.35, 52.61 - 51.31));

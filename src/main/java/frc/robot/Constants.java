@@ -37,7 +37,7 @@ import java.nio.file.Path;
 public final class Constants {
   public static final CANBus shooterCANBus = new CANBus("Shooter");
 
-  public static final Mode simMode = Mode.REPLAY;
+  public static final Mode simMode = Mode.SIM;
   public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
   public static final boolean debugMode = false;
 
@@ -55,8 +55,8 @@ public final class Constants {
   public static class Camera {
 
     // TODO: set on real robot
-    public static final double linearStdDev = 0.5;
-    public static final double angularStdDev = 0.5;
+    public static final double linearStdDev = 0.25;
+    public static final double angularStdDev = 0.25;
   }
 
   public static class Field {

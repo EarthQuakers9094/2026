@@ -139,12 +139,6 @@
             {
               "type": "named",
               "data": {
-                "name": "start_intake"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
                 "name": "deploy_intake"
               }
             },
@@ -155,6 +149,17 @@
               }
             }
           ]
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.15,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
         }
       }
     },

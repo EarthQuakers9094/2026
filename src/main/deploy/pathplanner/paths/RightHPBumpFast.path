@@ -138,18 +138,12 @@
   "eventMarkers": [
     {
       "name": "deploy_intake",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.108035111411204,
       "endWaypointRelativePos": null,
       "command": {
         "type": "parallel",
         "data": {
           "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "start_intake"
-              }
-            },
             {
               "type": "named",
               "data": {
@@ -163,6 +157,17 @@
               }
             }
           ]
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.22687373396354052,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
         }
       }
     },

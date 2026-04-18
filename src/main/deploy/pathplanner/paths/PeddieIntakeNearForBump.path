@@ -100,23 +100,12 @@
     },
     {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.027008777852801393,
+      "waypointRelativePos": 0.02700877785280139,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "deploy_intake"
-        }
-      }
-    },
-    {
-      "name": "stop_intake",
-      "waypointRelativePos": 1.7339635381498926,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "stop_intake"
         }
       }
     },
@@ -128,6 +117,17 @@
         "type": "named",
         "data": {
           "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "stop_intake",
+      "waypointRelativePos": 2.212406947890808,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_intake"
         }
       }
     },

@@ -12,7 +12,7 @@
         "y": 5.473881292999455
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterScoopStart"
     },
     {
       "anchor": {
@@ -202,7 +202,7 @@
   "folder": "CenterAuto",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 46.169
+    "rotation": 41.71075732150822
   },
   "useDefaultConstraints": true
 }

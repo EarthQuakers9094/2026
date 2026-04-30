@@ -121,6 +121,10 @@ public final class Constants {
     public static final double flywheelKI = 0.0;
     public static final double flywheelKD = 0.0175;
     public static final double flywheelKV = 0.12;
+    public static final double flywheelInsaneKP = 0.75;
+    public static final double flywheelInsaneKI = 0.0;
+    public static final double flywheelInsaneKD = 0.0175;
+    public static final double flywheelInsaneKV = 0.24;
     public static final int shooterBeamBrakePort = 0;
     public static final int turretMotorId = 54;
     public static final int hoodMotorId = 53;

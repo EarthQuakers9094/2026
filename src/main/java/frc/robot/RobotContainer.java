@@ -9,6 +9,9 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Inches;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
@@ -81,6 +84,7 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldUtil;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -304,6 +308,11 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "temporary reverse spindexer",
         new ParallelRaceGroup(new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.5)));
+    LoggedNetworkNumber customWaitTime = new LoggedNetworkNumber("WaitTime");
+    NamedCommands.registerCommand("CustomWait", Commands.defer(
+        () -> {return new WaitCommand(customWaitTime.get());},
+        new HashSet<>()
+    ));
 
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 
@@ -407,6 +416,7 @@ public class RobotContainer {
             () -> -leftStick.getX(),
             () -> -rightStick.getX(),
             () -> shouldSlow()));
+
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
 
     shooter.setDefaultCommand(

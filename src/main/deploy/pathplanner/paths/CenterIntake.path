@@ -1,0 +1,153 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.1851069900142646,
+        "y": 5.322396576319543
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.1851069900142654,
+        "y": 5.322396576319543
+      },
+      "isLocked": true,
+      "linkedName": "CenterBeforeBump"
+    },
+    {
+      "anchor": {
+        "x": 4.750684736091298,
+        "y": 5.4517831669044226
+      },
+      "prevControl": {
+        "x": 4.2442789925548885,
+        "y": 5.218836524877674
+      },
+      "nextControl": {
+        "x": 7.338416547788872,
+        "y": 6.642139800285308
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.979857346647646,
+        "y": 1.8807132667617692
+      },
+      "prevControl": {
+        "x": 5.466709345141947,
+        "y": 1.893435944485051
+      },
+      "nextControl": {
+        "x": 7.545435092724677,
+        "y": 1.8418972895863055
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.859686162624821,
+        "y": 5.011868758915835
+      },
+      "prevControl": {
+        "x": 7.274214576335532,
+        "y": 3.872961302523314
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "CenterPostIntake"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.1343283582089658,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.4179104477611977,
+      "rotationDegrees": 79.68564510994375
+    },
+    {
+      "waypointRelativePos": 1.7014925373134333,
+      "rotationDegrees": 84.1649196605788
+    },
+    {
+      "waypointRelativePos": 2.402985074626876,
+      "rotationDegrees": -96.29661449278993
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.35,
+      "maxWaypointRelativePos": 1.2667116812964536,
+      "constraints": {
+        "maxVelocity": 5.0,
+        "maxAcceleration": 5.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.27,
+      "maxWaypointRelativePos": 2.9304523970290584,
+      "constraints": {
+        "maxVelocity": 2.75,
+        "maxAcceleration": 2.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 1.2316002700877795,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "stop_intake",
+      "waypointRelativePos": 2.8926401080350885,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.75,
+    "rotation": -70.0
+  },
+  "reversed": false,
+  "folder": "CenterAuto",
+  "idealStartingState": {
+    "velocity": 2.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

@@ -3,74 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.66756062767475,
-        "y": 5.309457917261056
+        "x": 3.4697574893009984,
+        "y": 5.594108416547789
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8573747782660743,
-        "y": 5.146760073897064
+        "x": 2.6158059914407983,
+        "y": 5.878758915834522
       },
       "isLocked": false,
-      "linkedName": "BumpShootingSpot"
+      "linkedName": "CenterScoopStart"
     },
     {
       "anchor": {
-        "x": 1.904179743223965,
-        "y": 5.839942938659058
+        "x": 2.3144264398431544,
+        "y": 5.868753091361811
       },
       "prevControl": {
-        "x": 2.6965433568334958,
-        "y": 5.681955415651846
+        "x": 2.540770778658079,
+        "y": 6.434613938399122
       },
       "nextControl": {
-        "x": 1.1118161296144344,
-        "y": 5.99793046166627
+        "x": 2.221578770754629,
+        "y": 5.636633918640498
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 0.7785164051355205,
-        "y": 5.904636233951498
+        "x": 3.1851069900142646,
+        "y": 5.322396576319543
       },
       "prevControl": {
-        "x": 0.5304469359571038,
-        "y": 5.935644917598802
+        "x": 2.5179813976785983,
+        "y": 5.322396576319543
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "DepotSpot"
+      "linkedName": "CenterBeforeBump"
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 0.9083155650319708,
+      "rotationDegrees": -140.0
     }
   ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.0,
-      "maxWaypointRelativePos": 1.35,
+      "minWaypointRelativePos": 0.3673193787981152,
+      "maxWaypointRelativePos": 1.5232950708980195,
       "constraints": {
-        "maxVelocity": 0.7,
-        "maxAcceleration": 3.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    },
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.35,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 0.45,
-        "maxAcceleration": 3.0,
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
         "maxAngularVelocity": 540.0,
         "maxAngularAcceleration": 720.0,
         "nominalVoltage": 12.0,
@@ -81,8 +68,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
+      "name": "extend_hopper",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "extend_hopper"
+        }
+      }
+    },
+    {
       "name": "deploy_intake",
-      "waypointRelativePos": 1.0,
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -92,24 +90,24 @@
       }
     },
     {
-      "name": "start_intake",
-      "waypointRelativePos": 1.1,
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 0.1458474004051363,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "start_intake"
+          "name": "start_shooting_fuel"
         }
       }
     },
     {
-      "name": "jiggle_intake",
-      "waypointRelativePos": 1.7,
+      "name": "stop_shooting_fuel",
+      "waypointRelativePos": 1.733963538149876,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "jiggle_intake"
+          "name": "stop_shooting_fuel"
         }
       }
     }
@@ -123,14 +121,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 2.5,
+    "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Left Bump",
+  "folder": "CenterAuto",
   "idealStartingState": {
-    "velocity": 0.65,
-    "rotation": -43.72696997994338
+    "velocity": 0,
+    "rotation": 41.71075732150822
   },
   "useDefaultConstraints": true
 }

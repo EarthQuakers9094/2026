@@ -30,18 +30,33 @@ public class EeshwarkTargeter implements Targeter {
 
   static {
 
+    // cmp data
+    shotMap.put(1.907, new ShotParams(2600, 1.0, 27.4 - 26.36));//1.04
+    shotMap.put(2.339, new ShotParams(2600, 1.35, 10.19 - 9.2));//0.99
+    shotMap.put(2.713, new ShotParams(2700, 1.5, 38.65 - 37.62));//1.03
+    shotMap.put(2.972, new ShotParams(2760, 1.6, 41.06 - 40.08));//0.98
+    shotMap.put(3.298, new ShotParams(2780, 1.8, 3.12 - 2.12));//1.0
+    shotMap.put(3.6649, new ShotParams(2950, 1.9, 1.60 - 0.54));//1.06
+    shotMap.put(4.119, new ShotParams(3000, 2.0, 38.70 - 37.62));//1.08
+    shotMap.put(4.518, new ShotParams(3200, 2.4, 7.92 - 6.77));//1.15
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+
     // dcmp data
     shotMap.put(6.3069, new ShotParams(3750, 2.1, 47.90 - 46.60));
 
     shotMap.put(5.73245, new ShotParams(3650, 1.95, 52.20 - 51.0));
 
     shotMap.put(5.001142, new ShotParams(3400, 1.702637, 16.35 - 15.09));
-    shotMap.put(4.4543455, new ShotParams(3250, 1.4, 53.04 - 51.81));
-    shotMap.put(4.139972, new ShotParams(3200, 1.35, 52.61 - 51.31));
-    shotMap.put(3.756959, new ShotParams(3125, 1.25, 6.85 - 5.5));
-    shotMap.put(3.36106, new ShotParams(3025, 1.125, 5.80 - 4.54));
-    shotMap.put(2.934494, new ShotParams(2875, 0.9, 10.3 - 8.99));
-    shotMap.put(2.3173, new ShotParams(2760, 0.7, 9.82 - 8.67));
+    // shotMap.put(4.4543455, new ShotParams(3250, 1.4, 53.04 - 51.81));
+    // shotMap.put(4.139972, new ShotParams(3200, 1.35, 52.61 - 51.31));
+    // shotMap.put(3.756959, new ShotParams(3125, 1.25, 6.85 - 5.5));
+    // shotMap.put(3.36106, new ShotParams(3025, 1.125, 5.80 - 4.54));
+    // shotMap.put(2.934494, new ShotParams(2875, 0.9, 10.3 - 8.99));
+    // shotMap.put(2.3173, new ShotParams(2760, 0.7, 9.82 - 8.67));
     shotMap.put(1.8439404, new ShotParams(2760, 0.5, 23.64 - 22.59));
     shotMap.put(1.4798, new ShotParams(2760, 0.4, 15.58 - 14.32));
     // shotMap.put(, new ShotParams(, ,   - ));

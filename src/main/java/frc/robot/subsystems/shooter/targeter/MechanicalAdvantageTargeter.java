@@ -22,9 +22,9 @@ public class MechanicalAdvantageTargeter implements Targeter {
       new LoggedNetworkNumber("TwistCompensationFactor", 1.0);
 
   private LoggedNetworkNumber distanceFudge =
-      new LoggedNetworkNumber("DistanceFudgeFactorMeters", 0.0575);
+      new LoggedNetworkNumber("DistanceFudgeFactorMeters", 0.01);
   private LoggedNetworkNumber farDistanceFudge =
-      new LoggedNetworkNumber("FarDistanceFudgeFactorMeters", 0.06675);
+      new LoggedNetworkNumber("FarDistanceFudgeFactorMeters", 0.02);
   public static InterpolatingTreeMap<Double, FerryParams> ferryMap =
       new InterpolatingTreeMap<Double, FerryParams>(
           MathUtil::inverseInterpolate, Targeter::ferryInterpolator);

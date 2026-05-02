@@ -1,0 +1,202 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.560328102710413,
+        "y": 7.41845934379458
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.560328102710412,
+        "y": 7.41845934379458
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.031611982881596,
+        "y": 7.41845934379458
+      },
+      "prevControl": {
+        "x": 5.0338268250249865,
+        "y": 7.484978354318356
+      },
+      "nextControl": {
+        "x": 6.419771754636234,
+        "y": 7.392582025677603
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.536219686162624,
+        "y": 5.4647218259629105
+      },
+      "prevControl": {
+        "x": 6.600912981455064,
+        "y": 6.564507845934379
+      },
+      "nextControl": {
+        "x": 6.5091140579819715,
+        "y": 5.003926146891833
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 6.92437945791726,
+        "y": 4.028530670470756
+      },
+      "prevControl": {
+        "x": 6.674441163459351,
+        "y": 4.022976486149469
+      },
+      "nextControl": {
+        "x": 7.5066191155492135,
+        "y": 4.041469329529244
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.2219686162624805,
+        "y": 6.305734664764623
+      },
+      "prevControl": {
+        "x": 6.799292714562427,
+        "y": 6.239985080055726
+      },
+      "nextControl": {
+        "x": 7.804208273894435,
+        "y": 6.3963052781740375
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.8947788873038505,
+        "y": 4.028530670470756
+      },
+      "prevControl": {
+        "x": 7.299600570613409,
+        "y": 4.481383737517832
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "CenterForTide"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0149253731343393,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.6737739872068402,
+      "rotationDegrees": 105.42216131873617
+    },
+    {
+      "waypointRelativePos": 2.3454157782516,
+      "rotationDegrees": 111.02046291772531
+    },
+    {
+      "waypointRelativePos": 3.2835820895522194,
+      "rotationDegrees": -102.41735914502642
+    },
+    {
+      "waypointRelativePos": 3.7206823027717935,
+      "rotationDegrees": -97.4730315484679
+    },
+    {
+      "waypointRelativePos": 4.296375266524446,
+      "rotationDegrees": 96.30433276082604
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.309925725860891,
+      "maxWaypointRelativePos": 4.240378122889902,
+      "constraints": {
+        "maxVelocity": 2.2,
+        "maxAcceleration": 2.2,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "extend_hopper",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "extend_hopper"
+        }
+      }
+    },
+    {
+      "name": "deploy_intake",
+      "waypointRelativePos": 0.6076975016880335,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.9318028359216536,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 4.794058068872343,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "ZigZag",
+  "idealStartingState": {
+    "velocity": 0.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

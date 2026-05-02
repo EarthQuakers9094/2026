@@ -1,0 +1,176 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.348641154389116,
+        "y": 7.4575102268352165
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.61459950911191,
+        "y": 7.597425604786961
+      },
+      "isLocked": false,
+      "linkedName": "UnderTrenchSpot"
+    },
+    {
+      "anchor": {
+        "x": 6.859686162624821,
+        "y": 4.080285306704707
+      },
+      "prevControl": {
+        "x": 7.9471208380165015,
+        "y": 4.055345203722697
+      },
+      "nextControl": {
+        "x": 6.609751887361298,
+        "y": 4.086017500743453
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 4.543666191155491,
+        "y": 5.5811697574893016
+      },
+      "prevControl": {
+        "x": 8.464079885877318,
+        "y": 5.516476462196862
+      },
+      "nextControl": {
+        "x": 2.9035859033039806,
+        "y": 5.608233788641967
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.706376604850214,
+        "y": 6.0081455064194005
+      },
+      "prevControl": {
+        "x": 2.7861164321747314,
+        "y": 5.771203403917004
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": "BumpShootingSpot2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.4344474337748343,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 1.9317697228144928,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.47535449020931203,
+      "maxWaypointRelativePos": 1.3990546927751377,
+      "constraints": {
+        "maxVelocity": 2.75,
+        "maxAcceleration": 2.75,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "deploy_intake",
+      "waypointRelativePos": 0.02700877785280139,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 1.8717083051991872,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "stop_intake",
+      "waypointRelativePos": 2.212406947890808,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_intake"
+        }
+      }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 2.236326806212021,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
+        }
+      }
+    },
+    {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 2.284942606347059,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0.0,
+    "rotation": -43.72696997994338
+  },
+  "reversed": false,
+  "folder": "Peddie Auto",
+  "idealStartingState": {
+    "velocity": 3.0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

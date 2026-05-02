@@ -1,0 +1,79 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.859686162624821,
+        "y": 5.011868758915835
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.517666019299153,
+        "y": 5.951561379701744
+      },
+      "isLocked": true,
+      "linkedName": "CenterPostIntake"
+    },
+    {
+      "anchor": {
+        "x": 4.608359486447931,
+        "y": 7.4572753209700435
+      },
+      "prevControl": {
+        "x": 7.607467558377081,
+        "y": 7.530424298334172
+      },
+      "nextControl": {
+        "x": 4.108508141126406,
+        "y": 7.445083824742689
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.47,
+        "y": 7.458
+      },
+      "prevControl": {
+        "x": 3.727481143899556,
+        "y": 7.458
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "TrenchSpotShootingPeddie"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6481876332622653,
+      "rotationDegrees": 180.0
+    },
+    {
+      "waypointRelativePos": 1.0746268656716338,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "ZigZag",
+  "idealStartingState": {
+    "velocity": 2.75,
+    "rotation": -70.0
+  },
+  "useDefaultConstraints": true
+}

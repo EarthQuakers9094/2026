@@ -1,0 +1,79 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "extend_hopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "deploy_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CustomWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_shooting_fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of ZigZagPath"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LinkWithSupportForTide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterShootThroughBump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For Bump #2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PeddieIntakeNearForBump"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Support Autos",
+  "choreoAuto": false
+}

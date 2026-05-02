@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
@@ -24,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -66,8 +65,6 @@ import frc.robot.subsystems.shooter.ShooterIOReal;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
-import frc.robot.subsystems.shooter.targeter.ConstantTargeter;
-import frc.robot.subsystems.shooter.targeter.EeshwarkTargeter;
 import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
 import frc.robot.subsystems.shooter.targeter.Targeter;
 import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
@@ -78,10 +75,11 @@ import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldUtil;
+import java.util.HashSet;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -108,6 +106,8 @@ public class RobotContainer {
 
   private LinearFilter xInputAverage = LinearFilter.movingAverage(5);
   private LinearFilter yInputAverage = LinearFilter.movingAverage(5);
+
+  private LoggedNetworkNumber customWaitTime = new LoggedNetworkNumber("WaitTime", 0.0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -187,31 +187,32 @@ public class RobotContainer {
             new ShooterSubsystem(
                 new ShooterIOSim(drive::getPose, drive::getChassisSpeeds), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(
-                        Inches.of(12.465),
-                        Inches.of(4.915),
-                        Inches.of(12.03),
-                        new Rotation3d(0, -Math.PI / 6., 0.0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Left",
-                    new Transform3d(
-                        0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Right",
-                    new Transform3d(
-                        0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.)),
-                    drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(
+        //                 Inches.of(12.465),
+        //                 Inches.of(4.915),
+        //                 Inches.of(12.03),
+        //                 new Rotation3d(0, -Math.PI / 6., 0.0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Left",
+        //             new Transform3d(
+        //                 0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Right",
+        //             new Transform3d(
+        //                 0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.)),
+        //             drive::getPose));
+        vision = null;
 
         // vision =
         // new Vision(
@@ -254,9 +255,9 @@ public class RobotContainer {
         vision =
             new Vision(
                 drive::addVisionMeasurement,
-                new VisionIO() {},
-                new VisionIO() {},
-                new VisionIO() {});
+                VisionIO.withName("Front"),
+                VisionIO.withName("Left"),
+                VisionIO.withName("Right"));
         kicker = new KickerSubsystem(new KickerIO() {});
         spindexer = new SpindexerSubsystem(new SpindexerIO() {});
         servo = new HopperServoSubsystem(new HopperServoIO() {});
@@ -271,7 +272,7 @@ public class RobotContainer {
         "jiggle_intake",
         Commands.sequence(
             new InstantCommand(() -> intake.retractIntake()),
-            new WaitCommand(0.5),
+            new WaitCommand(0.1),
             new InstantCommand(() -> intake.deployIntake())));
 
     NamedCommands.registerCommand("start_intake", new InstantCommand(() -> intake.startIntake()));
@@ -292,7 +293,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
 
-    NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
+    NamedCommands.registerCommand(
+        "wait_for_spin_up", new WaitUntilCommand(() -> shooter.isSpunUp(false)));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
     NamedCommands.registerCommand(
@@ -302,10 +304,28 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "extend_hopper", new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
+    NamedCommands.registerCommand(
+        "temporary reverse spindexer",
+        new ParallelRaceGroup(new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.5)));
+    NamedCommands.registerCommand(
+        "CustomWait",
+        Commands.defer(
+            () -> {
+              return new WaitCommand(customWaitTime.get());
+            },
+            new HashSet<>()));
+
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 
     // Set up auto routines
-    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    // autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+
+    autoChooser =
+        new LoggedDashboardChooser<>(
+            "Auto Choices",
+            AutoBuilder.buildAutoChooserWithOptionsModifier(
+                (stream) ->
+                    true ? stream.filter(auto -> auto.getName().startsWith("real")) : stream));
 
     // Set up SysId routines
     autoChooser.addOption(
@@ -329,6 +349,10 @@ public class RobotContainer {
 
     new Trigger(() -> FieldUtil.isNearTrench(drive.getPose()))
         .whileTrue(Commands.run(shooter::retractHood).ignoringDisable(true));
+
+    // new Trigger(() -> (leftStick.getHID().getRawButton(2) && !shooter.isAutoShootOff()))
+    //     .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
+    //     .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
 
     // new Trigger(() -> FieldUtil.inAllianceZone(drive.getPose(),
     // DriverStation.getAlliance().orElse(Alliance.Blue)))
@@ -362,7 +386,7 @@ public class RobotContainer {
               shooter.setYaw(new Rotation2d(SmartDashboard.getNumber("Yaw", 0)));
             },
             shooter));
-    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+
     // drive
     leftStick
         .button(6)
@@ -393,7 +417,9 @@ public class RobotContainer {
             () -> -leftStick.getX(),
             () -> -rightStick.getX(),
             () -> shouldSlow()));
+
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
+
     shooter.setDefaultCommand(
         DriverAutomations.targetHubOrFerry(
                 shooter,
@@ -458,10 +484,45 @@ public class RobotContainer {
     // false));
 
     /** Shoots FUEL using Auto Aim */
-    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    // leftStick
+    //     .button(2)
+    //     .onTrue(new InstantCommand(() -> shooter.setPreventShooting(true)))
+    //     .onFalse(new InstantCommand(() -> shooter.setPreventShooting(false)));
+    // leftStick
+    //     .button(2)
+    //     // .onTrue(
+    //     //     new WaitCommand(0.1)
+    //     //         .andThen(new InstantCommand(() -> spindexer.reverse()))
+    //     //         .andThen(new WaitCommand(0.1)))
+    //     // .whileTrue(new ShootFuel(shooter, kicker, intake));
+    //     .onTrue(
+    //         Commands.sequence(
+    //             new StartShootingFuel(shooter, kicker, intake),
+    //             new ParallelRaceGroup(
+    //                 new WaitCommand(0.25),
+    //                 new InstantCommand(() -> spindexer.reverse())
+    //                     .finallyDo(() -> spindexer.start()))))
+    //     .onFalse(new StopShootingFuel(shooter, kicker, intake));
     controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
 
-    // controller.a().whileTrue(new ShootFuel(shooter, kicker, intake));
+    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+
+    /*
+    new Trigger(
+            () ->
+                GameState.getInstance().shouldShoot(targeter.getTOF())
+                    && FieldUtil.inShootingArea(
+                        drive.getPose(), DriverStation.getAlliance().orElse(Alliance.Blue))
+                    && !DriverStation.isAutonomous()
+                    && !leftStick.getHID().getRawButton(2)
+                    && !shooter.isAutoShootOff())
+        .whileTrue(new ShootFuel(shooter, kicker, intake));
+
+    rightStick.button(4).onTrue(Commands.runOnce(() -> shooter.updateAutoShoot(), shooter));
+
+    new Trigger(() -> (leftStick.getHID().getRawButton(2) && shooter.isAutoShootOff()))
+        .whileTrue(new ShootFuel(shooter, kicker, intake));
+    */
 
     rightStick
         .button(2)
@@ -470,7 +531,12 @@ public class RobotContainer {
                 drive,
                 () -> -leftStick.getY(),
                 () -> -leftStick.getX(),
-                () -> new Rotation2d(Math.PI + Math.atan2(leftStick.getX(), leftStick.getY()))));
+                () ->
+                    new Rotation2d(
+                        (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                                ? Math.PI
+                                : 0.0)
+                            + Math.atan2(leftStick.getX(), leftStick.getY()))));
 
     /** Zero Intake To Ground Position */
     leftStick
@@ -497,21 +563,21 @@ public class RobotContainer {
                 },
                 shooter));
     // controller.povLeft().onTrue(new ZeroHood(shooter));
-    controller
-        .povRight()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  targeter = new ConstantTargeter();
-                }));
+    // controller
+    //     .povRight()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               targeter = new ConstantTargeter();
+    //             }));
 
-    controller
-        .start()
-        .onTrue(
-            new InstantCommand(
-                () -> {
-                  targeter = new EeshwarkTargeter();
-                }));
+    // controller
+    //     .start()
+    //     .onTrue(
+    //         new InstantCommand(
+    //             () -> {
+    //               targeter = new EeshwarkTargeter();
+    //             }));
 
     controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
 

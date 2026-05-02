@@ -55,8 +55,8 @@ public final class Constants {
   public static class Camera {
 
     // TODO: set on real robot
-    public static final double linearStdDev = 1.0;
-    public static final double angularStdDev = 1.0;
+    public static final double linearStdDev = 0.25;
+    public static final double angularStdDev = 0.25;
   }
 
   public static class Field {
@@ -87,6 +87,10 @@ public final class Constants {
     public static final Distance trenchWidth = Inches.of(23.5 * 2);
 
     public static final Distance trenchHeight = Inches.of(49.48);
+
+    public static final Distance towerHeight = Inches.of(123.36);
+    public static final Distance towerWidth = Inches.of(47.0);
+    public static final Distance towerLength = Inches.of(41.8);
   }
 
   // public static class IndexerConstants {
@@ -113,10 +117,14 @@ public final class Constants {
             new Translation3d(Inches.of(4.770232), Inches.of(6.359835), Inches.of(17.539016)),
             new Rotation3d());
     public static final double robotPositionAnticipationSeconds = 0.03;
-    public static final double flywheelKP = 0.5;
+    public static final double flywheelKP = 0.50;
     public static final double flywheelKI = 0.0;
-    public static final double flywheelKD = 0.01;
+    public static final double flywheelKD = 0.0175;
     public static final double flywheelKV = 0.12;
+    public static final double flywheelInsaneKP = 0.75;
+    public static final double flywheelInsaneKI = 0.0;
+    public static final double flywheelInsaneKD = 0.0175;
+    public static final double flywheelInsaneKV = 0.24;
     public static final int shooterBeamBrakePort = 0;
     public static final int turretMotorId = 54;
     public static final int hoodMotorId = 53;
@@ -218,9 +226,9 @@ public final class Constants {
     public static final double kP = 0.002;
     public static final double kI = 0.0;
     public static final double kD = 0.1;
-    public static final double kV = 0.009;
+    public static final double kV = 0.036;
     public static final AngularVelocity spindexerSetSpeed =
-        KickerConstants.velocitySetpoint.div(3); // 6 in
+        KickerConstants.velocitySetpoint.div(-3); // 6 in
     // diameter
   }
 

@@ -20,7 +20,8 @@ public interface Targeter {
       Translation2d robotVelocity,
       Translation2d robotAcceleration,
       AngularVelocity robotOmegaAngularVelocity,
-      Rotation2d robotRotation) {}
+      Rotation2d robotRotation,
+      boolean shouldFerry) {}
 
   public record RobotRelativeAcceleration(LinearAcceleration aX, LinearAcceleration aY) {
 
@@ -47,6 +48,12 @@ public interface Targeter {
 
   public record ShotParams(double RPM, double hoodPosition, double TOF) {}
 
+  public record FerryParams(double RPM, double TOF) {
+    public ShotParams getShotParams() {
+      return new ShotParams(this.RPM, 2.3, this.TOF);
+    }
+  }
+
   public Optional<TargetingResult3d> getShooterTargeting(TargetingData targetingData);
 
   public static ShotParams shotInterpolator(ShotParams start, ShotParams end, double t) {
@@ -55,4 +62,12 @@ public interface Targeter {
         MathUtil.interpolate(start.hoodPosition(), end.hoodPosition(), t),
         MathUtil.interpolate(start.TOF(), end.TOF(), t));
   }
+
+  public static FerryParams ferryInterpolator(FerryParams start, FerryParams end, double t) {
+    return new FerryParams(
+        MathUtil.interpolate(start.RPM(), end.RPM(), t),
+        MathUtil.interpolate(start.TOF(), end.TOF(), t));
+  }
+
+  public double getTOF();
 }

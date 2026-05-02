@@ -1,0 +1,149 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.4697574893009984,
+        "y": 5.594108416547789
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6158059914407983,
+        "y": 5.878758915834522
+      },
+      "isLocked": false,
+      "linkedName": "CenterScoopStart"
+    },
+    {
+      "anchor": {
+        "x": 0.7785164051355205,
+        "y": 5.904636233951498
+      },
+      "prevControl": {
+        "x": 1.7161898736272794,
+        "y": 5.904636233951401
+      },
+      "nextControl": {
+        "x": 0.5285164051355205,
+        "y": 5.904636233951524
+      },
+      "isLocked": false,
+      "linkedName": "DepotSpot"
+    },
+    {
+      "anchor": {
+        "x": 3.1851069900142646,
+        "y": 5.322396576319543
+      },
+      "prevControl": {
+        "x": 2.5179813976785983,
+        "y": 5.322396576319543
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CenterBeforeBump"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.4669509594882792,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6887238352464465,
+      "maxWaypointRelativePos": 1.5232950708980195,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 0.5,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "extend_hopper",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "extend_hopper"
+        }
+      }
+    },
+    {
+      "name": "deploy_intake",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 0.3024983119513805,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
+        }
+      }
+    },
+    {
+      "name": "jiggle_intake",
+      "waypointRelativePos": 0.9696151249155756,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "jiggle_intake"
+        }
+      }
+    },
+    {
+      "name": "stop_shooting_fuel",
+      "waypointRelativePos": 1.4314652261985192,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "stop_shooting_fuel"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.5,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "CenterAuto",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 41.71075732150822
+  },
+  "useDefaultConstraints": true
+}

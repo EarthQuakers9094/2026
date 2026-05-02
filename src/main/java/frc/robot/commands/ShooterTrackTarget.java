@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,10 +25,10 @@ import frc.robot.subsystems.shooter.targeter.Targeter.RobotRelativeAcceleration;
 import frc.robot.subsystems.shooter.targeter.Targeter.TargetingData;
 import frc.robot.subsystems.shooter.targeter.TargetingResult.TargetingResult3d;
 import frc.robot.util.AllianceFlipUtil;
+import frc.robot.util.FieldUtil;
 import java.util.Optional;
 import java.util.function.Supplier;
 import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 public class ShooterTrackTarget extends Command {
 
@@ -36,7 +38,7 @@ public class ShooterTrackTarget extends Command {
   private final Supplier<ChassisSpeeds> chassisSpeedsSupplier;
   private final Supplier<Translation3d> targetSupplier;
   private final boolean shouldFlipTarget;
-  private final LoggedNetworkNumber yawFudge = new LoggedNetworkNumber("YawFudge");
+  private final double yawFudge = -0.2;
 
   private final Supplier<RobotRelativeAcceleration> accelerationSupplier;
 
@@ -129,6 +131,14 @@ public class ShooterTrackTarget extends Command {
 
     Translation2d shooterToTarget =
         flippedTarget.toTranslation2d().minus(anticipatedShooterPosition.getTranslation());
+    // Translation2d perpendicularToTargetVector =
+    //     new Translation2d(1.0, shooterToTarget.getAngle().plus(Rotation2d.kCCW_Pi_2));
+    // System.out.println(yawFudge);
+    // shooterToTarget = shooterToTarget.plus(perpendicularToTargetVector.times(yawFudge));
+
+    // Logger.recordOutput(
+    //     "VirtualTarget",
+    //     flippedTarget.plus(new Translation3d(perpendicularToTargetVector.times(yawFudge))));
     double distanceToTarget = shooterToTarget.getNorm();
 
     if (distanceToTarget <= 1.5) {
@@ -173,14 +183,19 @@ public class ShooterTrackTarget extends Command {
                         ),
                     fieldRelativeChassisAcceleration,
                     RadiansPerSecond.of(fieldRelativeChassisSpeeds.omegaRadiansPerSecond),
-                    robotPosition.getRotation()));
+                    robotPosition.getRotation(),
+                    !FieldUtil.inAllianceZone(
+                        robotPosition, DriverStation.getAlliance().orElse(Alliance.Blue))));
 
     Logger.recordOutput("Shooter/CanHitTarget", maybeTargetingResult.isPresent());
     if (maybeTargetingResult.isPresent()) {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
-      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+      boolean shouldFullFieldFerry = FieldUtil.inOpposingAllianceZone(robotPosition);
+      ShooterSubsystem.isGenerous = shouldFullFieldFerry;
+      shooterSubsystem.setTargetAngularVelocity(
+          RPM.of(targetingResult.targetRPM()), shouldFullFieldFerry);
       Logger.recordOutput("IdealAngularVelocityRPM", targetingResult.targetRPM());
       Logger.recordOutput("IdealHoodPosition", targetingResult.hoodPosition());
 
@@ -219,7 +234,8 @@ public class ShooterTrackTarget extends Command {
                   .plus(anticipatedShooterPosition.getRotation().getMeasure())),
           ShooterSubsystem.hoodAngleToLaunchAngle(shooterSubsystem.getHoodAngle()),
           ShooterSubsystem.shooterSpeedToVelocity(
-              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)));
+              shooterSubsystem.getShooterSpeed().in(RadiansPerSecond)),
+          fieldRelativeChassisSpeeds.omegaRadiansPerSecond);
       // }
 
       // shooterSubsystem.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM",
@@ -273,13 +289,23 @@ public class ShooterTrackTarget extends Command {
       ChassisSpeeds chassisSpeeds,
       Rotation2d yaw,
       double pitch,
-      double launchVelocity) {
+      double launchVelocity,
+      double omega) {
 
     Pose3d[] poses = new Pose3d[20];
 
     double vx = chassisSpeeds.vxMetersPerSecond + yaw.getCos() * launchVelocity * Math.cos(pitch);
     double vy = chassisSpeeds.vyMetersPerSecond + yaw.getSin() * launchVelocity * Math.cos(pitch);
     double vz = Math.sin(pitch) * launchVelocity;
+
+    vx +=
+        omega
+            * ((Constants.ShooterConstants.positionOnRobot.getY() * yaw.getCos())
+                - (Constants.ShooterConstants.positionOnRobot.getX() * omega));
+    vy +=
+        omega
+            * ((Constants.ShooterConstants.positionOnRobot.getX() * yaw.getCos())
+                - (Constants.ShooterConstants.positionOnRobot.getY() * yaw.getSin()));
 
     double x = startPosition.getX();
     double y = startPosition.getY();

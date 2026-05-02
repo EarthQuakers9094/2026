@@ -57,7 +57,7 @@ public class RecordLUTValues extends Command {
     // Julia's secret message
     Logger.recordOutput("Distance", distanceSupplier.getAsDouble());
     shooter.setHoodAngle(SmartDashboard.getNumber("HoodAngle", 0));
-    shooter.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0)));
+    shooter.setTargetAngularVelocity(RPM.of(SmartDashboard.getNumber("RPM", 0)), false);
     shooter.setTurretState(TurretState.OnTarget);
     shooter.setYaw(new Rotation2d(angleSupplier.getAsDouble()));
   }

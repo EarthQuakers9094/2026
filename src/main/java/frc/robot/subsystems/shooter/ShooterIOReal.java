@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.Slot2Configs;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
@@ -75,6 +76,15 @@ public class ShooterIOReal implements ShooterIO {
     flywheelLeadMotor
         .getConfigurator()
         .apply(new Slot1Configs().withKP(Constants.ShooterConstants.flywheelKP * 0.0));
+
+    flywheelLeadMotor
+        .getConfigurator()
+        .apply(
+            new Slot2Configs()
+                .withKP(Constants.ShooterConstants.flywheelInsaneKP)
+                .withKI(Constants.ShooterConstants.flywheelInsaneKI)
+                .withKD(Constants.ShooterConstants.flywheelInsaneKD)
+                .withKV(Constants.ShooterConstants.flywheelInsaneKV));
 
     hoodPivot
         .getConfigurator()
@@ -191,8 +201,13 @@ public class ShooterIOReal implements ShooterIO {
     // MotionMagicVoltage(Radians.of(yawRadians)));
   }
 
-  public void setVelocitySetpoint(AngularVelocity speed) {
+  public void setVelocitySetpoint(AngularVelocity speed, boolean extremeAgressive) {
     this.lastFlywheelVelocitySetpoint = speed.in(RPM);
+    // if (extremeAgressive) {
+    //  flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(2));
+
+    //  return;
+    // }
     if (lastFlywheelVelocitySetpoint == 0) {
       flywheelLeadMotor.setControl(new VelocityVoltage(speed).withSlot(1));
 

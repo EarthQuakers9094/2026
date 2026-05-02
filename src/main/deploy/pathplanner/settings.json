@@ -3,12 +3,16 @@
   "robotLength": 0.826,
   "holonomicMode": true,
   "pathFolders": [
+    "CenterAuto",
     "Ferry Auto",
     "Left Bump",
-    "CenterAuto",
+    "LunaTecsAuto",
     "Peddie Auto",
+    "Peddie Trench",
     "Right Bump",
-    "Right Bump HP"
+    "Right Bump HP",
+    "Tidal Auto",
+    "ZigZag"
   ],
   "autoFolders": [
     "Experimental Autos",

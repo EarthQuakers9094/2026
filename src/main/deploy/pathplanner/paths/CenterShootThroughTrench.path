@@ -36,8 +36,8 @@
         "y": 6.577446504992867
       },
       "prevControl": {
-        "x": 2.2033862339514974,
-        "y": 6.590385164051355
+        "x": 2.2033861486972652,
+        "y": 6.590383469512248
       },
       "nextControl": null,
       "isLocked": false,
@@ -93,7 +93,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -53.130102354155916
+    "rotation": -50.01311375503579
   },
   "reversed": false,
   "folder": "CenterAuto",

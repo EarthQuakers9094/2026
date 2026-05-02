@@ -99,4 +99,17 @@ public class FieldUtil {
     }
     return false;
   }
+
+  public static boolean inOpposingAllianceZone(Pose2d pose) {
+    Alliance otherAlliance = null;
+    switch (DriverStation.getAlliance().orElse(Alliance.Blue)) {
+      case Red:
+        otherAlliance = Alliance.Blue;
+        break;
+      default:
+        otherAlliance = Alliance.Red;
+        break;
+    }
+    return FieldUtil.inAllianceZone(pose, otherAlliance);
+  }
 }

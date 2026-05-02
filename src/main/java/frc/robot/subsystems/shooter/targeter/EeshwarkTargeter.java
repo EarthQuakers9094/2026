@@ -31,14 +31,14 @@ public class EeshwarkTargeter implements Targeter {
   static {
 
     // cmp data
-    shotMap.put(1.907, new ShotParams(2600, 1.0, 27.4 - 26.36));//1.04
-    shotMap.put(2.339, new ShotParams(2600, 1.35, 10.19 - 9.2));//0.99
-    shotMap.put(2.713, new ShotParams(2700, 1.5, 38.65 - 37.62));//1.03
-    shotMap.put(2.972, new ShotParams(2760, 1.6, 41.06 - 40.08));//0.98
-    shotMap.put(3.298, new ShotParams(2780, 1.8, 3.12 - 2.12));//1.0
-    shotMap.put(3.6649, new ShotParams(2950, 1.9, 1.60 - 0.54));//1.06
-    shotMap.put(4.119, new ShotParams(3000, 2.0, 38.70 - 37.62));//1.08
-    shotMap.put(4.518, new ShotParams(3200, 2.4, 7.92 - 6.77));//1.15
+    shotMap.put(1.907, new ShotParams(2600, 1.0, 27.4 - 26.36)); // 1.04
+    shotMap.put(2.339, new ShotParams(2600, 1.35, 10.19 - 9.2)); // 0.99
+    shotMap.put(2.713, new ShotParams(2700, 1.5, 38.65 - 37.62)); // 1.03
+    shotMap.put(2.972, new ShotParams(2760, 1.6, 41.06 - 40.08)); // 0.98
+    shotMap.put(3.298, new ShotParams(2780, 1.8, 3.12 - 2.12)); // 1.0
+    shotMap.put(3.6649, new ShotParams(2950, 1.9, 1.60 - 0.54)); // 1.06
+    shotMap.put(4.119, new ShotParams(3000, 2.0, 38.70 - 37.62)); // 1.08
+    shotMap.put(4.518, new ShotParams(3200, 2.4, 7.92 - 6.77)); // 1.15
     // shotMap.put(, new ShotParams(, ,  - ));
     // shotMap.put(, new ShotParams(, ,  - ));
     // shotMap.put(, new ShotParams(, ,  - ));

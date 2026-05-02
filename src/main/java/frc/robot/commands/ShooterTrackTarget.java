@@ -192,7 +192,10 @@ public class ShooterTrackTarget extends Command {
       shooterSubsystem.setTurretState(ShooterSubsystem.TurretState.OffTarget);
       TargetingResult3d targetingResult = maybeTargetingResult.get();
       // Logger.recordOutput("IdealPitch", targetingResult.pitchRadians());
-      shooterSubsystem.setTargetAngularVelocity(RPM.of(targetingResult.targetRPM()));
+      boolean shouldFullFieldFerry = FieldUtil.inOpposingAllianceZone(robotPosition);
+      ShooterSubsystem.isGenerous = shouldFullFieldFerry;
+      shooterSubsystem.setTargetAngularVelocity(
+          RPM.of(targetingResult.targetRPM()), shouldFullFieldFerry);
       Logger.recordOutput("IdealAngularVelocityRPM", targetingResult.targetRPM());
       Logger.recordOutput("IdealHoodPosition", targetingResult.hoodPosition());
 

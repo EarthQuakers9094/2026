@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 4.621298145506419,
-        "y": 5.801126961483595
+        "x": 4.608359486447931,
+        "y": 7.4572753209700435
       },
       "prevControl": {
-        "x": 5.514065620542082,
-        "y": 5.814065620542083
+        "x": 7.608359486447929,
+        "y": 7.4572753209700435
       },
       "nextControl": {
-        "x": 3.7023854544582937,
-        "y": 5.787809386251014
+        "x": 3.068659058487874,
+        "y": 7.4572753209700435
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.706376604850214,
-        "y": 6.0081455064194005
+        "x": 2.266462196861626,
+        "y": 5.71055634807418
       },
       "prevControl": {
-        "x": 2.870729039823457,
-        "y": 5.5197821276592975
+        "x": 2.1629529243937227,
+        "y": 6.512753209700427
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BumpShootingSpot2"
+      "linkedName": "TidePreBump"
     }
   ],
   "rotationTargets": [
@@ -54,35 +54,9 @@
       "rotationDegrees": 0.0
     }
   ],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 1.4530722484807452,
-      "maxWaypointRelativePos": 2.0,
-      "constraints": {
-        "maxVelocity": 0.75,
-        "maxAcceleration": 0.75,
-        "maxAngularVelocity": 80.0,
-        "maxAngularAcceleration": 80.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "start_shooting_fuel",
-      "waypointRelativePos": 1.3666441593517789,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "start_shooting_fuel"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -93,10 +67,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.72696997994338
+    "rotation": -47.337305859123845
   },
   "reversed": false,
-  "folder": "CenterAuto",
+  "folder": "ZigZag",
   "idealStartingState": {
     "velocity": 2.75,
     "rotation": -70.0

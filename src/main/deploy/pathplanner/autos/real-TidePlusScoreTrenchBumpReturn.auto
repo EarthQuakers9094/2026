@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "extend_hopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "deploy_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CustomWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_shooting_fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of ZigZagPath"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LinkWithSupportForTide"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterShootThroughTrenchTideBumpReturn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_shooting_fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BumpReturn"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Support Autos",
+  "choreoAuto": false
+}

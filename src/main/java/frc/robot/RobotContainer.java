@@ -7,11 +7,6 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Inches;
-
-import java.util.HashSet;
-import java.util.Set;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
@@ -80,9 +75,9 @@ import frc.robot.subsystems.spindexer.SpindexerSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
-import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AllianceFlipUtil;
 import frc.robot.util.FieldUtil;
+import java.util.HashSet;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
@@ -111,6 +106,8 @@ public class RobotContainer {
 
   private LinearFilter xInputAverage = LinearFilter.movingAverage(5);
   private LinearFilter yInputAverage = LinearFilter.movingAverage(5);
+
+  private LoggedNetworkNumber customWaitTime = new LoggedNetworkNumber("WaitTime", 0.0);
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -190,31 +187,32 @@ public class RobotContainer {
             new ShooterSubsystem(
                 new ShooterIOSim(drive::getPose, drive::getChassisSpeeds), drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
-        vision =
-            new Vision(
-                drive::addVisionMeasurement,
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(
-                        Inches.of(12.465),
-                        Inches.of(4.915),
-                        Inches.of(12.03),
-                        new Rotation3d(0, -Math.PI / 6., 0.0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Front",
-                    new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Left",
-                    new Transform3d(
-                        0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.)),
-                    drive::getPose),
-                new VisionIOPhotonVisionSim(
-                    "Right",
-                    new Transform3d(
-                        0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.)),
-                    drive::getPose));
+        // vision =
+        //     new Vision(
+        //         drive::addVisionMeasurement,
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(
+        //                 Inches.of(12.465),
+        //                 Inches.of(4.915),
+        //                 Inches.of(12.03),
+        //                 new Rotation3d(0, -Math.PI / 6., 0.0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Front",
+        //             new Transform3d(0.320, 0.163, 0.210, new Rotation3d(0, -Math.PI / 12., 0)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Left",
+        //             new Transform3d(
+        //                 0.247, 0.345, 0.277, new Rotation3d(0, -Math.PI / 8., Math.PI / 2.)),
+        //             drive::getPose),
+        //         new VisionIOPhotonVisionSim(
+        //             "Right",
+        //             new Transform3d(
+        //                 0.226, -0.345, 0.277, new Rotation3d(0, -Math.PI / 8., -Math.PI / 2.)),
+        //             drive::getPose));
+        vision = null;
 
         // vision =
         // new Vision(
@@ -295,7 +293,8 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "stop_shooting_fuel", new StopShootingFuel(shooter, kicker, intake));
 
-    NamedCommands.registerCommand("wait_for_spin_up", new WaitUntilCommand(shooter::isSpunUp));
+    NamedCommands.registerCommand(
+        "wait_for_spin_up", new WaitUntilCommand(() -> shooter.isSpunUp(false)));
     NamedCommands.registerCommand(
         "wait_for_eight_shot", new WaitUntilCommand(() -> shooter.shotCount >= 8));
     NamedCommands.registerCommand(
@@ -308,11 +307,13 @@ public class RobotContainer {
     NamedCommands.registerCommand(
         "temporary reverse spindexer",
         new ParallelRaceGroup(new ReverseKickerSpindexer(kicker, spindexer), new WaitCommand(0.5)));
-    LoggedNetworkNumber customWaitTime = new LoggedNetworkNumber("WaitTime");
-    NamedCommands.registerCommand("CustomWait", Commands.defer(
-        () -> {return new WaitCommand(customWaitTime.get());},
-        new HashSet<>()
-    ));
+    NamedCommands.registerCommand(
+        "CustomWait",
+        Commands.defer(
+            () -> {
+              return new WaitCommand(customWaitTime.get());
+            },
+            new HashSet<>()));
 
     // leftStick.button(6).onTrue(NamedCommands.getCommand("extend_hopper"));
 

@@ -16,32 +16,32 @@
     },
     {
       "anchor": {
-        "x": 4.621298145506419,
-        "y": 5.801126961483595
+        "x": 4.595420827389443,
+        "y": 5.438844507845934
       },
       "prevControl": {
-        "x": 5.514065620542082,
-        "y": 5.814065620542083
+        "x": 5.721084165477888,
+        "y": 5.387089871611984
       },
       "nextControl": {
-        "x": 3.7023854544582937,
-        "y": 5.787809386251014
+        "x": 3.677381440111398,
+        "y": 5.481053215306992
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.706376604850214,
-        "y": 6.0081455064194005
+        "x": 2.266462196861626,
+        "y": 5.71055634807418
       },
       "prevControl": {
-        "x": 2.870729039823457,
-        "y": 5.5197821276592975
+        "x": 2.4308146318348687,
+        "y": 5.222192969314077
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BumpShootingSpot2"
+      "linkedName": "TidePreBump"
     }
   ],
   "rotationTargets": [
@@ -93,10 +93,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -43.72696997994338
+    "rotation": -47.337305859123845
   },
   "reversed": false,
-  "folder": "CenterAuto",
+  "folder": "ZigZag",
   "idealStartingState": {
     "velocity": 2.75,
     "rotation": -70.0

@@ -24,6 +24,7 @@ public class ConstantTargeter extends EeshwarkTargeter {
             new Translation2d(),
             new Translation2d(),
             targetingData.robotOmegaAngularVelocity(),
-            targetingData.robotRotation()));
+            targetingData.robotRotation(),
+            false));
   }
 }

@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "extend_hopper"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "deploy_intake"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 7.6
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_shooting_fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCrossingLikeTidalTrench"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 3.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TidalIntakeNearForBump"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

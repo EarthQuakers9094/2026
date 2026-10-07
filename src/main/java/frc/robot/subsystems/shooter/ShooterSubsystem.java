@@ -27,6 +27,8 @@ import org.littletonrobotics.junction.mechanism.LoggedMechanismRoot2d;
 
 public class ShooterSubsystem extends SubsystemBase {
 
+  private boolean autoToggledOff = true;
+
   private final ShooterIO io;
   private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
@@ -67,6 +69,9 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput private TurretState turretState = TurretState.NotTargeting;
 
   private boolean shouldShootWhenReady = false;
+  private boolean preventShooting = false;
+
+  public static boolean isGenerous = false;
 
   private final Supplier<Pose2d> robotPositionSupplier;
 
@@ -78,15 +83,24 @@ public class ShooterSubsystem extends SubsystemBase {
     this.io = io;
   }
 
-  private void setSpeedSetpoint(AngularVelocity speed) {
-    io.setVelocitySetpoint(speed);
+  public void updateAutoShoot() {
+    if (autoToggledOff == true) autoToggledOff = false;
+    else if (autoToggledOff == false) autoToggledOff = true;
+  }
+
+  public boolean isAutoShootOff() {
+    return autoToggledOff;
+  }
+
+  private void setSpeedSetpoint(AngularVelocity speed, boolean extremeAgressive) {
+    io.setVelocitySetpoint(speed, extremeAgressive);
     // speedSetpointRPM = speed.in(RPM);
     Logger.recordOutput("Shooter/SpeedSetpointRadPerSec", speed.in(RadiansPerSecond));
   }
 
-  public void setTargetAngularVelocity(AngularVelocity speed) {
+  public void setTargetAngularVelocity(AngularVelocity speed, boolean extremeAgressive) {
     if (shooterState != ShooterState.Inactive) {
-      setSpeedSetpoint(speed);
+      setSpeedSetpoint(speed, extremeAgressive);
     }
     this.targetSpeed = speed;
   }
@@ -139,12 +153,19 @@ public class ShooterSubsystem extends SubsystemBase {
     this.shouldShootWhenReady = readyToShoot;
   }
 
+  public void setPreventShooting(boolean preventShooting) {
+    this.preventShooting = preventShooting;
+  }
+
   public boolean isActivelyShooting() {
     return shooterState == ShooterState.Shooting;
   }
 
   @Override
   public void periodic() {
+
+    Logger.recordOutput("turretAutoShootEnabled", !autoToggledOff);
+    Logger.recordOutput("ShooterIsGenerous(...)", isGenerous);
 
     Logger.recordOutput(
         "TurretVisualization",
@@ -167,23 +188,23 @@ public class ShooterSubsystem extends SubsystemBase {
 
     switch (shooterState) {
       case Inactive:
-        setSpeedSetpoint(RPM.of(0.0));
+        setSpeedSetpoint(RPM.of(0.0), false);
         break;
       case Revving:
-        setSpeedSetpoint(targetSpeed);
-        if (isSpunUp() && shouldShootWhenReady && isOnTarget()) {
+        setSpeedSetpoint(targetSpeed, false);
+        if (isSpunUp(isGenerous) && shouldShootWhenReady && !preventShooting && isOnTarget()) {
           this.shooterState = ShooterState.Shooting;
           LEDSubsystem.sendEvent(LEDEvent.StartedShooting);
         }
         break;
       case Shooting:
-        if (!isSpunUp() || !shouldShootWhenReady || !isOnTarget()) {
+        if (!isSpunUp(isGenerous) || !shouldShootWhenReady || !isOnTarget() || preventShooting) {
           this.shooterState = ShooterState.Revving;
         }
 
         break;
       case Reversing:
-        setSpeedSetpoint(targetSpeed.unaryMinus());
+        setSpeedSetpoint(targetSpeed.unaryMinus(), false);
       default:
         break;
     }
@@ -213,8 +234,8 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   @AutoLogOutput
-  public boolean isSpunUp() {
-    return isAboveMinLaunchSpeed() && isSpeedStable();
+  public boolean isSpunUp(boolean beGenerous) {
+    return isAboveMinLaunchSpeed(beGenerous) && isSpeedStable(beGenerous);
   }
 
   public boolean isRunning() {
@@ -222,14 +243,15 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   @AutoLogOutput
-  public boolean isSpeedStable() {
+  public boolean isSpeedStable(boolean beGenerous) {
     return true;
     // return speedAverage.getStandardDeviation(currentAverageSpeed) <= 12.;
   }
 
   @AutoLogOutput
-  private boolean isAboveMinLaunchSpeed() {
-    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * 0.85);
+  private boolean isAboveMinLaunchSpeed(boolean beGenerous) {
+    double threshold = (beGenerous ? 0.5 : 0.85);
+    return currentAverageSpeed >= (targetSpeed.in(RadiansPerSecond) * threshold);
   }
 
   public void setPitch(Rotation2d pitch) {
@@ -301,7 +323,10 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public static double shooterSpeedToVelocity(double shooterSpeedRadPerSec) {
-    return 0.0209048 * shooterSpeedRadPerSec + 0.742784;
+    return shooterSpeedRadPerSec
+        * Constants.ShooterConstants.flywheelDiameter
+            .div(2)
+            .in(Meters); // 0.0209048 * shooterSpeedRadPerSec + 0.742784;
   }
 
   public static AngularVelocity velocityToShooterSpeed(double velocityMPS) {

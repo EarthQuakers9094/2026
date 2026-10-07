@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "CustomWait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterScoopPreloads"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterShootThroughTrench"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Support Autos",
+  "choreoAuto": false
+}

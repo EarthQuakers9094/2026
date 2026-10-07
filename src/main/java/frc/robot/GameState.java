@@ -86,6 +86,33 @@ public class GameState {
         }
       }
       return;
+    } else if (currentPhase == Phase.Auto) {
+      String gameData = DriverStation.getGameSpecificMessage();
+
+      if (!gameData.isEmpty()) {
+        boolean isBlueAlliance = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+        switch (gameData.charAt(0)) {
+          case 'B':
+            isFirstActiveAlliance = Optional.of(!isBlueAlliance); // Blue alliance
+            // won auto
+            Logger.recordOutput("GameState/AutoWinningAlliance", Alliance.Blue);
+            transitionToPhase(Phase.Transition);
+            break;
+          case 'R':
+            Logger.recordOutput("GameState/AutoWinningAlliance", Alliance.Red);
+            isFirstActiveAlliance = Optional.of(isBlueAlliance); // Red alliance won
+            // auto
+            transitionToPhase(Phase.Transition);
+            break;
+          default:
+            if (remainingPhaseTime <= 0.0) {
+              DriverStation.reportError("No FMS Data", false);
+              LEDSubsystem.sendEvent(LEDEvent.NoFMSData);
+              Logger.recordOutput("GameState/AutoWinningAlliance", "No FMS Data");
+            }
+            break;
+        }
+      }
     }
 
     if (remainingPhaseTime <= 0) {

@@ -7,7 +7,7 @@ import org.littletonrobotics.junction.AutoLog;
 public interface VisionIO {
   @AutoLog
   public static class VisionIOInputs {
-    public PoseObservation poseObservation;
+    public PoseObservation poseObservation = new PoseObservation(new Pose3d(), 0., 0., 1);
     public boolean isCameraConnected = false;
     public Pose3d[] targetPoses = new Pose3d[] {};
   }
@@ -17,4 +17,12 @@ public interface VisionIO {
   }
 
   public default void updateInputs(VisionIOInputs inputs) {}
+
+  public static VisionIO withName(String name) {
+    return new VisionIO() {
+      public String getName() {
+        return name;
+      }
+    };
+  }
 }

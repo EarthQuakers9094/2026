@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 7.8947788873038505,
+        "y": 4.028530670470756
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.1960912981455065,
+        "y": 4.157917261055635
+      },
+      "isLocked": false,
+      "linkedName": "CenterForTide"
+    },
+    {
+      "anchor": {
+        "x": 6.859686162624821,
+        "y": 5.011868758915835
+      },
+      "prevControl": {
+        "x": 7.034750677518343,
+        "y": 4.5308829572981075
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "CenterPostIntake"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.75,
+    "rotation": -70.0
+  },
+  "reversed": false,
+  "folder": "ZigZag",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "useDefaultConstraints": true
+}

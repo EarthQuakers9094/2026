@@ -12,7 +12,7 @@
         "y": 0.5997860199714706
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightUnderTrench"
     },
     {
       "anchor": {
@@ -96,24 +96,24 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "start_intake",
-      "waypointRelativePos": 0.0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "start_intake"
-        }
-      }
-    },
-    {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.19,
+      "waypointRelativePos": 0.20256583389601618,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.47805536799459863,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
         }
       }
     }

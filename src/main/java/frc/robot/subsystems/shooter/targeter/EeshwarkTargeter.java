@@ -26,25 +26,77 @@ public class EeshwarkTargeter implements Targeter {
 
   private static InterpolatingDoubleTreeMap velocityToDistance = new InterpolatingDoubleTreeMap();
   private LoggedNetworkBoolean correctWithRPM = new LoggedNetworkBoolean("CorrectWithRPM", true);
+  private double TOF = 0.0;
 
   static {
-    shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
-    // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD
-    // DATA POINT
-    shotMap.put(4.237791791973659, new ShotParams(3300, 2.2, 1.56 - 0.32));
-    shotMap.put(3.8188085361104056, new ShotParams(3200, 2.1, 1.94 - 0.84));
-    shotMap.put(3.4200357766207268, new ShotParams(3050, 2.025, 3.08 - 1.91));
-    shotMap.put(2.7163413872695594, new ShotParams(2850, 1.4, 1.42 - 0.38));
-    shotMap.put(2.4258430558322117, new ShotParams(2800, 1.3, 1.44 - 0.32));
-    shotMap.put(2.119235489902627, new ShotParams(2650, 1.05, 1.74 - 0.75));
-    shotMap.put(1.904048127971999, new ShotParams(2600, 0.925, 1.68 - 0.73));
-    shotMap.put(1.5355979615043405, new ShotParams(2600, 0.6, 1.42 - 0.36));
-    shotMap.put(1.0561370725815047, new ShotParams(2500, 0.35, 3.33 - 2.29));
-    shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));
 
-    double minDistance = 1.0561370725815047;
-    double maxDistance = 4.964619639141648;
+    // cmp data
+    shotMap.put(1.907, new ShotParams(2600, 1.0, 27.4 - 26.36)); // 1.04
+    shotMap.put(2.339, new ShotParams(2600, 1.35, 10.19 - 9.2)); // 0.99
+    shotMap.put(2.713, new ShotParams(2700, 1.5, 38.65 - 37.62)); // 1.03
+    shotMap.put(2.972, new ShotParams(2760, 1.6, 41.06 - 40.08)); // 0.98
+    shotMap.put(3.298, new ShotParams(2780, 1.8, 3.12 - 2.12)); // 1.0
+    shotMap.put(3.6649, new ShotParams(2950, 1.9, 1.60 - 0.54)); // 1.06
+    shotMap.put(4.119, new ShotParams(3000, 2.0, 38.70 - 37.62)); // 1.08
+    shotMap.put(4.518, new ShotParams(3200, 2.4, 7.92 - 6.77)); // 1.15
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
+    // shotMap.put(, new ShotParams(, ,  - ));
 
+    // dcmp data
+    shotMap.put(6.3069, new ShotParams(3750, 2.1, 47.90 - 46.60));
+
+    shotMap.put(5.73245, new ShotParams(3650, 1.95, 52.20 - 51.0));
+
+    shotMap.put(5.001142, new ShotParams(3400, 1.702637, 16.35 - 15.09));
+    // shotMap.put(4.4543455, new ShotParams(3250, 1.4, 53.04 - 51.81));
+    // shotMap.put(4.139972, new ShotParams(3200, 1.35, 52.61 - 51.31));
+    // shotMap.put(3.756959, new ShotParams(3125, 1.25, 6.85 - 5.5));
+    // shotMap.put(3.36106, new ShotParams(3025, 1.125, 5.80 - 4.54));
+    // shotMap.put(2.934494, new ShotParams(2875, 0.9, 10.3 - 8.99));
+    // shotMap.put(2.3173, new ShotParams(2760, 0.7, 9.82 - 8.67));
+    shotMap.put(1.8439404, new ShotParams(2760, 0.5, 23.64 - 22.59));
+    shotMap.put(1.4798, new ShotParams(2760, 0.4, 15.58 - 14.32));
+    // shotMap.put(, new ShotParams(, ,   - ));
+    // shotMap.put(, new ShotParams(, ,   - ));
+    // shotMap.put(, new ShotParams(, ,   - ));
+    // shotMap.put(, new ShotParams(, ,   - ));
+
+    // olddata
+    // shotMap.put(3.0463328824003626, new ShotParams(3000, 1.6, 2.7 - 1.58));
+    // // shotMap.put(2.8789923633033014, new ShotParams(2800, 1.61, 2.34-1.35)); BAD
+    // // DATA POINT
+    // shotMap.put(4.237791791973659, new ShotParams(3300, 2.2, 1.56 - 0.32));
+    // shotMap.put(3.8188085361104056, new ShotParams(3200, 2.1, 1.94 - 0.84));
+    // shotMap.put(3.4200357766207268, new ShotParams(3050, 2.025, 3.08 - 1.91));
+    // shotMap.put(2.7163413872695594, new ShotParams(2850, 1.4, 1.42 - 0.38));
+    // shotMap.put(2.4258430558322117, new ShotParams(2800, 1.3, 1.44 - 0.32));
+    // shotMap.put(2.119235489902627, new ShotParams(2650, 1.05, 1.74 - 0.75));
+    // shotMap.put(1.904048127971999, new ShotParams(2600, 0.925, 1.68 - 0.73));
+    // shotMap.put(1.5355979615043405, new ShotParams(2600, 0.6, 1.42 - 0.36));
+    // shotMap.put(1.0561370725815047, new ShotParams(2500, 0.35, 3.33 - 2.29));
+    // shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));
+    // shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));    //
+    // shotMap.put(4.964619639141648, new ShotParams(3600, 2.35, 3.39 - 1.96));
+
+    // double minDistance = 1.0561370725815047;
+    // double maxDistance = 4.964619639141648;
+
+    // Newer data before dcmp
+    // shotMap.put(5.042064448325879, new ShotParams(3385, 2.246, 4.56 - 3.27));
+    // shotMap.put(4.692851868222061, new ShotParams(3350, 2.1, 5.84 - 4.64));
+    // shotMap.put(4.263325456381816, new ShotParams(3250, 1.9, 4.39 - 3.22));
+    // shotMap.put(3.9220137708683636, new ShotParams(3050, 1.8, 3.63 - 2.5));
+    // shotMap.put(3.6095082462299666, new ShotParams(3025, 1.55, 3.62 - 2.44));
+    // shotMap.put(3.208731477252873, new ShotParams(2915, 1.4, 3.62 - 2.52));
+    // shotMap.put(2.8736308316568264, new ShotParams(2880, 1.2, 3.59 - 2.56));
+    // shotMap.put(2.6087508103794472, new ShotParams(2730, 1.15, 3.54 - 2.52));
+    // shotMap.put(2.284140519891348, new ShotParams(2650, 0.9, 19.76 - 18.62));
+    // shotMap.put(2.105161339906001, new ShotParams(2625, 0.85, 5.17 - 4.11));
+    // shotMap.put(1.8371400611905015, new ShotParams(2600, 0.8, 3.49 - 2.52));
+    // shotMap.put(1.2942615663372328, new ShotParams(2575, 0.1, 15.08 - 13.91));
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);
@@ -53,26 +105,26 @@ public class EeshwarkTargeter implements Targeter {
     // distanceToTOF.put(null, null);
     // distanceToTOF.put(null, null);
 
-    for (int i = 0; i < 15; i++) {
-      // double distance = ((maxTOFDistance - minTOFDistance) / 10) * i +
-      double distance = (((maxDistance - minDistance) / 10) * i) + minDistance;
-      double TOF = shotMap.get(distance).TOF();
-      // double launchAngle = ShooterSubsystem.getIdealPitch(distance);
+    // for (int i = 0; i < 15; i++) {
+    //   // double distance = ((maxTOFDistance - minTOFDistance) / 10) * i +
+    //   double distance = (((maxDistance - minDistance) / 10) * i) + minDistance;
+    //   double TOF = shotMap.get(distance).TOF();
+    //   // double launchAngle = ShooterSubsystem.getIdealPitch(distance);
 
-      // double velocity =
-      // ShooterSubsystem.shooterSpeedToVelocity(distanceToRPM.get(distance) *
-      // (Math.PI / 30.));
-      // double xVelocity = Math.cos(launchAngle) * velocity;
+    //   // double velocity =
+    //   // ShooterSubsystem.shooterSpeedToVelocity(distanceToRPM.get(distance) *
+    //   // (Math.PI / 30.));
+    //   // double xVelocity = Math.cos(launchAngle) * velocity;
 
-      // minTOFDistance;
+    //   // minTOFDistance;
 
-      // System.out.println("Velocity: " + (distance / TOF) + " & Distance: " +
-      // distance);
-      System.out.println(
-          "Distance: " + distance + " & Velocity: " + (distance / TOF) + " & TOF: " + TOF);
+    //   // System.out.println("Velocity: " + (distance / TOF) + " & Distance: " +
+    //   // distance);
+    //   System.out.println(
+    //       "Distance: " + distance + " & Velocity: " + (distance / TOF) + " & TOF: " + TOF);
 
-      velocityToDistance.put(distance / TOF, distance);
-    }
+    //   velocityToDistance.put(distance / TOF, distance);
+    // }
   }
 
   // @AutoLogOutput
@@ -152,6 +204,7 @@ public class EeshwarkTargeter implements Targeter {
     // - Constants.ShooterConstants.positionOnRobot.getZ(),
     // projectileVelocity);
     ShotParams params = shotMap.get(distance);
+    TOF = params.TOF();
     // double projectileVelocity = ShooterSubsystem.shooterSpeedToVelocity(baseRPM *
     // (Math.PI /
     // 30.));
@@ -177,5 +230,9 @@ public class EeshwarkTargeter implements Targeter {
             calculateAdjustedRpm(requiredHorizontalVelocity),
             fieldRelativeYaw,
             distance / requiredHorizontalVelocity));
+  }
+
+  public double getTOF() {
+    return TOF;
   }
 }

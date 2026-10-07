@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "extend_hopper"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "IntakeCrossingForRBump"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For RBump no rotate"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": " IntakeNearForRBump no rotate"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Retreat For RBump end"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

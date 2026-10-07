@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "CustomWait"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterScoopToDepot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterShootThroughBump"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Support Autos",
+  "choreoAuto": false
+}

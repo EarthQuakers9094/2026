@@ -84,7 +84,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "New Left Auto",
+  "folder": null,
   "idealStartingState": {
     "velocity": 3.0,
     "rotation": 180.0

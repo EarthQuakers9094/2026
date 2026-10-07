@@ -29,9 +29,10 @@ public interface ShooterIO {
 
   public default void setYaw(Rotation2d yaw) {}
 
-  public default void setVelocitySetpoint(AngularVelocity speed) {}
-
   public default void retractHood() {
     setHoodAngle(Constants.ShooterConstants.safeHoodAngle);
   }
+
+  public default void setVelocitySetpoint(AngularVelocity speed, boolean extremeAgressive) {}
+  ;
 }

@@ -1,0 +1,136 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.706376604850214,
+        "y": 6.0081455064194005
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.589650083019567,
+        "y": 6.354991347805385
+      },
+      "isLocked": false,
+      "linkedName": "BumpShootingSpot2"
+    },
+    {
+      "anchor": {
+        "x": 1.839486447931526,
+        "y": 6.0081455064194005
+      },
+      "prevControl": {
+        "x": 2.201768901569187,
+        "y": 5.995206847360913
+      },
+      "nextControl": {
+        "x": 1.03204074632308,
+        "y": 6.036982852905417
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.7138231098430812,
+        "y": 5.956390870185448
+      },
+      "prevControl": {
+        "x": 0.46575363181658946,
+        "y": 5.987399483048069
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.0,
+      "maxWaypointRelativePos": 1.35,
+      "constraints": {
+        "maxVelocity": 0.7,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.35,
+      "maxWaypointRelativePos": 2.0,
+      "constraints": {
+        "maxVelocity": 0.45,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "deploy_intake",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 1.1,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "jiggle_intake",
+      "waypointRelativePos": 1.7,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "jiggle_intake"
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Peddie Auto",
+  "idealStartingState": {
+    "velocity": 0.65,
+    "rotation": -43.72696997994338
+  },
+  "useDefaultConstraints": true
+}

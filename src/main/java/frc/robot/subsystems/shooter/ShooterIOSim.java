@@ -195,7 +195,7 @@ public class ShooterIOSim implements ShooterIO {
     this.yaw = yaw;
   }
 
-  public void setVelocitySetpoint(AngularVelocity speed) {
+  public void setVelocitySetpoint(AngularVelocity speed, boolean _ignored) {
     flywheelLeadMotor.setControl(new VelocityVoltage(speed.in(RotationsPerSecond)).withSlot(0));
   }
 

@@ -16,28 +16,28 @@
     },
     {
       "anchor": {
-        "x": 8.464079885877318,
-        "y": 4.947175463623396
+        "x": 8.308815977175463,
+        "y": 4.934236804564907
       },
       "prevControl": {
-        "x": 8.719972446193601,
-        "y": 5.913880691484906
+        "x": 8.564708537491747,
+        "y": 5.900942032426417
       },
       "nextControl": {
-        "x": 8.231184022824536,
-        "y": 4.067346647646221
+        "x": 8.075920114122681,
+        "y": 4.054407988587732
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0039657631954344,
-        "y": 5.425905848787448
+        "x": 2.66756062767475,
+        "y": 5.309457917261056
       },
       "prevControl": {
-        "x": 6.756176890156918,
-        "y": 6.305734664764623
+        "x": 6.419771754636233,
+        "y": 6.189286733238232
       },
       "nextControl": null,
       "isLocked": false,
@@ -67,29 +67,42 @@
         "nominalVoltage": 12.0,
         "unlimited": false
       }
+    },
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 0.4807562457798865,
+      "constraints": {
+        "maxVelocity": 3.25,
+        "maxAcceleration": 3.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
     }
   ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "start_intake",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "start_intake"
-        }
-      }
-    },
-    {
       "name": "deploy_intake",
-      "waypointRelativePos": 0.06963063979289943,
+      "waypointRelativePos": 0.06482106684672688,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
           "name": "deploy_intake"
+        }
+      }
+    },
+    {
+      "name": "start_intake",
+      "waypointRelativePos": 0.11883862255232425,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_intake"
         }
       }
     },
@@ -100,7 +113,18 @@
       "command": {
         "type": "named",
         "data": {
-          "name": "stop_intake"
+          "name": "start_intake"
+        }
+      }
+    },
+    {
+      "name": "temporary reverse spindexer",
+      "waypointRelativePos": 1.95,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "temporary reverse spindexer"
         }
       }
     }

@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterScoop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

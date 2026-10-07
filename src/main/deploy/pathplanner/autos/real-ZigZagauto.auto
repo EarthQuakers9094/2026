@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "start_shooting_fuel"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CustomWait"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "stop_shooting_fuel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of ZigZagPath"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Real Autos",
+  "choreoAuto": false
+}

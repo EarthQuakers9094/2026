@@ -25,7 +25,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -100,9 +99,11 @@ public class RobotContainer {
   private final LEDSubsystem leds = new LEDSubsystem();
 
   // Controller
-  private final CommandXboxController controller = new CommandXboxController(0);
-  private final CommandJoystick leftStick = new CommandJoystick(1);
-  private final CommandJoystick rightStick = new CommandJoystick(2);
+  private final CommandXboxController operator = new CommandXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(1);
+
+  // private final CommandJoystick leftStick = new CommandJoystick(1);
+  // private final CommandJoystick rightStick = new CommandJoystick(2);
 
   private LinearFilter xInputAverage = LinearFilter.movingAverage(5);
   private LinearFilter yInputAverage = LinearFilter.movingAverage(5);
@@ -370,8 +371,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDriveAtAngle(
             drive,
-            () -> -leftStick.getY(),
-            () -> -leftStick.getX(),
+            () -> -driver.getLeftY(),
+            () -> -driver.getLeftX(),
             () ->
                 AllianceFlipUtil.apply(Constants.Field.hub)
                     .toTranslation2d()
@@ -388,7 +389,7 @@ public class RobotContainer {
             shooter));
 
     // drive
-    leftStick
+    driver
         .button(6)
         .onTrue(
             AutoBuilder.pathfindToPoseFlipped(
@@ -413,9 +414,9 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -leftStick.getY(),
-            () -> -leftStick.getX(),
-            () -> -rightStick.getX(),
+            () -> -driver.getLeftY(),
+            () -> -driver.getLeftX(),
+            () -> -driver.getRightX(),
             () -> shouldSlow()));
 
     // shooter.setDefaultCommand(new RecordLUTValues(shooter, drive::getPose));
@@ -471,15 +472,15 @@ public class RobotContainer {
      */
 
     /** Keeps the Intake Deployed when the Right Trigger is not pressed. */
-    rightStick.trigger().whileFalse(new DeployIntake(intake));
+    driver.rightBumper().whileFalse(new DeployIntake(intake));
 
     /** Enables the Intake spinners FORWARD */
-    leftStick.trigger().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
+    driver.leftTrigger().whileTrue(new RunIntakeSpinnerCommand(intake, () -> true));
     // controller.povRight().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
     // true));
 
     /** Enables the Intake spinners BACKWARDS */
-    controller.back().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
+    driver.leftBumper().whileTrue(new RunIntakeSpinnerCommand(intake, () -> false));
     // controller.povLeft().whileTrue(new RunIntakeSpinnerCommand(intake, () ->
     // false));
 
@@ -503,9 +504,9 @@ public class RobotContainer {
     //                 new InstantCommand(() -> spindexer.reverse())
     //                     .finallyDo(() -> spindexer.start()))))
     //     .onFalse(new StopShootingFuel(shooter, kicker, intake));
-    controller.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
+    operator.rightTrigger().whileTrue(new ShootFuelNoIntake(shooter, kicker));
 
-    leftStick.button(2).whileTrue(new ShootFuel(shooter, kicker, intake));
+    driver.rightTrigger().whileTrue(new ShootFuel(shooter, kicker, intake));
 
     /*
     new Trigger(
@@ -524,29 +525,29 @@ public class RobotContainer {
         .whileTrue(new ShootFuel(shooter, kicker, intake));
     */
 
-    rightStick
-        .button(2)
+    driver
+        .a()
         .toggleOnTrue(
             DriveCommands.joystickDriveAtAngle(
                 drive,
-                () -> -leftStick.getY(),
-                () -> -leftStick.getX(),
+                () -> -driver.getLeftY(),
+                () -> -driver.getLeftX(),
                 () ->
                     new Rotation2d(
                         (DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
                                 ? Math.PI
                                 : 0.0)
-                            + Math.atan2(leftStick.getX(), leftStick.getY()))));
+                            + Math.atan2(driver.getLeftX(), driver.getLeftY()))));
 
     /** Zero Intake To Ground Position */
-    leftStick
-        .button(3)
+    driver
+        .y()
         .onTrue(
             new InstantCommand(
                 () -> intake.setIntakePosition(Constants.IntakeConstants.deployedAngle)));
 
-    controller.a().whileTrue(new ManualTurret(shooter, controller::getLeftX));
-    controller
+    operator.a().whileTrue(new ManualTurret(shooter, operator::getLeftX));
+    operator
         .povUp()
         .whileTrue(
             Commands.run(
@@ -554,7 +555,7 @@ public class RobotContainer {
                   shooter.setHoodAngle(shooter.getHoodAngle() + 0.1);
                 },
                 shooter));
-    controller
+    operator
         .povDown()
         .whileTrue(
             Commands.run(
@@ -579,24 +580,24 @@ public class RobotContainer {
     //               targeter = new EeshwarkTargeter();
     //             }));
 
-    controller.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
+    operator.leftTrigger().whileTrue(Commands.run(shooter::retractHood, shooter));
 
-    controller.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
-    controller.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));
+    operator.leftBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(1.0)));
+    operator.rightBumper().whileTrue(new InstantCommand(() -> servo.setSetpointPWM(0.0)));
 
-    controller
+    operator
         .b()
         .whileTrue(Commands.run(shooter::reverseShooter, shooter))
         .onFalse(new InstantCommand(() -> shooter.stopShooter()));
 
-    controller.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
+    operator.x().whileTrue(new ReverseKickerSpindexer(kicker, spindexer));
 
     new Trigger(() -> GameState.getInstance().isHubActive.orElse(false))
         .onTrue(
-            new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 1.0))
+            new InstantCommand(() -> operator.setRumble(RumbleType.kBothRumble, 1.0))
                 .andThen(new WaitCommand(1.0))
                 .andThen(
-                    new InstantCommand(() -> controller.setRumble(RumbleType.kBothRumble, 0.0))));
+                    new InstantCommand(() -> operator.setRumble(RumbleType.kBothRumble, 0.0))));
   }
 
   /**

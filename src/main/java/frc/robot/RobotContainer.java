@@ -414,8 +414,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driver.getLeftY(),
-            () -> -driver.getLeftX(),
+            () -> -driver.getLeftY() * 0.85, // cap max speed for new drivers at Daisy
+            () -> -driver.getLeftX() * 0.85,
             () -> -driver.getRightX(),
             () -> shouldSlow()));
 

@@ -60,8 +60,6 @@ import frc.robot.subsystems.kicker.KickerIOSim;
 import frc.robot.subsystems.kicker.KickerSubsystem;
 import frc.robot.subsystems.led.LEDSubsystem;
 import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOReal;
-import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem.TurretState;
 import frc.robot.subsystems.shooter.targeter.MechanicalAdvantageTargeter;
@@ -146,7 +144,7 @@ public class RobotContainer {
         // new ModuleIOTalonFXS(TunerConstants.FrontRight),
         // new ModuleIOTalonFXS(TunerConstants.BackLeft),
         // new ModuleIOTalonFXS(TunerConstants.BackRight));
-        shooter = new ShooterSubsystem(new ShooterIOReal(), drive::getPose);
+        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOReal());
         // might be the correct one saving it charlie didnt know
         // new VisionIOPhotonVision(
@@ -184,9 +182,7 @@ public class RobotContainer {
                 new ModuleIOSim(TunerConstants.FrontRight),
                 new ModuleIOSim(TunerConstants.BackLeft),
                 new ModuleIOSim(TunerConstants.BackRight));
-        shooter =
-            new ShooterSubsystem(
-                new ShooterIOSim(drive::getPose, drive::getChassisSpeeds), drive::getPose);
+        shooter = new ShooterSubsystem(new ShooterIO() {}, drive::getPose);
         intake = new IntakeSubsystem(new IntakeIOSim()); // fix
         // vision =
         //     new Vision(
@@ -414,8 +410,8 @@ public class RobotContainer {
     drive.setDefaultCommand(
         DriveCommands.joystickDrive(
             drive,
-            () -> -driver.getLeftY() * 0.85, // cap max speed for new drivers at Daisy
-            () -> -driver.getLeftX() * 0.85,
+            () -> -driver.getLeftY(), // cap max speed for new drivers at Daisy
+            () -> -driver.getLeftX(),
             () -> -driver.getRightX(),
             () -> shouldSlow()));
 

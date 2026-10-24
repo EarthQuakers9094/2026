@@ -16,7 +16,7 @@ public class SpindexerSubsystem extends SubsystemBase {
   }
 
   public void run(AngularVelocity spindexerSpeed) {
-    spindexerIO.run(spindexerSpeed);
+    spindexerIO.run(RPM.of(0));
   }
 
   public void stop() {

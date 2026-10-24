@@ -43,7 +43,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void runIntake(AngularVelocity speed) {
-    io.runIntake(speed);
+    io.runIntake(RPM.of(0));
     this.speedSetpoint = speed;
   }
 
@@ -60,7 +60,8 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void pivotIntake(Angle angle) {
-    io.pivotIntake(angle);
+    // io.pivotIntake(angle);
+    io.pivotIntake(Constants.IntakeConstants.retractedAngle);
     this.state = IntakeState.Moving;
     pivotSetpoint = angle;
     Logger.recordOutput("Intake/PivotSetpointRad", angle.in(Radians));
@@ -77,7 +78,7 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void setIntakePosition(Angle position) {
-    io.setIntakePosition(position);
+    io.setIntakePosition(Constants.IntakeConstants.retractedAngle);
   }
 
   @Override

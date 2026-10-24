@@ -14,7 +14,8 @@ public class KickerSubsystem extends SubsystemBase {
   }
 
   public void startKicker() {
-    io.startKicker();
+    // io.startKicker();
+    io.stopKicker();
   }
 
   public void stopKicker() {
@@ -22,7 +23,8 @@ public class KickerSubsystem extends SubsystemBase {
   }
 
   public void reverseKicker() {
-    io.reverseKicker();
+    // io.reverseKicker();
+    io.stopKicker();
   }
 
   public boolean kickerAtSpeed() {

@@ -69,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput private TurretState turretState = TurretState.NotTargeting;
 
   private boolean shouldShootWhenReady = false;
-  private boolean preventShooting = false;
+  private boolean preventShooting = true;
 
   public static boolean isGenerous = false;
 

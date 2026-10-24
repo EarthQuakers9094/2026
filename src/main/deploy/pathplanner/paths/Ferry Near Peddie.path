@@ -123,6 +123,17 @@
       }
     },
     {
+      "name": "start_shooting_fuel",
+      "waypointRelativePos": 1.2416873449131924,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "start_shooting_fuel"
+        }
+      }
+    },
+    {
       "name": "temporary reverse spindexer",
       "waypointRelativePos": 1.8,
       "endWaypointRelativePos": null,
@@ -130,17 +141,6 @@
         "type": "named",
         "data": {
           "name": "temporary reverse spindexer"
-        }
-      }
-    },
-    {
-      "name": "start_shooting_fuel",
-      "waypointRelativePos": 1.902729528535951,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "start_shooting_fuel"
         }
       }
     },
